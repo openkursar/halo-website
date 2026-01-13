@@ -1201,7 +1201,7 @@
       </div>
 
       <p class="version-text">
-        <span id="version">v1.0.0</span> · <span id="build-time"></span> · <a href="https://github.com/imwangfu/halo-release/releases" target="_blank" data-i18n="all-releases">All releases</a>
+        <span id="version">v1.0.0</span> · <span id="build-time"></span> · <a href="https://github.com/openkursar/hello-halo/releases" target="_blank" data-i18n="all-releases">All releases</a>
       </p>
     </div>
 
@@ -1374,7 +1374,7 @@
       </div>
 
       <div class="notice fade-in delay-5">
-        <p><span data-i18n="notice">Developer Preview — </span><a href="https://github.com/imwangfu/halo-release/issues" target="_blank" data-i18n="notice-link">Stable version coming soon →</a></p>
+        <p><span data-i18n="notice">Developer Preview — </span><a href="https://github.com/openkursar/hello-halo/issues" target="_blank" data-i18n="notice-link">Stable version coming soon →</a></p>
       </div>
     </div>
   </section>
@@ -1397,9 +1397,9 @@
   <footer>
     <p>
       Made with ❤️ ·
-      <a href="https://github.com/imwangfu/halo-release">GitHub</a> ·
-      <a href="https://github.com/imwangfu/halo-release/releases">Releases</a> ·
-      <a href="https://github.com/imwangfu/halo-release/issues" data-i18n="feedback">Feedback</a>
+      <a href="https://github.com/openkursar/hello-halo">GitHub</a> ·
+      <a href="https://github.com/openkursar/hello-halo/releases">Releases</a> ·
+      <a href="https://github.com/openkursar/hello-halo/issues" data-i18n="feedback">Feedback</a>
     </p>
   </footer>
 
@@ -1589,7 +1589,7 @@
     });
 
     // Fetch release
-    fetch('https://api.github.com/repos/imwangfu/halo-release/releases/latest')
+    fetch('https://api.github.com/repos/openkursar/hello-halo/releases/latest')
       .then(r => r.json())
       .then(data => {
         if (data.tag_name) {
@@ -1617,7 +1617,7 @@
         });
       })
       .catch(() => {
-        const fb = 'https://github.com/imwangfu/halo-release/releases/latest';
+        const fb = 'https://github.com/openkursar/hello-halo/releases/latest';
         ['mac-arm64-btn', 'mac-arm64-btn-2', 'mac-x64-btn', 'win-btn'].forEach(id => {
           const btn = document.getElementById(id);
           if (btn) btn.href = fb;
