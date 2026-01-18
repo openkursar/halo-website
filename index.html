@@ -1610,8 +1610,8 @@
         (data.assets || []).forEach(a => {
           const n = a.name.toLowerCase();
           if (n.includes('arm64') && n.endsWith('.dmg')) urls.arm64 = a.browser_download_url;
-          else if (n.includes('x64') && n.endsWith('.dmg')) urls.x64 = a.browser_download_url;
-          else if (n.endsWith('.exe')) urls.win = a.browser_download_url;
+          else if (!n.includes('arm64') && n.endsWith('.dmg') && !n.includes('blockmap')) urls.x64 = a.browser_download_url;
+          else if (n.endsWith('.exe') && !n.includes('blockmap')) urls.win = a.browser_download_url;
           else if (n.endsWith('.appimage')) urls.linux = a.browser_download_url;
         });
 
