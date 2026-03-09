@@ -50,6 +50,12 @@ const zhSidebar = [
       { text: '最佳实践', link: '/advanced/best-practices' },
     ]
   },
+  {
+    text: '联系我们',
+    items: [
+      { text: '社区与支持', link: '/contact' },
+    ]
+  },
 ]
 
 const enSidebar = [
@@ -100,6 +106,12 @@ const enSidebar = [
     items: [
       { text: 'Config Paths', link: '/en/advanced/config-paths' },
       { text: 'Best Practices', link: '/en/advanced/best-practices' },
+    ]
+  },
+  {
+    text: 'Contact',
+    items: [
+      { text: 'Community & Support', link: '/en/contact' },
     ]
   },
 ]
