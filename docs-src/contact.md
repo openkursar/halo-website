@@ -19,3 +19,9 @@
 [@FlynnWayne_Wang](https://x.com/FlynnWayne_Wang)
 
 关注获取 Halo 最新动态。
+
+## B 站
+
+[Halo 官方 B 站主页](https://b23.tv/ui9RldJ)
+
+视频教程与产品介绍。

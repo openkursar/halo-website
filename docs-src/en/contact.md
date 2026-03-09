@@ -19,3 +19,9 @@ Best for open-source collaboration or anything that needs a private conversation
 [@FlynnWayne_Wang](https://x.com/FlynnWayne_Wang)
 
 Follow for Halo updates and announcements.
+
+## Bilibili
+
+[Halo on Bilibili](https://b23.tv/ui9RldJ)
+
+Video tutorials and product introductions.
