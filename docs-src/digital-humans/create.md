@@ -31,6 +31,10 @@ Halo 会自动：
 
 对于有技术背景的用户，可以直接编写 spec 文件，精确控制每个细节。
 
+在 Halo 主界面右侧的 **Apps** 面板中点击 **Open →** 进入数字人管理页面，即可手动安装 spec。
+
+![Halo Apps 入口](/images/enter_apps.png)
+
 ### 基础结构
 
 ```yaml
@@ -124,3 +128,9 @@ output:
 ## 发布到商店
 
 想把你的数字人分享给所有人？见 → [DHP 协议](/digital-humans/dhp-protocol)
+
+---
+
+## 下一步：生产级数字人
+
+基础创建完成后，如果你的数字人需要频繁运行、操作平台页面，建议阅读 → [生产级数字人制作](/digital-humans/production-guide)

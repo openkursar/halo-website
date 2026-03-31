@@ -33,6 +33,9 @@ const zhSidebar = [
       { text: '数字人是什么', link: '/digital-humans/overview' },
       { text: '数字人商店', link: '/digital-humans/store' },
       { text: '创建数字人', link: '/digital-humans/create' },
+      { text: '生产级数字人制作', link: '/digital-humans/production-guide' },
+      { text: '配置企业微信机器人', link: '/digital-humans/wecom-bot' },
+      { text: '企业微信机器人玩法', link: '/digital-humans/wecom-bot-features' },
       { text: 'DHP 协议', link: '/digital-humans/dhp-protocol' },
     ]
   },

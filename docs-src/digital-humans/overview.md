@@ -65,4 +65,6 @@ AI 数字人
 
 - [数字人商店](/digital-humans/store)：一键安装现成的数字人
 - [创建数字人](/digital-humans/create)：用自然语言创建你自己的数字人
+- [生产级数字人制作](/digital-humans/production-guide)：从 demo 到生产环境的完整指南
+- [配置企业微信机器人](/digital-humans/wecom-bot)：让数字人在企业微信中与员工对话
 - [DHP 协议](/digital-humans/dhp-protocol)：开发者向，深入了解协议规范
