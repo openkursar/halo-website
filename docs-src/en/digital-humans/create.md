@@ -105,7 +105,7 @@ Common `every` values: `30m`, `1h`, `24h`, `7d`
 | DingTalk | `channels: [dingtalk]` |
 | Webhook | `channels: [webhook]` |
 
-Notification channel credentials (email password, Webhook URL, etc.) are managed centrally under **Settings → Notification Channels**.
+Message channel credentials (email password, Webhook URL, etc.) are managed centrally under **Settings → Message Channels**.
 
 ---
 

@@ -22,24 +22,26 @@ Think of MCP as **the AI's toolbox**. Each MCP server is a tool provider. The AI
 
 ## Configure MCP Servers
 
-Go to **Settings → MCP Servers** and click "Add."
+Go to **Apps → My Apps** and click the "Manual Add SKILL/MCP" button at the bottom of the sidebar, then select **MCP Server**.
 
-<!-- Screenshot placeholder: screenshot-mcp-settings.png (MCP settings page) -->
+Two editing modes are supported:
+- **Visual form**: Fill in name, transport type, command/URL, arguments, and environment variables step by step
+- **JSON mode**: Paste a config directly from Cursor or Claude Desktop
+
+<!-- Screenshot placeholder: screenshot-mcp-add.png (Add MCP dialog) -->
 
 ### Supported Connection Types
 
 | Type | Description | Example |
 |------|-------------|---------|
 | **Command Line (stdio)** | Most common — local process communication | `npx @anthropic-ai/mcp-server-xxx` |
-| **HTTP** | REST API style | Remote server endpoint |
-| **SSE** | Streaming connection | Real-time data push scenarios |
+| **SSE (Server-Sent Events)** | Streaming connection | Real-time data push scenarios |
+| **HTTP (Streamable)** | Streamable HTTP interface | Remote server endpoint |
 
 ### Example: Installing the Puppeteer MCP
 
 ```json
 {
-  "name": "puppeteer",
-  "type": "stdio",
   "command": "npx",
   "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
 }

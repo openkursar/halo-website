@@ -22,24 +22,26 @@ MCP（Model Context Protocol）是 AI 调用外部工具的标准接口协议。
 
 ## 配置 MCP 服务器
 
-进入 **设置 → MCP 服务器**，点击「添加」。
+进入 **应用 → 我的应用**，点击底部「手动添加 SKILL/MCP」按钮，选择 **MCP Server** 类型。
 
-<!-- 截图占位：screenshot-mcp-settings.png（MCP 设置页） -->
+支持两种编辑方式：
+- **可视化表单**：逐项填写名称、传输类型、命令/URL、参数、环境变量等
+- **JSON 模式**：直接粘贴来自 Cursor 或 Claude Desktop 的配置
+
+<!-- 截图占位：screenshot-mcp-add.png（新建 MCP 对话框） -->
 
 ### 支持的连接类型
 
 | 类型 | 说明 | 示例 |
 |------|------|------|
 | **Command Line (stdio)** | 最常用，本地进程通信 | `npx @anthropic-ai/mcp-server-xxx` |
-| **HTTP** | REST API 方式 | 远程服务器接口 |
-| **SSE** | 流式连接 | 实时数据推送场景 |
+| **SSE (Server-Sent Events)** | 流式连接 | 实时数据推送场景 |
+| **HTTP (Streamable)** | 可流式传输的 HTTP 接口 | 远程服务器接口 |
 
 ### 示例：安装 Puppeteer MCP
 
 ```json
 {
-  "name": "puppeteer",
-  "type": "stdio",
   "command": "npx",
   "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
 }

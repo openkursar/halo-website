@@ -2,6 +2,20 @@
 
 企业微信智能机器人让你的数字人可以直接在企业微信中与员工对话。配置完成后，员工发消息给机器人，数字人会自动回复。
 
+## 先搞清楚：机器人 ≠ 数字人
+
+很多人会把这两个概念混淆，配置前先理清楚：
+
+| | 企业微信智能机器人 | 数字人 |
+|---|---|---|
+| 是什么 | 企业微信里的一个应用入口 | Halo 里运行的 AI 个体 |
+| 负责什么 | 收发消息（通道） | 理解消息、思考、回复（大脑） |
+| 在哪里配置 | 企业微信管理后台 | Halo |
+
+**一句话：机器人是门，数字人是门后面的人。** 光有门没有人，消息进来没人回；光有人没有门，消息进不来。两个都要配。
+
+本文档带你完成这两件事。
+
 ---
 
 ## 前提条件
@@ -60,23 +74,23 @@ Secret 只显示一次，请立即复制保存。如果丢失需要重新生成�
 ## 第四步：在 Halo 中填入凭据
 
 1. 打开 Halo，进入 **设置**
-2. 找到 **消息渠道**（Message Channels）板块
+2. 找到 **消息通道**（Message Channels）板块
 3. 点击 **WeCom Intelligent Bot** 卡片展开
 
-> 📷 *截图：Halo 设置 → 消息渠道 → WeCom Intelligent Bot*
+> 📷 *截图：Halo 设置 → 消息通道 → WeCom Intelligent Bot*
 
 4. 开启 **Enabled** 开关
 5. 填入 **Bot ID** 和 **Secret**
 6. **WebSocket URL** 留空即可（默认使用 `wss://openws.work.weixin.qq.com`）
 
-![Halo 消息渠道设置](/images/channels_setting.png)
+![Halo 消息通道设置](/images/channels_setting.png)
 
 填写完成后配置会自动保存。
 
-::: warning 注意：别配成通知渠道了
-**消息渠道**（Message Channels）板块里有多个卡片，要找的是 **WeCom Intelligent Bot**，它标有 **Bidirectional**（双向）徽标。
+::: warning 注意：要选对卡片
+**消息通道**（Message Channels）板块里有多个卡片，要找的是 **WeCom Intelligent Bot**，它标有 **Bidirectional**（双向）徽标。
 
-其他卡片（Email、WeCom、DingTalk、Feishu、Webhook）都是单向通知渠道，只能让数字人向外发通知，无法接收消息——配那些是不起作用的。
+其他卡片（Email、WeCom、DingTalk、Feishu、Webhook）都是单向通道，只能让数字人向外发通知，无法接收消息——配那些是不起作用的。
 :::
 
 ---

@@ -109,7 +109,7 @@ output:
 | 钉钉 | `channels: [dingtalk]` |
 | Webhook | `channels: [webhook]` |
 
-通知渠道的凭据（邮箱密码、Webhook URL 等）在 **设置 → 通知渠道** 中统一管理。
+消息通道的凭据（邮箱密码、Webhook URL 等）在 **设置 → 消息通道** 中统一管理。
 
 ---
 
