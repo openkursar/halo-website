@@ -6,6 +6,7 @@ const zhSidebar = [
     items: [
       { text: 'Halo 是什么', link: '/guide/what-is-halo' },
       { text: '核心理念', link: '/guide/philosophy' },
+      { text: '更新日志', link: '/guide/changelog' },
     ]
   },
   {
@@ -25,6 +26,7 @@ const zhSidebar = [
       { text: 'MCP 服务器', link: '/features/mcp' },
       { text: 'Skills 技能', link: '/features/skills' },
       { text: '命令', link: '/features/commands' },
+      { text: '邮件 MCP', link: '/features/email' },
     ]
   },
   {
@@ -36,6 +38,7 @@ const zhSidebar = [
       { text: '生产级数字人制作', link: '/digital-humans/production-guide' },
       { text: '配置企业微信机器人', link: '/digital-humans/wecom-bot' },
       { text: '企业微信机器人玩法', link: '/digital-humans/wecom-bot-features' },
+      { text: '连接个人微信', link: '/digital-humans/personal-wechat' },
       { text: 'DHP 协议', link: '/digital-humans/dhp-protocol' },
     ]
   },
@@ -51,6 +54,7 @@ const zhSidebar = [
     items: [
       { text: '配置路径', link: '/advanced/config-paths' },
       { text: '最佳实践', link: '/advanced/best-practices' },
+      { text: '安全与权限控制', link: '/advanced/security' },
     ]
   },
   {
