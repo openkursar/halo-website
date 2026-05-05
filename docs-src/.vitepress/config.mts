@@ -6,61 +6,60 @@ const zhSidebar = [
     items: [
       { text: 'Halo 是什么', link: '/guide/what-is-halo' },
       { text: '核心理念', link: '/guide/philosophy' },
-      { text: '更新日志', link: '/guide/changelog' },
     ]
   },
   {
-    text: '快速上手',
+    text: '上手指南',
     items: [
-      { text: '安装', link: '/guide/installation' },
-      { text: '30 秒开始第一个对话', link: '/guide/quickstart' },
+      { text: '1. 安装 Halo', link: '/getting-started/install' },
+      { text: '2. 配置 AI 模型', link: '/getting-started/setup-ai' },
+      { text: '3. 第一次对话', link: '/getting-started/first-chat' },
+      { text: '4. 接入企业微信 Bot', link: '/getting-started/wecom-bot' },
+      { text: '5. 创建更多数字人', link: '/getting-started/create-digital-human' },
+      { text: '6. 配置邮箱', link: '/getting-started/email' },
     ]
   },
   {
-    text: '核心功能',
+    text: '功能详解',
     items: [
       { text: '空间', link: '/features/spaces' },
       { text: 'AI 浏览器', link: '/features/ai-browser' },
       { text: '远程访问', link: '/features/remote-access' },
-      { text: '图片输入', link: '/features/image-input' },
       { text: 'MCP 服务器', link: '/features/mcp' },
       { text: 'Skills 技能', link: '/features/skills' },
       { text: '命令', link: '/features/commands' },
-      { text: '邮件 MCP', link: '/features/email' },
     ]
   },
   {
-    text: '数字人',
+    text: '数字人进阶',
     items: [
-      { text: '数字人是什么', link: '/digital-humans/overview' },
+      { text: '数字人概述', link: '/digital-humans/overview' },
       { text: '数字人商店', link: '/digital-humans/store' },
-      { text: '创建数字人', link: '/digital-humans/create' },
       { text: '生产级数字人制作', link: '/digital-humans/production-guide' },
-      { text: '配置企业微信机器人', link: '/digital-humans/wecom-bot' },
-      { text: '企业微信机器人玩法', link: '/digital-humans/wecom-bot-features' },
+      { text: '企微 Bot 进阶玩法', link: '/digital-humans/wecom-bot-features' },
       { text: '连接个人微信', link: '/digital-humans/personal-wechat' },
       { text: 'DHP 协议', link: '/digital-humans/dhp-protocol' },
     ]
   },
   {
+    text: '安全与权限',
+    items: [
+      { text: '权限控制', link: '/advanced/security' },
+    ]
+  },
+  {
     text: '常见问题',
     items: [
-      { text: '常见错误', link: '/troubleshooting/common-errors' },
+      { text: 'FAQ', link: '/troubleshooting/faq' },
       { text: 'API 错误码', link: '/troubleshooting/api-errors' },
     ]
   },
   {
-    text: '高级',
+    text: '更多',
     items: [
+      { text: '更新日志', link: '/guide/changelog' },
       { text: '配置路径', link: '/advanced/config-paths' },
-      { text: '最佳实践', link: '/advanced/best-practices' },
-      { text: '安全与权限控制', link: '/advanced/security' },
-    ]
-  },
-  {
-    text: '联系我们',
-    items: [
-      { text: '社区与支持', link: '/contact' },
+      { text: '联系我们', link: '/contact' },
     ]
   },
 ]
