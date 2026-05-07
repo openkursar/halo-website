@@ -36,6 +36,7 @@ const zhSidebar = [
       { text: '数字人概述', link: '/digital-humans/overview' },
       { text: '数字人商店', link: '/digital-humans/store' },
       { text: '生产级数字人制作', link: '/digital-humans/production-guide' },
+      { text: '数字人协作与通信', link: '/digital-humans/collaboration' },
       { text: '企微 Bot 进阶玩法', link: '/digital-humans/wecom-bot-features' },
       { text: '连接个人微信', link: '/digital-humans/personal-wechat' },
       { text: 'DHP 协议', link: '/digital-humans/dhp-protocol' },
@@ -97,6 +98,7 @@ const enSidebar = [
       { text: 'Overview', link: '/en/digital-humans/overview' },
       { text: 'Store', link: '/en/digital-humans/store' },
       { text: 'Create', link: '/en/digital-humans/create' },
+      { text: 'Collaboration', link: '/en/digital-humans/collaboration' },
       { text: 'DHP Protocol', link: '/en/digital-humans/dhp-protocol' },
     ]
   },
