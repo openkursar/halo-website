@@ -93,7 +93,15 @@ curl -s http://localhost:3847/api/apps/<appId> \
 
 ### 2.3 向数字人发消息
 
-这是数字人之间通信的核心 —— 给目标数字人发一条消息，触发它执行。
+::: warning 注意：两套独立系统
+Halo 数字人有两套独立系统：
+- **Chat 系统**（`/chat/send`）：对话式交互，有消息历史，可获取回复内容
+- **执行系统**（`/trigger`、`/state`）：定时 / 手动触发自动化任务，只有运行状态
+
+`/chat/send` 发出的消息走 Chat 系统，`/state` 查的是执行系统状态，两者互不关联。
+:::
+
+这是数字人之间通信的核心 —— 给目标数字人发一条消息。
 
 ```bash
 curl -s -X POST http://localhost:3847/api/apps/<目标数字人ID>/chat/send \
@@ -119,10 +127,49 @@ curl -s -X POST http://localhost:3847/api/apps/<目标数字人ID>/chat/send \
 ```
 
 ::: warning 注意
-发消息是**异步**的。`curl` 会立刻返回，目标数字人会在后台执行。想知道它做完没有？看下一步。
+发消息是**异步**的。`curl` 会立刻返回，目标数字人会在后台生成回复。想拿到回复内容？看 2.4。
 :::
 
-### 2.4 查看数字人运行状态
+### 2.4 获取 Chat 回复内容
+
+发消息后想拿到数字人的回复，需要两步轮询：
+
+**Step 1：等待生成完成**
+
+```bash
+curl -s http://localhost:3847/api/apps/<目标数字人ID>/chat/status \
+  -H "Authorization: Bearer 你的密码"
+```
+
+返回：
+
+```json
+{ "success": true, "data": { "isGenerating": false, "conversationId": "conv-xxx..." } }
+```
+
+`isGenerating` 为 `false` 时说明回复生成完毕。
+
+**Step 2：获取消息内容**
+
+```bash
+curl -s http://localhost:3847/api/apps/<目标数字人ID>/chat/messages \
+  -H "Authorization: Bearer 你的密码"
+```
+
+返回完整的消息列表，最后一条即为数字人的回复。
+
+### 2.5 手动触发数字人执行
+
+不等定时计划，直接让数字人跑一次：
+
+```bash
+curl -s -X POST http://localhost:3847/api/apps/<目标数字人ID>/trigger \
+  -H "Authorization: Bearer 你的密码"
+```
+
+### 2.6 查看自动化执行状态
+
+查看数字人自动化任务的运行状态（定时执行或手动触发的任务）：
 
 ```bash
 curl -s http://localhost:3847/api/apps/<目标数字人ID>/state \
@@ -145,15 +192,6 @@ curl -s http://localhost:3847/api/apps/<目标数字人ID>/state \
 `status` 的含义：
 - `idle` — 空闲，没有在跑
 - `running` — 正在执行中
-
-### 2.5 手动触发数字人执行
-
-不等定时计划，直接让数字人跑一次：
-
-```bash
-curl -s -X POST http://localhost:3847/api/apps/<目标数字人ID>/trigger \
-  -H "Authorization: Bearer 你的密码"
-```
 
 ---
 
@@ -385,7 +423,7 @@ curl -s -X POST http://localhost:3847/hooks/app-a-to-b \
 
 | 限制 | 影响 |
 |------|------|
-| 发消息是**异步**的，不等对方执行完就返回 | 如果想要确认结果，需要轮询 `/api/apps/:appId/state` 或者 `/api/apps/:appId/activity` |
+| 发消息是**异步**的，不等对方执行完就返回 | Chat 消息可通过轮询 `/chat/status` + `/chat/messages` 获取回复；自动化任务可轮询 `/state` 查看执行状态 |
 | 没有"谁调了我"的回调机制 | 调用方无法自动获知被调用方的执行结果 |
 | 自动化数字人**没有**内置的 `list_automation_apps` 或 `trigger_automation_app` 等便利工具 | 必须手动配置目标 App ID，不能运行时自动发现 |
 | Webhook 的路径名必须是**全局唯一**的 | 多个数字人不能用同一个 webhook path |

@@ -6,6 +6,8 @@ const zhSidebar = [
     items: [
       { text: 'Halo 是什么', link: '/guide/what-is-halo' },
       { text: '核心理念', link: '/guide/philosophy' },
+      { text: '从 Claude Code 迁移', link: '/guide/from-claude-code' },
+      { text: '更新日志', link: '/guide/changelog' },
     ]
   },
   {
@@ -20,6 +22,20 @@ const zhSidebar = [
     ]
   },
   {
+    text: '用户手册',
+    items: [
+      { text: '第零章：安装与第一次打开', link: '/manual/00-install-and-first-open' },
+      { text: '第一章：企微机器人配置', link: '/manual/01-wecom-bot' },
+      { text: '第二章：创建和使用数字人', link: '/manual/02-digital-human' },
+      { text: '第三章：用 Halo 发邮件', link: '/manual/03-email' },
+      { text: '第四章：和 AI 对话基础', link: '/manual/04-chat-basics' },
+      { text: '第五章：空间管理', link: '/manual/chapter05-space-management' },
+      { text: '第六章：AI 浏览器', link: '/manual/chapter06-ai-browser' },
+      { text: '第七章：远程访问', link: '/manual/chapter07-remote-access' },
+      { text: '第八章：设置、应用商店与排障', link: '/manual/chapter08-settings-and-troubleshooting' },
+    ]
+  },
+  {
     text: '功能详解',
     items: [
       { text: '空间', link: '/features/spaces' },
@@ -28,6 +44,14 @@ const zhSidebar = [
       { text: 'MCP 服务器', link: '/features/mcp' },
       { text: 'Skills 技能', link: '/features/skills' },
       { text: '命令', link: '/features/commands' },
+    ]
+  },
+  {
+    text: '数字人开发指南',
+    items: [
+      { text: '第一章：快速上手', link: '/digital-humans/guide-01-quickstart' },
+      { text: '第二章：改造一个数字人', link: '/digital-humans/guide-02-build' },
+      { text: '第三章：参考手册', link: '/digital-humans/guide-03-reference' },
     ]
   },
   {
@@ -146,6 +170,7 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: '文档', link: '/guide/what-is-halo' },
+          { text: '用户手册', link: '/manual/00-install-and-first-open' },
           { text: '数字人', link: '/digital-humans/overview' },
           { text: '常见问题', link: '/troubleshooting/common-errors' },
         ],

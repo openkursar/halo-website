@@ -214,7 +214,7 @@ system_prompt: |
   curl -s -X POST http://localhost:{halo_port}/api/apps/{alert_app_id}/chat/send \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer {halo_token}" \
-    -d '{"spaceId":"{space_id}","message":"ALERT: <symbol> price change <pct>%, current price <price>"}'
+    -d '{"spaceId":"{space_id}","message":"ALERT: &lt;symbol&gt; price change &lt;pct&gt;%, current price &lt;price&gt;"}'
   ```
 
   4. Update last_prices in memory.
@@ -393,5 +393,4 @@ No password needed — just a shared `secret` agreed upon by both parties.
 ## Next Steps
 
 - [Creating Digital Humans](/en/digital-humans/create) — Learn the full spec format
-- [Production-Grade Digital Humans](/en/digital-humans/production-guide) — Encapsulate curl calls in Skill scripts
 - [Remote Access](/en/features/remote-access) — Manage remote access toggle and password
