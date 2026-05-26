@@ -1,3 +1,7 @@
+---
+title: "MCP 服务器 - 扩展 AI 能力"
+description: "通过 MCP（Model Context Protocol）协议为 Halo 安装外部工具服务器，扩展 AI 的能力边界。"
+---
 # MCP 服务器
 
 MCP（Model Context Protocol）是 AI 调用外部工具的标准接口协议。通过安装 MCP 服务器，你可以大幅扩展 Halo 的能力边界。

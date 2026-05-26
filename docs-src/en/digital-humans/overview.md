@@ -1,4 +1,8 @@
-# What are Digital Humans
+---
+title: "Digital Humans - 24/7 Autonomous AI Agents | Halo"
+description: "Halo Digital Humans are autonomous AI agents that run 24/7. Automate scheduled tasks, web scraping, report generation, monitoring, and more. Open source and free."
+---
+# Digital Humans: 24/7 Autonomous AI Agents
 
 Starting with Halo v2.0, Halo is no longer just a "one-off AI conversation tool" — it is a platform capable of running persistent AI individuals.
 

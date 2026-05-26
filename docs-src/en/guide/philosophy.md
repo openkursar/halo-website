@@ -1,3 +1,7 @@
+---
+title: "Philosophy - Kill Ugly Raw Source"
+description: "The design philosophy behind Halo: bringing frontier AI capabilities to everyone through a beautiful desktop experience."
+---
 # Philosophy
 
 ## Kill Ugly Raw Source, AI Rewrites

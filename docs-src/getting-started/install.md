@@ -1,4 +1,8 @@
-# 1. 安装 Halo
+---
+title: "安装 Halo - 免费下载 Claude Code 桌面版 AI 助手"
+description: "一键下载安装 Halo AI 桌面助手。支持 macOS、Windows、Linux，无需 Node.js 或终端，Claude Code 的完整 Agent 能力开箱即用。"
+---
+# 安装 Halo — Claude Code 桌面版 AI 助手
 
 Halo 是一个 AI 桌面助手。装好之后，你可以用自然语言让 AI 帮你完成各种工作——写文档、整理文件、分析数据、操作网页、收发邮件，甚至让它 7×24 小时自动干活。
 

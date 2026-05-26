@@ -1,3 +1,7 @@
+---
+title: "Create a Digital Human"
+description: "Create your own Halo digital human using natural language or spec.yaml configuration."
+---
 # Create a Digital Human
 
 You have two ways to create your own Digital Human: **natural language conversation** or **writing a spec.yaml directly**.

@@ -1,3 +1,7 @@
+---
+title: "Common Errors"
+description: "Troubleshoot common issues and errors when using Halo AI desktop agent."
+---
 # Common Errors
 
 ## AI Disconnects Without Warning / Stops Mid-Task

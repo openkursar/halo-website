@@ -1,3 +1,7 @@
+---
+title: "配置 AI 模型 - 连接 Claude 或代理"
+description: "为 Halo 配置 AI 模型，支持 Anthropic 官方 API Key 或第三方代理，一步完成 AI 连接。"
+---
 # 2. 配置 AI 模型
 
 Halo 本身是一个工具，它需要连接一个 AI 模型才能工作——就像浏览器需要连接网络才能上网一样。

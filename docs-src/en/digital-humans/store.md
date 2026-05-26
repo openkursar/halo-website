@@ -1,3 +1,7 @@
+---
+title: "Digital Human Store"
+description: "Browse and one-click install community-made digital humans from the Halo store."
+---
 # Digital Human Store
 
 The Digital Human Store is Halo's built-in app marketplace. Just like installing an app, you can install Digital Humans curated by community developers with a single click — no coding required, no complex configuration, ready to use out of the box.

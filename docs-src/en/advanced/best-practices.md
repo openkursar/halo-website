@@ -1,3 +1,7 @@
+---
+title: "Best Practices"
+description: "Tips and best practices for getting the most out of Halo AI desktop agent."
+---
 # Best Practices
 
 This page consolidates effective tips for everyday Halo use, drawn from real-world experience.

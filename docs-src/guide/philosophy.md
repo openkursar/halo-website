@@ -1,3 +1,7 @@
+---
+title: "核心理念 - Kill Ugly Raw Source"
+description: "Halo 的设计哲学：让 AI 重写一切丑陋的原始代码，用最前沿的 AI 能力服务每一个人。"
+---
 # 核心理念
 
 ## Kill Ugly Raw Source, AI Rewrites

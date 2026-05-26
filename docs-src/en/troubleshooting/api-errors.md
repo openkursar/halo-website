@@ -1,3 +1,7 @@
+---
+title: "API Error Codes"
+description: "Quick reference for AI model API error codes including Anthropic, OpenAI, and third-party providers."
+---
 # API Error Codes
 
 These errors come from model service providers (such as Anthropic, OpenAI, or third-party proxies). Halo displays the raw error messages directly.

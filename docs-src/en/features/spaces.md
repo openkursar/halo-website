@@ -1,3 +1,7 @@
+---
+title: "Spaces - Project Isolation"
+description: "Organize projects into isolated workspaces in Halo, each with independent context, history, and AI settings."
+---
 # Spaces
 
 A Space is the fundamental isolation unit for tasks in Halo. Each space has its own independent conversation history, file context, and AI state — completely separate from one another.

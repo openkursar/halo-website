@@ -151,9 +151,13 @@ const enSidebar = [
 export default defineConfig({
   base: '/docs/',
   title: 'Halo',
-  description: 'Halo 官方文档',
+  description: 'Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans.',
 
   appearance: 'light',
+
+  sitemap: {
+    hostname: 'https://hello-halo.cc/docs/',
+  },
 
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/docs/logo.svg' }],
@@ -161,7 +165,36 @@ export default defineConfig({
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', { href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', rel: 'stylesheet' }],
     ['meta', { name: 'theme-color', content: '#3b82f6' }],
+    // SEO
+    ['meta', { name: 'robots', content: 'index, follow' }],
+    ['meta', { property: 'og:site_name', content: 'Halo' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    // Baidu Analytics
+    ['script', {}, `var _hmt = _hmt || [];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?ba1b0224eb934176ead125ffccc8861b";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s)})();`],
+    // Google Analytics (GA4)
+    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-6V61P0940T' }],
+    ['script', {}, `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-6V61P0940T');`],
   ],
+
+  transformPageData(pageData) {
+    const canonicalUrl = `https://hello-halo.cc/docs/${pageData.relativePath}`
+      .replace(/index\.md$/, '')
+      .replace(/\.md$/, '.html')
+
+    const title = pageData.frontmatter.title || pageData.title || 'Halo Docs'
+    const description = pageData.frontmatter.description || pageData.description || 'Halo - AI Desktop Agent powered by Claude Code.'
+
+    pageData.frontmatter.head ??= []
+    pageData.frontmatter.head.push(
+      ['link', { rel: 'canonical', href: canonicalUrl }],
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { property: 'og:url', content: canonicalUrl }],
+      ['meta', { name: 'twitter:title', content: title }],
+      ['meta', { name: 'twitter:description', content: description }],
+    )
+  },
 
   locales: {
     root: {

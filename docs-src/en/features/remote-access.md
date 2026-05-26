@@ -1,3 +1,7 @@
+---
+title: "Remote Access - Control AI from Anywhere"
+description: "Access your Halo AI desktop agent from any device, anywhere — phone, tablet, or another computer."
+---
 # Remote Access
 
 Halo has built-in remote access, allowing you to control your Halo from any device and any location through a browser — no client installation required.

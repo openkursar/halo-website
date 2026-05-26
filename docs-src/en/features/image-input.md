@@ -1,3 +1,7 @@
+---
+title: "Image Input - Multimodal AI"
+description: "Send images to Halo AI for analysis, OCR recognition, and visual understanding."
+---
 # Image Input
 
 Halo supports sending images directly in conversations. The AI can recognize and analyze image content and respond accordingly.

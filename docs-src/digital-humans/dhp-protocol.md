@@ -1,3 +1,7 @@
+---
+title: "DHP 协议 - 数字人分发标准"
+description: "DHP（Digital Human Protocol）是 Halo 的开放 AI 数字人分发协议，开发者可发布数字人供一键安装。"
+---
 # DHP 协议
 
 DHP（Digital Human Protocol）是 Halo 提出的**开放 AI 数字人分发协议**。

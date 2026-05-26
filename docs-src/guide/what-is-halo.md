@@ -1,4 +1,8 @@
-# Halo 是什么
+---
+title: "Halo 是什么 - Claude Code 桌面版 AI 智能体应用"
+description: "Halo 是开源的 Claude Code 桌面版替代方案，将 Claude Code Agent 完整能力封装为可视化桌面 AI 应用。支持远程访问、AI 浏览器自动化、7×24 小时数字人。免费下载，支持 macOS/Windows/Linux。"
+---
+# Halo：Claude Code 桌面版 AI 智能体应用
 
 ## 从一个问题开始
 
@@ -70,3 +74,13 @@ Halo 不是商业产品，是个人与社区共同驱动的实验。我们诞生
 ::: info 参与共建
 欢迎在 [GitHub](https://github.com/openkursar/hello-halo) 提交 Issue 或 PR，共同完善 Halo。
 :::
+
+---
+
+## 下一步
+
+- [安装 Halo](/getting-started/install) — 一键下载 AI 桌面助手
+- [AI 浏览器自动化](/features/ai-browser) — 让 AI 操控网页
+- [数字人概述](/digital-humans/overview) — 创建 7×24 小时 AI 智能体
+- [远程访问](/features/remote-access) — 随时随地控制你的 AI
+- [核心理念](/guide/philosophy) — 了解 Halo 的设计哲学

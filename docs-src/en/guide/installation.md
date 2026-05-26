@@ -1,3 +1,7 @@
+---
+title: "Install Halo - One-click AI Desktop App"
+description: "Download and install Halo AI desktop agent on macOS, Windows, or Linux. No coding required."
+---
 # Installation
 
 Halo supports macOS, Windows, and Linux — all three major desktop platforms — with a one-click installer for each.

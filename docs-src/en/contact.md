@@ -1,3 +1,7 @@
+---
+title: "Contact & Community"
+description: "Halo community channels, feedback, and support contacts."
+---
 # Contact
 
 Have questions, feedback, or collaboration ideas? Reach out through any of the channels below.

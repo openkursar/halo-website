@@ -1,3 +1,7 @@
+---
+title: "Commands"
+description: "Built-in commands and shortcuts available in Halo AI desktop agent."
+---
 # Commands
 
 Halo's input box passes content directly to the underlying Claude Code, so all native Claude Code commands are available.

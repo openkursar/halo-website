@@ -1,3 +1,7 @@
+---
+title: "DHP Protocol - Digital Human Distribution"
+description: "DHP (Digital Human Protocol) is Halo's open standard for distributing and installing AI digital humans."
+---
 # DHP Protocol
 
 DHP (Digital Human Protocol) is an **open AI Digital Human distribution protocol** proposed by Halo.

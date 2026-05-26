@@ -1,3 +1,7 @@
+---
+title: "Skills - Reusable AI Templates"
+description: "Create reusable instruction templates for Halo AI, invoke with /skill-name in any conversation."
+---
 # Skills
 
 Skills are reusable instruction templates. Define one once, then invoke it in any conversation with `/skill-name`. The AI will automatically load that skill and execute it.

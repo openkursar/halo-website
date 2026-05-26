@@ -1,3 +1,7 @@
+---
+title: "Digital Human Collaboration"
+description: "Enable multi-agent collaboration between Halo digital humans via REST API communication."
+---
 # Digital Human Collaboration & Communication
 
 When Remote Access is enabled in Halo, each digital human exposes a REST API. One digital human can call another using `curl`, enabling task distribution and collaboration.
@@ -214,7 +218,7 @@ system_prompt: |
   curl -s -X POST http://localhost:{halo_port}/api/apps/{alert_app_id}/chat/send \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer {halo_token}" \
-    -d '{"spaceId":"{space_id}","message":"ALERT: &lt;symbol&gt; price change &lt;pct&gt;%, current price &lt;price&gt;"}'
+    -d '{"spaceId":"{space_id}","message":"ALERT: {symbol} price change {pct}%, current price {price}"}'
   ```
 
   4. Update last_prices in memory.
@@ -393,4 +397,5 @@ No password needed — just a shared `secret` agreed upon by both parties.
 ## Next Steps
 
 - [Creating Digital Humans](/en/digital-humans/create) — Learn the full spec format
+- [Production-Grade Digital Humans](/digital-humans/production-guide) — Encapsulate curl calls in Skill scripts (Chinese)
 - [Remote Access](/en/features/remote-access) — Manage remote access toggle and password

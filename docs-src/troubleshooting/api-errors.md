@@ -1,3 +1,7 @@
+---
+title: "API 错误码"
+description: "AI 模型 API 错误码速查表，包括 Anthropic、OpenAI 等常见错误解决方案。"
+---
 # API 错误码
 
 这类错误来自模型服务提供商（如 Anthropic、OpenAI 或第三方代理），Halo 会将原始错误信息直接展示。

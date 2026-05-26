@@ -1,4 +1,8 @@
-# What is Halo
+---
+title: "What is Halo - Open Source Claude Code Desktop App & AI Agent"
+description: "Halo is an open-source Claude Code desktop alternative. A visual GUI for Claude Code Agent with remote access, AI browser automation, and 24/7 digital humans. Free download for macOS, Windows, and Linux."
+---
+# Halo: Open Source Claude Code Desktop App
 
 ## Starting with a Question
 
@@ -70,3 +74,13 @@ We believe the computing platform of the future should be a standardized Agent r
 ::: info Get Involved
 Contributions are welcome on [GitHub](https://github.com/openkursar/hello-halo). Feel free to open an Issue or submit a PR to help improve Halo.
 :::
+
+---
+
+## Next Steps
+
+- [Install Halo](/en/guide/installation) — Download the AI desktop agent
+- [AI Browser Automation](/en/features/ai-browser) — Let AI control web pages
+- [Digital Humans](/en/digital-humans/overview) — Create 24/7 autonomous AI agents
+- [Remote Access](/en/features/remote-access) — Control your AI from anywhere
+- [Philosophy](/en/guide/philosophy) — The design principles behind Halo

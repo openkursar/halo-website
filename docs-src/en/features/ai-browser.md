@@ -1,4 +1,8 @@
-# AI Browser
+---
+title: "AI Browser Automation - Web Scraping & Auto-fill | Halo"
+description: "Halo's built-in AI browser lets AI agents automatically browse, fill forms, scrape data, and automate web tasks. No coding or crawler scripts needed."
+---
+# AI Browser: Automated Web Browsing & Data Scraping
 
 The AI Browser lets Halo's Agent directly interact with web pages — automatically opening pages, searching for information, filling out forms, and clicking buttons, just like an automated assistant that can see, click, and type.
 

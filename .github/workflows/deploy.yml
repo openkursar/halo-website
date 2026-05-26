@@ -42,6 +42,8 @@ jobs:
           # Landing page at root
           cp index.html dist/
           cp CNAME dist/
+          cp robots.txt dist/
+          cp sitemap.xml dist/
           # Docs at /docs/
           cp -r docs-src/.vitepress/dist dist/docs
 

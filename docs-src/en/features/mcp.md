@@ -1,3 +1,7 @@
+---
+title: "MCP Servers - Extend AI Capabilities"
+description: "Install MCP (Model Context Protocol) servers to extend Halo AI agent's capabilities with external tools."
+---
 # MCP Servers
 
 MCP (Model Context Protocol) is the standard interface protocol for AI to call external tools. By installing MCP servers, you can greatly expand the boundaries of what Halo can do.

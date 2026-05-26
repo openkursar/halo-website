@@ -1,3 +1,7 @@
+---
+title: "命令"
+description: "Halo 支持的内置命令和快捷操作。"
+---
 # 命令
 
 Halo 的输入框内容会直接传给底层的 Claude Code，因此所有 Claude Code 原生命令均可使用。

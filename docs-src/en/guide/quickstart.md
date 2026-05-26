@@ -1,3 +1,7 @@
+---
+title: "Quick Start - Your First AI Conversation"
+description: "Start your first conversation with Halo AI in 30 seconds. Experience AI-powered file management, data analysis, and web automation."
+---
 # Start Your First Conversation in 30 Seconds
 
 ## Step 1: Create a Space

@@ -1,3 +1,7 @@
+---
+title: "Config Paths"
+description: "Location of Halo configuration files on different operating systems."
+---
 # Config Paths
 
 Halo has two independent sets of configuration paths: **Claude Code configuration** and **Halo's own configuration**. They are stored separately and do not interfere with each other.
