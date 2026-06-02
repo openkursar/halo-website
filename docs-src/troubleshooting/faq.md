@@ -29,6 +29,20 @@ AI 服务端处理失败。常见原因：
 - 发送了不支持的参数，比如大模型不支持图片，新开对话。
 - 服务过载 → 稍后重试
 
+**Q：报错 "There's an issue with the selected model (xxx). It may not exist or you may not have access to it."？**
+
+模型校验本身可以通过 CLI 验证（同模型在 `claude` 命令行能跑），问题出在 Halo 的内部配置文件 `claude-config/settings.json` 被写脏了，SDK 启动时直接拒绝当前模型。
+
+解决：
+
+1. 完全关闭 Halo
+2. 删除 `settings.json`：
+   - macOS：`~/Library/Application Support/Halo/claude-config/settings.json`
+   - Windows：`C:\Users\<用户名>\AppData\Roaming\Halo\claude-config\settings.json`
+3. 重新启动 Halo，文件会自动重建
+
+如果同事有可用的配置，也可以直接拷贝覆盖。
+
 ---
 
 ## 企业微信 Bot

@@ -1,5 +1,40 @@
 import { defineConfig } from 'vitepress'
 
+// Internal (intranet) build switch. Set HALO_INTERNAL=1 to strip public-only
+// content (e.g. open-source/community messaging, contact page) from the build.
+const isInternal = process.env.HALO_INTERNAL === '1'
+
+// Pages excluded entirely from the internal build.
+const internalExcludePages = [
+  'guide/philosophy.md',
+  'en/guide/philosophy.md',
+  'contact.md',
+  'en/contact.md',
+]
+
+// Sidebar/nav links pointing at the excluded pages (filtered out internally).
+const internalExcludeLinks = [
+  '/guide/philosophy',
+  '/en/guide/philosophy',
+  '/contact',
+  '/en/contact',
+]
+
+type SidebarGroup = { text: string; items: { text: string; link: string }[] }
+
+// Drop links to excluded pages, then drop any group left empty.
+function filterSidebar(groups: SidebarGroup[]): SidebarGroup[] {
+  if (!isInternal) return groups
+  return groups
+    .map((g) => ({ ...g, items: g.items.filter((i) => !internalExcludeLinks.includes(i.link)) }))
+    .filter((g) => g.items.length > 0)
+}
+
+function filterNav<T extends { link?: string }>(items: T[]): T[] {
+  if (!isInternal) return items
+  return items.filter((i) => !i.link || !internalExcludeLinks.includes(i.link))
+}
+
 const zhSidebar = [
   {
     text: '认识 Halo',
@@ -159,6 +194,24 @@ export default defineConfig({
     hostname: 'https://hello-halo.cc/docs/',
   },
 
+  // Internal build: exclude public-only pages entirely.
+  srcExclude: isInternal ? internalExcludePages : [],
+
+  markdown: {
+    config: (md) => {
+      // Internal build: strip regions wrapped in
+      // <!-- public:start --> ... <!-- public:end --> from the source.
+      md.core.ruler.before('normalize', 'strip_public', (state) => {
+        if (isInternal) {
+          state.src = state.src.replace(
+            /<!--\s*public:start\s*-->[\s\S]*?<!--\s*public:end\s*-->/g,
+            ''
+          )
+        }
+      })
+    }
+  },
+
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/docs/logo.svg' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
@@ -201,13 +254,13 @@ export default defineConfig({
       lang: 'zh-CN',
       label: '中文',
       themeConfig: {
-        nav: [
+        nav: filterNav([
           { text: '文档', link: '/guide/what-is-halo' },
           { text: '用户手册', link: '/manual/00-install-and-first-open' },
           { text: '数字人', link: '/digital-humans/overview' },
           { text: '常见问题', link: '/troubleshooting/common-errors' },
-        ],
-        sidebar: zhSidebar,
+        ]),
+        sidebar: filterSidebar(zhSidebar),
       }
     },
     en: {
@@ -215,12 +268,12 @@ export default defineConfig({
       label: 'English',
       link: '/en/',
       themeConfig: {
-        nav: [
+        nav: filterNav([
           { text: 'Docs', link: '/en/guide/what-is-halo' },
           { text: 'Digital Humans', link: '/en/digital-humans/overview' },
           { text: 'Troubleshooting', link: '/en/troubleshooting/common-errors' },
-        ],
-        sidebar: enSidebar,
+        ]),
+        sidebar: filterSidebar(enSidebar),
       }
     }
   },
@@ -229,13 +282,17 @@ export default defineConfig({
     logo: '/logo.svg',
     siteTitle: 'Halo',
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/openkursar/hello-halo' }
-    ],
+    socialLinks: isInternal
+      ? []
+      : [
+          { icon: 'github', link: 'https://github.com/openkursar/hello-halo' }
+        ],
 
     footer: {
       message: '基于 MIT 协议开源',
-      copyright: '© 2025 Halo · <a href="https://hello-halo.cc" target="_blank">hello-halo.cc</a>'
+      copyright: isInternal
+        ? '© 2025 Halo'
+        : '© 2025 Halo · <a href="https://hello-halo.cc" target="_blank">hello-halo.cc</a>'
     },
 
     search: {
@@ -256,10 +313,12 @@ export default defineConfig({
       }
     },
 
-    editLink: {
-      pattern: 'https://github.com/openkursar/halo-website/edit/main/docs-src/:path',
-      text: '在 GitHub 上编辑此页'
-    },
+    editLink: isInternal
+      ? undefined
+      : {
+          pattern: 'https://github.com/openkursar/halo-website/edit/main/docs-src/:path',
+          text: '在 GitHub 上编辑此页'
+        },
 
     lastUpdated: {
       text: '最后更新于',
