@@ -1,8 +1,15 @@
 import { defineConfig } from 'vitepress'
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
 // Internal (intranet) build switch. Set HALO_INTERNAL=1 to strip public-only
 // content (e.g. open-source/community messaging, contact page) from the build.
 const isInternal = process.env.HALO_INTERNAL === '1'
+
+// Source for internal-only content injected by `<!-- internal:NAME -->` markers.
+// Kept out of git (see docs-src/.gitignore); only present on the intranet build
+// machine, so confidential values never reach the public repo or site.
+const internalDir = fileURLToPath(new URL('../.internal', import.meta.url))
 
 // Pages excluded entirely from the internal build.
 const internalExcludePages = [
@@ -102,6 +109,20 @@ const zhSidebar = [
     ]
   },
   {
+    text: 'Halo 服务版（Server）',
+    items: [
+      { text: '快速开始', link: '/server/' },
+      { text: '配置（环境变量）', link: '/server/configuration' },
+      { text: '容器部署', link: '/server/deployment-docker' },
+      { text: '函数平台部署', link: '/server/deployment-faas' },
+      { text: '集成指南', link: '/server/integration' },
+      { text: 'HTTP API 参考', link: '/server/api-reference' },
+      { text: 'WebSocket 事件协议', link: '/server/websocket' },
+      { text: '集成示例', link: '/server/examples' },
+      { text: '自建镜像与工作原理', link: '/server/build' },
+    ]
+  },
+  {
     text: '安全与权限',
     items: [
       { text: '权限控制', link: '/advanced/security' },
@@ -162,6 +183,20 @@ const enSidebar = [
     ]
   },
   {
+    text: 'Halo Server',
+    items: [
+      { text: 'Quickstart', link: '/en/server/' },
+      { text: 'Configuration', link: '/en/server/configuration' },
+      { text: 'Deploy with Docker', link: '/en/server/deployment-docker' },
+      { text: 'Deploy on Function Platform', link: '/en/server/deployment-faas' },
+      { text: 'Integration Guide', link: '/en/server/integration' },
+      { text: 'HTTP API Reference', link: '/en/server/api-reference' },
+      { text: 'WebSocket Protocol', link: '/en/server/websocket' },
+      { text: 'Examples', link: '/en/server/examples' },
+      { text: 'Build Your Own Image', link: '/en/server/build' },
+    ]
+  },
+  {
     text: 'Troubleshooting',
     items: [
       { text: 'Common Errors', link: '/en/troubleshooting/common-errors' },
@@ -208,6 +243,18 @@ export default defineConfig({
             ''
           )
         }
+      })
+
+      // Internal build: replace `<!-- internal:NAME -->` markers with the
+      // contents of `.internal/NAME.md`. On the public build the marker stays
+      // an inert HTML comment. A missing file collapses to nothing so the
+      // build never breaks when a snippet is absent.
+      md.core.ruler.before('normalize', 'inject_internal', (state) => {
+        if (!isInternal) return
+        state.src = state.src.replace(/<!--\s*internal:([\w-]+)\s*-->/g, (_, name) => {
+          const file = `${internalDir}/${name}.md`
+          return fs.existsSync(file) ? fs.readFileSync(file, 'utf-8') : ''
+        })
       })
     }
   },
