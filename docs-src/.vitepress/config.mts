@@ -104,6 +104,7 @@ const zhSidebar = [
       { text: '生产级数字人制作', link: '/digital-humans/production-guide' },
       { text: '数字人协作与通信', link: '/digital-humans/collaboration' },
       { text: '企微 Bot 进阶玩法', link: '/digital-humans/wecom-bot-features' },
+      { text: '企微 Bot 显示真实姓名', link: '/digital-humans/wecom-name-resolution' },
       { text: '连接个人微信', link: '/digital-humans/personal-wechat' },
       { text: 'DHP 协议', link: '/digital-humans/dhp-protocol' },
     ]
