@@ -82,6 +82,8 @@ const zhSidebar = [
     items: [
       { text: '空间', link: '/features/spaces' },
       { text: 'AI 浏览器', link: '/features/ai-browser' },
+      { text: 'AI 终端', link: '/features/ai-terminal' },
+      { text: '知识库', link: '/features/knowledge-base' },
       { text: '远程访问', link: '/features/remote-access' },
       { text: 'MCP 服务器', link: '/features/mcp' },
       { text: 'Skills 技能', link: '/features/skills' },
@@ -166,6 +168,8 @@ const enSidebar = [
     items: [
       { text: 'Spaces', link: '/en/features/spaces' },
       { text: 'AI Browser', link: '/en/features/ai-browser' },
+      { text: 'AI Terminal', link: '/en/features/ai-terminal' },
+      { text: 'Knowledge Base', link: '/en/features/knowledge-base' },
       { text: 'Remote Access', link: '/en/features/remote-access' },
       { text: 'Image Input', link: '/en/features/image-input' },
       { text: 'MCP Servers', link: '/en/features/mcp' },
