@@ -143,6 +143,7 @@ const zhSidebar = [
     items: [
       { text: '更新日志', link: '/guide/changelog' },
       { text: '配置路径', link: '/advanced/config-paths' },
+      { text: '换电脑迁移', link: '/advanced/migrate' },
       { text: '联系我们', link: '/contact' },
     ]
   },
@@ -212,6 +213,7 @@ const enSidebar = [
     text: 'Advanced',
     items: [
       { text: 'Config Paths', link: '/en/advanced/config-paths' },
+      { text: 'Move to a New Computer', link: '/en/advanced/migrate' },
       { text: 'Best Practices', link: '/en/advanced/best-practices' },
     ]
   },
