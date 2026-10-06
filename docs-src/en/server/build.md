@@ -4,23 +4,15 @@ description: "Build the Halo Server deploy bundle yourself from Halo source (to 
 ---
 # Build Your Own Image & How It Works
 
-This is a **low-frequency, advanced entry point**. In most cases you **do not** need to build it yourself — just `docker build` from the ready-made `halo-server` repo (see the [Quickstart](./)).
-
-You only need to regenerate the deploy bundle from source when you want to **rebrand, swap the built-in provider, or track the latest Halo source**.
+Halo does not publish a ready-made server image, so a deployment starts by generating the app bundle from source once (one command). Regenerate it whenever you want to **rebrand, swap the built-in provider, or track the latest Halo source**.
 
 ---
 
 ## Prerequisites
 
-Check out both repos as **siblings**:
+Only the Halo repository is needed: the deployment files live in its `deploy/server/` directory (`Dockerfile`, entrypoint script, `docker-compose.yml`), and the generated bundle is written there too.
 
-```
-workdir/
-├── hello-halo/     # Halo main repo (source + build scripts)
-└── halo-server/    # deploy repo (the bundle artifact lands here)
-```
-
-- A Node environment (matching `hello-halo`'s `package.json` requirements).
+- A Node environment (matching `hello-halo`'s `package.json` requirements); run `npm ci` first.
 - On restricted networks, set the Electron download mirrors: `ELECTRON_MIRROR`, `ELECTRON_BUILDER_BINARIES_MIRROR`.
 
 ---
@@ -38,28 +30,22 @@ It runs, in order:
 1. **Activates the server profile** — temporarily switches in `server.product.json` (brand-neutral, API-key auth only, because OAuth cannot complete headless). **On exit — success, failure, or interrupt — it always restores `product.json`**, leaving the working tree unmodified.
 2. **Prepares linux native dependencies** and builds the app (`electron-vite`).
 3. **Cross-builds the linux-x64 headless app** (`electron-builder --linux dir --x64`).
-4. **Compresses and splits** — tars the output, splits it into `<90MB` parts written to `../halo-server/bundle/` (to survive git host per-file size limits and allow offline reassembly in the container), then runs an integrity check on the rejoined size.
+4. **Compresses and splits** — tars the output, splits it into `<90MB` parts written to `deploy/server/bundle/` (so it fits in a git repository), then runs an integrity check on the rejoined size.
 
-> Output defaults to the sibling `../halo-server`. To target another directory: `bash scripts/build-server-halo.sh /path/to/halo-server`.
+> Output defaults to `deploy/server/`. To write somewhere else (your own deploy repository, for example): `bash scripts/build-server-halo.sh /path/to/dir` — that directory needs a `Dockerfile` (copy it from `deploy/server/`).
 
 ---
 
 ## Assemble the image and run
 
-Once the bundle is updated, build and run from the `halo-server` repo as usual (same as the [Quickstart](./)):
+Once the bundle is generated, build and run the image (same as the [Quickstart](./)):
 
 ```bash
-cd ../halo-server
-docker build -t halo-server .
+docker build -t halo-server deploy/server
 docker run -d -p 8080:8080 -e HALO_REMOTE_PASSWORD=set-your-own-token halo-server
 ```
 
-To commit the new bundle back to the deploy repo:
-
-```bash
-cd ../halo-server
-git add bundle && git commit -m "update bundle" && git push
-```
+`deploy/server/bundle/` is not committed to the Halo repository. If you maintain your own deploy repository (for example so a function platform can build from git), commit the files of `deploy/server/` together with `bundle/` there.
 
 ---
 

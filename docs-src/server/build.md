@@ -4,23 +4,15 @@ description: "从 Halo 源码自己构建 Halo Server 的部署 bundle（用于�
 ---
 # 自建镜像与工作原理
 
-这是一个**低频的进阶入口**。绝大多数情况下你**不需要**自建——直接用现成的 `halo-server` 仓库 `docker build` 即可（见[快速开始](./)）。
-
-只有当你要**改品牌、更换内置 Provider、或跟随最新的 Halo 源码**时，才需要从源码重新生成部署 bundle。
+Halo 目前不提供现成的服务端镜像，部署前需要从源码生成一次应用包（一条命令）。之后要**改品牌、更换内置 Provider、或跟随最新的 Halo 源码**时，重新生成即可。
 
 ---
 
 ## 前置
 
-把两个仓库 checkout 到**同级目录**：
+只需要 Halo 主仓库：部署文件在仓库的 `deploy/server/` 目录（`Dockerfile`、入口脚本、`docker-compose.yml`），生成的应用包也写到这里。
 
-```
-工作目录/
-├── hello-halo/     # Halo 主仓库（源码 + 构建脚本）
-└── halo-server/    # 部署仓库（bundle 产物落到这里）
-```
-
-- Node 环境（与 `hello-halo` 的 `package.json` 要求一致）。
+- Node 环境（与 `hello-halo` 的 `package.json` 要求一致），先执行 `npm ci` 安装依赖。
 - 国内网络建议设置 Electron 下载镜像：`ELECTRON_MIRROR`、`ELECTRON_BUILDER_BINARIES_MIRROR`。
 
 ---
@@ -38,28 +30,22 @@ npm run build:server
 1. **切入服务端配置**——临时启用 `server.product.json`（品牌中立、仅保留 API-key 接入方式，因为 OAuth 在无头环境无法完成）。**无论成功、失败还是中断，退出时都会还原 `product.json`**，工作区不留改动。
 2. **准备 linux 原生依赖**并构建应用（`electron-vite`）。
 3. **交叉构建 linux-x64 无头应用**（`electron-builder --linux dir --x64`）。
-4. **压缩并分片**——把构建产物打成 `tar.gz`，按 `<90MB` 切片写入 `../halo-server/bundle/`（规避 git 托管的单文件大小限制，并保证容器内可离线重组），最后做一次拼接完整性校验。
+4. **压缩并分片**——把构建产物打成 `tar.gz`，按 `<90MB` 切片写入 `deploy/server/bundle/`（便于放进 git 仓库），最后做一次拼接完整性校验。
 
-> 默认输出到同级的 `../halo-server`。如需指定其它目录：`bash scripts/build-server-halo.sh /path/to/halo-server`。
+> 默认输出到 `deploy/server/`。如需输出到其它目录（例如你自己的部署仓库）：`bash scripts/build-server-halo.sh /path/to/dir`，该目录里需要有 `Dockerfile`（可从 `deploy/server/` 复制）。
 
 ---
 
 ## 拼装成镜像并运行
 
-bundle 更新后，进入 `halo-server` 仓库照常构建运行（与[快速开始](./)一致）：
+应用包生成后，构建并运行镜像（与[快速开始](./)一致）：
 
 ```bash
-cd ../halo-server
-docker build -t halo-server .
+docker build -t halo-server deploy/server
 docker run -d -p 8080:8080 -e HALO_REMOTE_PASSWORD=改成你自己的令牌 halo-server
 ```
 
-若要把新 bundle 提交回部署仓库：
-
-```bash
-cd ../halo-server
-git add bundle && git commit -m "update bundle" && git push
-```
+`deploy/server/bundle/` 不进入 Halo 主仓库。如果你维护自己的部署仓库（例如让函数平台从 git 构建），把 `deploy/server/` 的文件连同 `bundle/` 一起提交到那个仓库即可。
 
 ---
 

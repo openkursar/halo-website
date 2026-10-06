@@ -4,32 +4,34 @@ description: "在 Serverless 函数平台（Knative 体系）上部署 Halo Serv
 ---
 # Serverless 部署（Knative）
 
-本文介绍如何把 Halo Server 部署到 Serverless 函数平台（Knative 体系）。平台直接克隆 `halo-server` 仓库并用其 `Dockerfile` 构建镜像——**构建过程离线、无需联网**。
+本文介绍如何把 Halo Server 部署到 Serverless 函数平台（Knative 体系）。镜像用 Halo 主仓库 `deploy/server/` 里的 `Dockerfile` 构建（见[容器部署](./deployment-docker.md)）。
 
 ---
 
 ## 工作原理
 
-`halo-server` 仓库是**自包含、可离线构建**的。`Dockerfile` 在构建时完成以下工作：
+`deploy/server/Dockerfile` 在构建时完成以下工作：
 
-1. **重组应用包**——预构建的 linux-x64 Electron 应用被拆成 `<90MB` 的分片（`bundle/halo-bundle.tgz.part-*`，以规避 git 托管的单文件大小限制），构建时重新拼接并解压到 `/app/linux-unpacked`。
-2. **补齐系统库**——slim 版 Debian 基础镜像缺少 Chromium/Electron 依赖的 GTK/X11/nss 等库，这些库随仓库的 `chromium-libs.tar.gz` 一起提供，解压到独立目录并通过 `LD_LIBRARY_PATH` 暴露（不污染系统库目录）。
-3. **安装字体**——slim 基础镜像不带字体（否则文字渲染为空白），仓库内置 CJK 字体（文泉驿微米黑）与 `fonts.conf`。
-4. **设置运行时默认值**——`HALO_SERVER_MODE=1`、`PORT=8080`、`HALO_DATA_DIR=/tmp/.halo`、`HOME=/tmp`，并以无头参数启动主进程。
+1. **重组应用包**——`npm run build:server` 生成的 linux-x64 Electron 应用被拆成 `<90MB` 的分片（`bundle/halo-bundle.tgz.part-*`，便于放进 git 仓库），构建时重新拼接并解压到 `/app/linux-unpacked`。
+2. **安装系统库与字体**——用 apt 安装 Chromium/Electron 依赖的 GTK/X11/nss 等库，以及中文字体（文泉驿微米黑）；slim 基础镜像不带字体，否则文字会渲染为空白。
+3. **设置运行时默认值**——`HALO_SERVER_MODE=1`、`PORT=8080`、`HOME=/tmp`（未设置 `HALO_DATA_DIR` 时数据写在 `/tmp/.halo`），由 tini 启动主进程。
 
-> 基础镜像为公共镜像 `python:3.12-slim`（Debian 12 bookworm slim）。如需换成自己环境里可达的等价基础镜像，改 `Dockerfile` 的 `FROM` 即可，并保证构建环境可拉取该镜像。
+> 基础镜像为公共镜像 `python:3.12-slim-bookworm`（Debian 12）。如需换成自己环境里可达的等价基础镜像，改 `Dockerfile` 的 `FROM` 即可，并保证构建环境可拉取该镜像。
 
 ---
 
 ## 部署步骤
 
-### 1. 指向 `halo-server` 仓库
+### 1. 准备镜像
 
-在平台的函数 / 服务创建界面，把代码源指向 `halo-server` git 仓库（HTTP 或 SSH 地址 + 分支）。
+两种方式任选其一：
 
-### 2. 启用 Dockerfile 构建
+- **推送镜像（推荐）**：按[容器部署](./deployment-docker.md)在本地构建好镜像，推送到平台能访问的镜像仓库，在平台上用这个镜像创建服务。
+- **由平台从 git 构建**：把 `deploy/server/` 目录的文件连同生成的 `bundle/` 放进你自己的私有 git 仓库（`bundle/` 已按 `<90MB` 分片），把平台的代码源指向这个仓库。
 
-选择「Dockerfile 构建」方式，Dockerfile 路径为仓库根目录的 `./Dockerfile`。平台会克隆仓库并执行构建，无需额外构建参数。
+### 2. 启用 Dockerfile 构建（仅 git 构建方式）
+
+选择「Dockerfile 构建」方式，Dockerfile 路径为仓库根目录的 `./Dockerfile`。构建时需要联网安装系统库。
 
 ### 3. 设置运行时环境变量
 

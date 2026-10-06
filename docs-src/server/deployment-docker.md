@@ -1,6 +1,6 @@
 ---
 title: "Docker 部署"
-description: "用普通 Docker 部署 Halo Server：从 halo-server 仓库构建镜像，挂载持久化数据卷，配置访问令牌与企业自有大模型网关。"
+description: "用普通 Docker 部署 Halo Server：用 Halo 主仓库的 deploy/server 构建镜像，挂载持久化数据卷，配置访问令牌与企业自有大模型网关。"
 ---
 # Docker 部署
 
@@ -10,16 +10,20 @@ description: "用普通 Docker 部署 Halo Server：从 halo-server 仓库构建
 
 ## 1. 构建镜像
 
-克隆 `halo-server` 仓库并从其 `Dockerfile` 构建。仓库**自包含、可离线构建**——应用包、Chromium/Electron 系统库、字体都已随仓库提供，构建过程不需要联网（除非要拉取基础镜像）。
+部署文件在 Halo 主仓库的 `deploy/server/` 目录。先生成 Linux 版应用包，再用该目录的 `Dockerfile` 构建镜像：
 
 ```bash
-git clone <halo-server 仓库地址>
-cd halo-server
-docker build -t halo-server:latest .
+git clone https://github.com/openkursar/hello-halo.git
+cd hello-halo
+npm ci
+npm run build:server              # 应用包写入 deploy/server/bundle/
+docker build -t halo-server:latest deploy/server
 ```
 
+构建镜像时需要联网：拉取基础镜像，并用 apt 安装 Chromium/Electron 依赖的系统库和字体（含中文字体）。
+
 ::: tip 基础镜像
-`Dockerfile` 基于公共镜像 `python:3.12-slim`（Debian 12 bookworm slim）。若想换成自己环境里可达的等价基础镜像，改 `Dockerfile` 的 `FROM` 即可。
+`Dockerfile` 基于公共镜像 `python:3.12-slim-bookworm`（Debian 12）。若想换成自己环境里可达的等价基础镜像，改 `Dockerfile` 的 `FROM` 即可；注意更新的 Debian 版本里部分系统库改了包名，需要相应调整安装列表。
 :::
 
 ---
@@ -46,7 +50,7 @@ docker run -d \
 要点：
 
 - `-p 8080:8080`：把容器的 `8080`（`PORT` 默认值）映射到宿主机。
-- `-v /your/data:/data` + `-e HALO_DATA_DIR=/data`：把数据写到挂载卷，容器重建后数据不丢。
+- `-v /your/data:/data` + `-e HALO_DATA_DIR=/data`：把数据写到挂载卷，容器重建后数据不丢。设置了 `HALO_DATA_DIR` 时，全局技能、AI 引擎的对话记录和内置浏览器数据也会放进这个目录（`$HALO_DATA_DIR/home`）。
 - `HALO_REMOTE_PASSWORD`：对外可达的部署务必改成强随机令牌（`openssl rand -hex 32`）。
 - 大模型四件套指向**企业自有网关**，详见 [配置说明](./configuration.md)。
 
@@ -62,11 +66,13 @@ Halo Server 运行完整的 Electron（Chromium）主进程，**内存需求较�
 
 ## 3. docker compose
 
+仓库里的 `deploy/server/docker-compose.yml` 可以直接使用：生成应用包后，修改其中的令牌和模型配置，在 `deploy/server` 目录执行 `docker compose up -d`。等价配置如下：
+
 ```yaml
 services:
   halo-server:
     image: halo-server:latest
-    # 或直接从仓库构建：
+    # 或在 deploy/server 目录里直接构建：
     # build: .
     container_name: halo-server
     restart: unless-stopped

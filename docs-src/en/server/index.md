@@ -11,9 +11,11 @@ Halo Server is the headless edition of Halo — the **same application** as desk
 ## Quickstart
 
 ```bash
-git clone <halo-server repo URL>
-cd halo-server
-docker build -t halo-server .
+git clone https://github.com/openkursar/hello-halo.git
+cd hello-halo
+npm ci
+npm run build:server              # builds the Linux app bundle into deploy/server/bundle/
+docker build -t halo-server deploy/server
 
 docker run -d --name halo-server \
   -p 8080:8080 \
@@ -25,7 +27,7 @@ docker run -d --name halo-server \
   halo-server
 ```
 
-The repo is **self-contained and builds offline** — the app bundle, system libraries, and fonts are all vendored, so `docker build` needs no network (except to pull the base image).
+The deployment files live in the Halo repository's `deploy/server/` directory. `npm run build:server` generates the Linux app bundle from source (it needs a Node environment; see [Build Your Own Image](./build.md)), and `docker build` needs network access to pull the base image and install system libraries and fonts.
 
 ## Open the management UI
 
@@ -63,7 +65,7 @@ curl -X POST http://localhost:8080/api/remote/login \
 - **[Integration (for backends)](./integration.md)** — HTTP API, WebSocket events, multi-user digital-human examples.
 
 ::: tip Two things before production
-1. **Persistence**: by default data is written to `/tmp/.halo` inside the container and lost when the container is removed. Mount a volume and set `HALO_DATA_DIR` (see [Configuration](./configuration.md)).
+1. **Persistence**: by default data is written to `/tmp/.halo` inside the container and lost when the container is removed. Mount a volume and set `HALO_DATA_DIR` (see [Configuration](./configuration.md)); app data such as global skills and the AI engine's conversation records is then kept on that volume too.
 2. **Resources**: Halo runs a full Electron (Chromium) main process and needs real memory — provision **≥ 4–8 GB** for the container.
 :::
 

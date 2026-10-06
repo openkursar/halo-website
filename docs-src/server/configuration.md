@@ -25,7 +25,7 @@ Halo Server 的全部配置都通过**系统环境变量**注入。容器启动�
 
 ## 数据持久化（HALO_DATA_DIR）
 
-Halo Server 的所有状态——SQLite 数据库、空间数据、文件——都写在 `HALO_DATA_DIR`。
+Halo Server 的所有状态——SQLite 数据库、空间数据、文件——都写在 `HALO_DATA_DIR`。用 `deploy/server` 构建的镜像在设置了 `HALO_DATA_DIR` 时，还会把全局技能、AI 引擎的对话记录和内置浏览器数据放在 `$HALO_DATA_DIR/home`，一并持久化。
 
 默认值 `/tmp/.halo` 是**临时目录**：实例回收、重启或 scale-to-zero 之后，数据会被清空。
 

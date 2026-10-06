@@ -1,6 +1,6 @@
 ---
 title: "Docker Deployment"
-description: "Deploy Halo Server with plain Docker: build the image from the halo-server repo, mount a persistent data volume, and configure the access token and your own LLM gateway."
+description: "Deploy Halo Server with plain Docker: build the image from deploy/server in the Halo repository, mount a persistent data volume, and configure the access token and your own LLM gateway."
 ---
 # Docker Deployment
 
@@ -10,16 +10,20 @@ This guide covers deploying Halo Server with plain Docker (`docker run` / `docke
 
 ## 1. Build the image
 
-Clone the `halo-server` repo and build from its `Dockerfile`. The repo is **self-contained and offline-buildable** — the app bundle, Chromium/Electron system libs, and fonts all ship with it, so the build needs no network (except to pull the base image).
+The deployment files live in the Halo repository's `deploy/server/` directory. Generate the Linux app bundle first, then build the image from that directory's `Dockerfile`:
 
 ```bash
-git clone <halo-server repo URL>
-cd halo-server
-docker build -t halo-server:latest .
+git clone https://github.com/openkursar/hello-halo.git
+cd hello-halo
+npm ci
+npm run build:server              # the bundle lands in deploy/server/bundle/
+docker build -t halo-server:latest deploy/server
 ```
 
+Building the image needs network access: it pulls the base image and installs, with apt, the system libraries Chromium/Electron need plus fonts (including CJK fonts).
+
 ::: tip Base image
-The `Dockerfile` is based on the public image `python:3.12-slim` (Debian 12 bookworm slim). To use an equivalent base image reachable from your own environment, just change the `Dockerfile`'s `FROM`.
+The `Dockerfile` is based on the public image `python:3.12-slim-bookworm` (Debian 12). To use an equivalent base image reachable from your own environment, change the `Dockerfile`'s `FROM`; newer Debian releases renamed some of the system library packages, so adjust the install list accordingly.
 :::
 
 ---
@@ -46,7 +50,7 @@ docker run -d \
 Key points:
 
 - `-p 8080:8080`: maps the container's `8080` (the `PORT` default) to the host.
-- `-v /your/data:/data` + `-e HALO_DATA_DIR=/data`: writes data to the mounted volume so it survives container recreation.
+- `-v /your/data:/data` + `-e HALO_DATA_DIR=/data`: writes data to the mounted volume so it survives container recreation. With `HALO_DATA_DIR` set, global skills, the AI engine's conversation records and the built-in browser profile are kept in that directory too (`$HALO_DATA_DIR/home`).
 - `HALO_REMOTE_PASSWORD`: for any externally reachable deployment, change to a strong random token (`openssl rand -hex 32`).
 - The four LLM vars point at **your own enterprise gateway**; see [Configuration](./configuration.md).
 
@@ -62,11 +66,13 @@ Halo Server runs a full Electron (Chromium) main process with **meaningful memor
 
 ## 3. docker compose
 
+The repository's `deploy/server/docker-compose.yml` is ready to use: after generating the bundle, edit the token and model settings in it and run `docker compose up -d` in `deploy/server`. The equivalent configuration:
+
 ```yaml
 services:
   halo-server:
     image: halo-server:latest
-    # or build from the repo directly:
+    # or build in deploy/server directly:
     # build: .
     container_name: halo-server
     restart: unless-stopped

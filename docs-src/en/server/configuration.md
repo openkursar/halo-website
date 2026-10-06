@@ -25,7 +25,7 @@ All Halo Server configuration is injected through **system environment variables
 
 ## Data persistence (HALO_DATA_DIR)
 
-All of Halo Server's state — the SQLite database, space data, files — is written under `HALO_DATA_DIR`.
+All of Halo Server's state — the SQLite database, space data, files — is written under `HALO_DATA_DIR`. With `HALO_DATA_DIR` set, the image built from `deploy/server` also keeps global skills, the AI engine's conversation records and the built-in browser profile in `$HALO_DATA_DIR/home`, so they persist as well.
 
 The default `/tmp/.halo` is a **temporary directory**: data is wiped when the instance recycles, restarts, or scales to zero.
 

@@ -11,9 +11,11 @@ Halo Server 是 Halo 的无头（headless）服务端版本，与桌面版 Halo 
 ## 快速开始
 
 ```bash
-git clone <halo-server 仓库地址>
-cd halo-server
-docker build -t halo-server .
+git clone https://github.com/openkursar/hello-halo.git
+cd hello-halo
+npm ci
+npm run build:server              # 构建 Linux 版应用包，写入 deploy/server/bundle/
+docker build -t halo-server deploy/server
 
 docker run -d --name halo-server \
   -p 8080:8080 \
@@ -25,7 +27,7 @@ docker run -d --name halo-server \
   halo-server
 ```
 
-仓库**自包含、可离线构建**，应用包、系统库、字体都已随仓库提供，`docker build` 过程不需要联网（除非要拉取基础镜像）。
+部署文件在 Halo 主仓库的 `deploy/server/` 目录。`npm run build:server` 从源码生成 Linux 版应用包（需要 Node 环境，详见[自建镜像与工作原理](./build.md)）；`docker build` 时需要联网拉取基础镜像并安装系统库和字体。
 
 ## 打开管理界面
 
@@ -63,7 +65,7 @@ curl -X POST http://localhost:8080/api/remote/login \
 - **[集成（给后台用）](./integration.md)** —— HTTP API、WebSocket 事件、多用户数字人对话示例。
 
 ::: tip 上生产前两件事
-1. **持久化**：默认数据写在容器内 `/tmp/.halo`，删容器即丢。挂一块卷并设置 `HALO_DATA_DIR`（见[配置](./configuration.md)）。
+1. **持久化**：默认数据写在容器内 `/tmp/.halo`，删容器即丢。挂一块卷并设置 `HALO_DATA_DIR`（见[配置](./configuration.md)），全局技能、AI 引擎的对话记录等应用数据也会一起存进这块卷。
 2. **资源**：Halo 跑的是完整的 Electron（Chromium）主进程，内存需求较大，给容器预留 **≥ 4–8 GB**。
 :::
 
