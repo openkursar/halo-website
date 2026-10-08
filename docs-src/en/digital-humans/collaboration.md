@@ -36,13 +36,13 @@ These three values are all you need going forward:
 
 ## Step 2: Try It Out
 
-Open your terminal and replace the placeholders with your actual values.
+These examples use Bash/zsh (macOS and Linux terminals; on Windows, use Git Bash). Replace placeholders such as `your-password`, `<appId>`, and `<spaceId>` with your actual values, keeping the straight single quotes in the commands.
 
 ### 2.1 List All Digital Humans
 
 ```bash
 curl -s http://localhost:3847/api/apps \
-  -H "Authorization: Bearer your-password"
+  -H 'Authorization: Bearer your-password'
 ```
 
 Response:
@@ -78,7 +78,7 @@ From the response, note two key fields:
 Add `?spaceId=<spaceId>` to filter:
 ```bash
 curl -s "http://localhost:3847/api/apps?spaceId=f8a3b2c1-4d5e-6f7a-8b9c-0d1e2f3a4b5c" \
-  -H "Authorization: Bearer your-password"
+  -H 'Authorization: Bearer your-password'
 ```
 :::
 
@@ -88,7 +88,7 @@ Replace `<appId>` with the `id` from the previous step:
 
 ```bash
 curl -s http://localhost:3847/api/apps/<appId> \
-  -H "Authorization: Bearer your-password"
+  -H 'Authorization: Bearer your-password'
 ```
 
 Returns the full digital human config, including `system_prompt`, `subscriptions`, `config_schema`, and more.
@@ -99,8 +99,8 @@ This is the core of inter-digital-human communication — send a message to trig
 
 ```bash
 curl -s -X POST http://localhost:3847/api/apps/<targetAppId>/chat/send \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer your-password" \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer your-password' \
   -d '{
     "spaceId": "<spaceId>",
     "message": "This is a message from another digital human"
@@ -128,7 +128,7 @@ Sending is **async**. `curl` returns immediately. The target digital human execu
 
 ```bash
 curl -s http://localhost:3847/api/apps/<targetAppId>/state \
-  -H "Authorization: Bearer your-password"
+  -H 'Authorization: Bearer your-password'
 ```
 
 Response:
@@ -152,7 +152,7 @@ Response:
 
 ```bash
 curl -s -X POST http://localhost:3847/api/apps/<targetAppId>/trigger \
-  -H "Authorization: Bearer your-password"
+  -H 'Authorization: Bearer your-password'
 ```
 
 Triggers the digital human to run immediately, regardless of its schedule.
@@ -216,8 +216,8 @@ system_prompt: |
 
   ```
   curl -s -X POST http://localhost:{halo_port}/api/apps/{alert_app_id}/chat/send \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer {halo_token}" \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer {halo_token}' \
     -d '{"spaceId":"{space_id}","message":"ALERT: {symbol} price change {pct}%, current price {price}"}'
   ```
 
@@ -332,10 +332,10 @@ Use `config_schema` to let the user fill in the token. Reference it as `{halo_to
 
 ```yaml
 # ✓ Correct: via variable
-"Authorization: Bearer {halo_token}"
+'Authorization: Bearer {halo_token}'
 
 # ✗ Wrong: hardcoded (leaks to anyone with spec access)
-"Authorization: Bearer 583921"
+'Authorization: Bearer 583921'
 ```
 
 ### Public Tunnel Scenarios
@@ -374,7 +374,7 @@ App A calls via Bash with HMAC:
 BODY='your message content'
 SIGNATURE=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "your-shared-secret" | sed 's/^.* //')
 curl -s -X POST http://localhost:3847/hooks/app-a-to-b \
-  -H "Content-Type: application/json" \
+  -H 'Content-Type: application/json' \
   -H "x-hub-signature-256: sha256=$SIGNATURE" \
   -d "$BODY"
 ```

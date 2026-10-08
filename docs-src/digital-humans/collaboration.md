@@ -38,13 +38,13 @@ Halo 开启远程访问后，每个数字人都暴露了 REST API。一个数字
 
 ## 第二步：动手试试
 
-打开终端（macOS 按 `Cmd+空格` 搜 "终端"，Windows 搜 "cmd"），把下面命令里的占位符换成你的实际值，直接复制粘贴执行。
+以下示例使用 Bash/zsh（macOS、Linux 终端；Windows 可使用 Git Bash）。把 `你的密码`、`<appId>`、`<空间ID>` 等占位符换成实际值后执行，保留命令中的英文单引号。
 
 ### 2.1 查看所有数字人
 
 ```bash
 curl -s http://localhost:3847/api/apps \
-  -H "Authorization: Bearer 你的密码"
+  -H 'Authorization: Bearer 你的密码'
 ```
 
 返回类似这样的 JSON：
@@ -80,7 +80,7 @@ curl -s http://localhost:3847/api/apps \
 加上 `?spaceId=<空间ID>` 参数可以过滤：
 ```bash
 curl -s "http://localhost:3847/api/apps?spaceId=f8a3b2c1-4d5e-6f7a-8b9c-0d1e2f3a4b5c" \
-  -H "Authorization: Bearer 你的密码"
+  -H 'Authorization: Bearer 你的密码'
 ```
 :::
 
@@ -90,7 +90,7 @@ curl -s "http://localhost:3847/api/apps?spaceId=f8a3b2c1-4d5e-6f7a-8b9c-0d1e2f3a
 
 ```bash
 curl -s http://localhost:3847/api/apps/<appId> \
-  -H "Authorization: Bearer 你的密码"
+  -H 'Authorization: Bearer 你的密码'
 ```
 
 返回完整的数字人配置，包括 `system_prompt`、`subscriptions`、`config_schema` 等所有字段。
@@ -109,8 +109,8 @@ Halo 数字人有两套独立系统：
 
 ```bash
 curl -s -X POST http://localhost:3847/api/apps/<目标数字人ID>/chat/send \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer 你的密码" \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer 你的密码' \
   -d '{
     "spaceId": "<空间ID>",
     "message": "这是一条来自另一个数字人的消息"
@@ -142,7 +142,7 @@ curl -s -X POST http://localhost:3847/api/apps/<目标数字人ID>/chat/send \
 
 ```bash
 curl -s http://localhost:3847/api/apps/<目标数字人ID>/chat/status \
-  -H "Authorization: Bearer 你的密码"
+  -H 'Authorization: Bearer 你的密码'
 ```
 
 返回：
@@ -157,7 +157,7 @@ curl -s http://localhost:3847/api/apps/<目标数字人ID>/chat/status \
 
 ```bash
 curl -s http://localhost:3847/api/apps/<目标数字人ID>/chat/messages \
-  -H "Authorization: Bearer 你的密码"
+  -H 'Authorization: Bearer 你的密码'
 ```
 
 返回完整的消息列表，最后一条即为数字人的回复。
@@ -168,7 +168,7 @@ curl -s http://localhost:3847/api/apps/<目标数字人ID>/chat/messages \
 
 ```bash
 curl -s -X POST http://localhost:3847/api/apps/<目标数字人ID>/trigger \
-  -H "Authorization: Bearer 你的密码"
+  -H 'Authorization: Bearer 你的密码'
 ```
 
 ### 2.6 查看自动化执行状态
@@ -177,7 +177,7 @@ curl -s -X POST http://localhost:3847/api/apps/<目标数字人ID>/trigger \
 
 ```bash
 curl -s http://localhost:3847/api/apps/<目标数字人ID>/state \
-  -H "Authorization: Bearer 你的密码"
+  -H 'Authorization: Bearer 你的密码'
 ```
 
 返回：
@@ -256,8 +256,8 @@ system_prompt: |
 
   ```
   curl -s -X POST http://localhost:{halo_port}/api/apps/{alert_app_id}/chat/send \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer {halo_token}" \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer {halo_token}' \
     -d '{"spaceId":"{space_id}","message":"告警：<标的> 价格变化 <百分比>%，当前价 <当前价>"}'
   ```
 
@@ -372,10 +372,10 @@ Token 通过 `config_schema` 由用户填入，而不是直接写在 `system_pro
 
 ```yaml
 # ✓ 正确：通过变量引用
-"Authorization: Bearer {halo_token}"
+'Authorization: Bearer {halo_token}'
 
 # ✗ 错误：硬编码（会泄漏给所有能看到 spec 的人）
-"Authorization: Bearer 583921"
+'Authorization: Bearer 583921'
 ```
 
 ### 公网隧道场景
@@ -414,7 +414,7 @@ App A 的 system_prompt 中通过 Bash + curl 发送签名请求：
 BODY='要发送的内容'
 SIGNATURE=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "你设置的共享密钥" | sed 's/^.* //')
 curl -s -X POST http://localhost:3847/hooks/app-a-to-b \
-  -H "Content-Type: application/json" \
+  -H 'Content-Type: application/json' \
   -H "x-hub-signature-256: sha256=$SIGNATURE" \
   -d "$BODY"
 ```
