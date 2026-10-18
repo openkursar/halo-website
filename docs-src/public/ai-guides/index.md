@@ -1,6 +1,6 @@
 # Halo Official Guides — Index
 
-Last updated: 2026-10-06
+Last updated: 2026-10-18
 
 Halo's own documentation about how it works, written for agents rather than for the docs site.
 Everything here is raw markdown and is read with the `read_halo_doc` tool.
@@ -19,9 +19,14 @@ Two rules hold across every guide here:
   channels, and enabled features vary by build and by user configuration. Ask the user what their
   screen shows, or look with AI Browser. The guides describe *mechanisms*; the user's screen is
   the authority on *contents*.
-- **You have no Settings API.** Nearly all configuration in Halo is user-driven UI work. You
-  guide the user through it and confirm the result with them; you cannot set it for them. Guides
-  give UI paths in `English (中文)` form so you can say it in either language.
+- **You can change only part of Halo's configuration yourself.** With **Operate Halo** (操作 Halo)
+  on — from the conversation's **+** menu, or for a digital human its `halo-api-ref` permission
+  (off by default) — `halo_api_ref` gives you the HTTP operations opened to you: spaces, digital
+  humans, knowledge bases, and a few settings such as switching between model sources the user
+  already configured or choosing the model. Credentials are never set that way: API keys,
+  passwords, sign-ins and channel secrets, like most other settings, stay user-driven UI work —
+  guide the user through it and confirm the result with them. Without Operate Halo you have no
+  API at all. Guides give UI paths in `English (中文)` form so you can say it in either language.
 
 ## Route by what the user asked
 
@@ -59,10 +64,19 @@ document opens with a table of its companion documents; read the entry first and
 | `ai-browser/index.md` | Halo's built-in browser: session and login reuse, when to use it instead of fetching, and its interaction model. Companion: `ai-browser/scripting.md` for writing production `browser_run` scripts. |
 | `knowledge-base/index.md` | Knowledge bases: accepted files, local text extraction, which conversations and digital humans use a base, citations, and watched-folder limits. |
 | `ai-terminal/index.md` | The AI Terminal: persistent terminal sessions shared with the user, turning it on, the SSH hand-over pattern, tab-close behaviour, and platform support. |
-| `remote-access/index.md` | The HTTP/WebSocket API, its single shared credential, the optional tunnel, and the security properties the user must understand before enabling it. |
+| `remote-access/index.md` | The HTTP/WebSocket API, its single shared credential, the optional tunnel, the security properties the user must understand before enabling it, and how Operate Halo's scoped local API differs from it. |
 
 This index is published alongside the guides and updated whenever one is added, so it — not any
 list baked into the client — is the authoritative answer to "what documentation exists".
+
+When a **developer** asks how to call Halo from their own script or server, the human reference
+is the documentation site's developer section: `/docs/developers/api/` (HTTP operations, auth,
+errors), `/docs/developers/api/websocket.html` (live events) and
+`/docs/developers/quickstart.html`, on the same documentation host these guides come from (public
+build: `https://hello-halo.cc/docs/`; English pages under `/docs/en/`).
+It describes the remote API — access password, every documented operation — not your own
+`halo_api_ref` access, which is narrower and uses a different token; keep using `halo_api_ref`
+for your own calls.
 
 Guides also cite Halo source files, which look like `src/main/apps/spec/PROTOCOL.md` or
 `execute.ts:429`. Those are paths **inside the Halo source repository**, recorded so a

@@ -102,11 +102,12 @@ These behaviors are real but live on the IM channel *instance*, not the App Spec
   and a bot name may contain spaces (Halo 3.0 and later; `message-channels/wecom-bot.md` §5).
   Text after the command, no `@` at the start, or no slash makes it an ordinary message.
 - When the app asks for a decision (an escalation, `report_to_user`), the bound bot sends the
-  question to its owner's direct chat with a number, and the owner can answer right there with
-  `/answer <number> <answer>` — handled before the AI, like the commands above, and the same as
-  answering in Halo (Halo 3.0 and later). Groups only hear that a question is waiting. Nothing in
-  the spec configures this; who receives the question and who may answer follows the instance's
-  permission control (`message-channels/index.md` §2). Keep `escalation.enabled` on as usual — the
-  owner no longer has to open Halo to unblock it.
+  question to its owner's direct chat (Halo 3.0 and later), and the owner just replies there in
+  their own words: the AI receives the open question with a one-time grant and submits only what
+  the owner said — the same as answering in Halo. There is **no `/answer` command and no question
+  number** in 3.0.4. Groups get no question; only the group a team's work came from hears that
+  one is waiting. Nothing in the spec configures this; who receives the question follows the
+  instance's permission control (`message-channels/index.md` §2). The owner no longer has to open
+  Halo to unblock it.
 - A message arriving while the app is still answering is buffered and merged into the next
   round — never dropped, never run concurrently.

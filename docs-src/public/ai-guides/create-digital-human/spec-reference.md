@@ -1,9 +1,10 @@
 # App Spec Field Reference (condensed, automation-focused)
 
-The authoritative reference is `src/main/apps/spec/PROTOCOL.md` in the Halo repository, kept in
-sync with the Zod schema (`src/main/apps/spec/schema.ts`) by repo policy. This page covers what
-matters when authoring `type: automation` specs through `create_automation_app`, and flags what
-the tool description omits.
+The source of truth is the Zod schema `src/main/apps/spec/schema.ts` in the Halo repository.
+`src/main/apps/spec/PROTOCOL.md` describes it in prose but has drifted from it; when the two
+disagree, the schema (and this page) wins. This page covers what matters when authoring
+`type: automation` specs through `create_automation_app`, and flags what the tool description
+omits.
 
 ## Top-level shape
 
@@ -12,8 +13,10 @@ name*, description*, system_prompt*        always required
 type: "automation"                          forced by create_automation_app
 subscriptions?                              omit entirely for IM-only / manual-only apps
 config_schema?, requires?, filters?
-memory_schema?, output?, escalation?
+memory_schema?, escalation?                 escalation: only timeout_hours has an effect
 permissions?, browser_login?
+display_name?, recommended_model?
+output?                                     schema-only, never read — don't write it
 version, author                             default to "1.0" / "Halo" when omitted
 ```
 
@@ -21,7 +24,7 @@ version, author                             default to "1.0" / "Halo" when omitt
 
 | type | Works? | Notes |
 |---|---|---|
-| `schedule` | Yes | `every: "30m"` (duration `\d+[smhd]`) or `cron: "0 8 * * *"` (5-field). Mutually exclusive; at least one required. |
+| `schedule` | Yes | `every: "30m"` (duration `\d+[smhd]`) or `cron: "0 8 * * *"` — 5 fields, or 6 with a leading seconds field, validated by croner when the spec is saved (`schema.ts:44-60`). At least one is required; set only one — if both are present `every` wins and `cron` is ignored (`runtime/service.ts:1066-1085`). `workday_calendar: true` runs only on mainland China working days (holidays and make-up workdays included); the schedule must then fire every day, not `1-5`. |
 | `file` | Yes | `pattern` (glob against relative path) and/or `path` (absolute dir, substring match). Both omitted = every file change. |
 | `webhook` | Yes | Mounted at `/hooks/{path}`; `secret` enables HMAC-SHA256 verification. JSON only, ≤256KB. |
 | `webpage` | **No producer** | Schema-only. Use `schedule` + AI Browser polling instead. |
@@ -55,11 +58,15 @@ There is no credential type, by design. Use `browser_login` for login-gated site
 | `ai-terminal` | Shell commands / interactive terminals | ON where the platform supports terminals |
 | `email` | Email and calendar tools | ON, but tools load only once an email channel is configured |
 | `im-push` | `notify_bot` proactive IM push | ON, but tools load only once a pushable contact exists |
+| `halo-api-ref` | **Operate Halo** — Halo's own API through `halo_api_ref`: spaces, digital humans, knowledge bases, settings | **OFF** |
+| `conversation-collab` | **Conversation Collaboration** — read and message the other conversations of its space, other digital humans included, with their authority | **OFF** |
 
-Resolution order (`resolvePermission`, `src/shared/apps/app-types.ts`): explicit user deny →
-explicit user grant → declared in `spec.permissions` → default `true`. **A spec can only add
-capability, never remove it**; only a user opt-out in the UI disables one. Web search, memory,
-and OCR are always on and not permission-gated.
+Resolution order (`resolvePermission`, `src/shared/apps/app-types.ts:564-573`): explicit user
+deny → explicit user grant → declared in `spec.permissions` → the default (`true` for the first
+four, `false` for the last two). **A spec can only add capability, never remove it**; only a user
+opt-out in the UI disables one. Declaring an OFF-by-default permission turns it on at install, so
+add `halo-api-ref` or `conversation-collab` only when the task truly needs it, and tell the user.
+Web search, memory, and OCR are always on and not permission-gated.
 
 ## `output`
 
@@ -74,13 +81,15 @@ The real mechanisms, both entirely outside the App Spec:
 
 - **Desktop toast** is controlled by a per-app **user override**, not a spec field —
   `app.userOverrides.notificationLevel` (`'none' | 'important' | 'all'`, default `'important'`),
-  set by the user in the app's own Settings panel (`AppConfigPanel.tsx`), read by the runtime at
-  `src/main/apps/runtime/service.ts:519` and `report-tool.ts:194-199`. Nothing in `create_automation_app`
-  can set this at creation time; if the user wants toasts, point them at that panel afterward.
+  set by the user in the app's own Settings panel (**Messages & Notifications** › **System
+  Notifications**, `AppConfigPanel.tsx`), read by the runtime at
+  `src/main/apps/runtime/service.ts:801-804` and `report-tool.ts:357-362`. Nothing in
+  `create_automation_app` can set this at creation time; if the user wants toasts, point them at
+  that panel afterward.
 - **External channel delivery is entirely AI-driven at runtime**, not spec-configured — during a
   run the agent decides whether to call `notify_channel` (email/wecom/dingtalk/feishu/webhook,
   credentials configured once globally in Settings → Message Channels) or `notify_bot` (IM, needs
-  `permissions: ["im-push"]`). Both `service.ts:516` and `report-tool.ts:198` say this outright in
+  `permissions: ["im-push"]`). Both `service.ts:800` and `report-tool.ts:369` say this outright in
   comments: *"External channel notifications are now AI-driven via notify_channel / notify_bot
   tools."* There is no `output.notify.channels` list that pre-declares which channels a run will
   push to — that decision is made by the model, in `system_prompt`, at run time. If a task must
@@ -94,23 +103,33 @@ Don't write an `output` block into a spec at all; it has no effect of any kind.
 ## `escalation`
 
 ```json
-"escalation": { "enabled": true, "timeout_hours": 24 }
+"escalation": { "timeout_hours": 24 }
 ```
 
-`enabled` defaults to `true`: the agent may pause and ask the user (status → `waiting_user`),
-resuming on reply. `timeout_hours` defaults to 24; past that the run closes as `error` with a
-desktop notification. Disable only when the task must always resolve autonomously. Ask the user
-explicitly whenever the task performs irreversible actions.
+The agent can always pause and ask the user (a `report_to_user` escalation; status →
+`waiting_user`), resuming on reply. **`enabled` is schema-only** — nothing reads it, so `false`
+does not stop the agent from asking and does not make it autonomous; autonomy comes from
+`system_prompt` and its config (`interview-checklist.md`, item 6). Don't write it.
+
+`timeout_hours` is the only field with an effect: a question asked by this app expires that many
+hours after it is asked, and the run then ends as `error` ("Decision deadline expired without an
+answer", `runtime/store.ts:502-505`, `runtime/service.ts:1037-1054`). **There is no default for
+new installs** — without `timeout_hours` a question waits until answered (only apps installed
+before the change keep their old 24 h, `runtime/migrations.ts:163`). Set it when a stale answer
+would be worse than none. Ask the user explicitly whenever the task performs irreversible
+actions.
 
 ## `memory_schema`
 
 Descriptive guidance for the agent's own `memory.md` (no runtime validation). Use it whenever
 the app must remember across runs: processed-ID lists for dedup, running counters, last-run
 timestamps, consecutive-failure counts. Stored at
-`{space}/.halo/apps/{appId}/memory.md` (`src/main/platform/memory/paths.ts:70-77`), read and
-written by the agent each run. The sibling `{space}/.halo/apps/{appId}/memory/` directory (no
-`.md`) is the **archive** for run summaries and compaction snapshots, not the live file — don't
-add an extra `memory/` segment when referencing the main file.
+`{space}/.halo/apps/{appId}/memory.md` for a digital human installed in a space (a global install
+uses `{haloDir}/apps/{appId}/`; `resolveWorkDir()`, `src/main/apps/manager/service.ts:290-301`,
+and `src/main/platform/memory/paths.ts:58-80`), read and written by the agent each run. The
+sibling `memory/` directory (no `.md`) is the **archive** for run summaries and compaction
+snapshots, not the live file — don't add an extra `memory/` segment when referencing the main
+file.
 
 ## `filters`
 
