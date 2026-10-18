@@ -1,0 +1,20 @@
+# Halo
+
+> Halo is an open-source (MIT) desktop AI workstation for macOS, Windows and Linux. Day to day it works like a desktop AI workbench (chat, code, documents, research) with pluggable agent engines: Claude Code, Codex, Halo SDK and DeepSeek dsh. Beyond that, it runs Digital Humans — AI members that stay on duty on schedules or events — and puts them in teams that divide work, hand it over and deliver results, including with colleagues' Digital Humans on their own computers. Work can be handed off from a phone, Feishu, WeChat or WeCom.
+
+Key facts:
+- Open source, free; runs on the user's own computer; Halo has no backend service of its own.
+- Sign in with Claude, ChatGPT or GitHub Copilot accounts, or use any Anthropic / OpenAI-compatible API.
+- Digital Human teams are decentralized: no central server; team state follows a Raft-inspired design (majority-elected leading node, term-based log replication, automatic re-election).
+- Built-in AI browser, AI terminal, knowledge base, Office document skills (Word, Excel, PowerPoint, PDF), MCP and Skills.
+- Requirements: macOS 12+ (Apple silicon and Intel), Windows 10+ x64, Linux glibc 2.34+; Android app is a remote client.
+- Written almost entirely by Halo itself: over 500,000 lines of code.
+
+## Links
+- [Website](https://hello-halo.cc/)
+- [Documentation (Chinese)](https://hello-halo.cc/docs/)
+- [Documentation (English)](https://hello-halo.cc/docs/en/)
+- [What is Halo](https://hello-halo.cc/docs/guide/what-is-halo)
+- [GitHub repository](https://github.com/openkursar/hello-halo)
+- [Downloads (latest release)](https://github.com/openkursar/hello-halo/releases/latest)
+- [Digital Human Protocol](https://github.com/openkursar/digital-human-protocol)
