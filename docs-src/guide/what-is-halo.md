@@ -1,111 +1,63 @@
 ---
-title: "Halo 是什么 - Claude Code 桌面版 AI 智能体应用"
-description: "Halo 是开源的 Claude Code 桌面版替代方案，将 Claude Code Agent 完整能力封装为可视化桌面 AI 应用。支持远程访问、AI 浏览器自动化、7×24 小时数字人。免费下载，支持 macOS/Windows/Linux。"
----
-# Halo：Claude Code 桌面版 AI 智能体应用
-
-**Halo 是一个 AI 工作站——面向团队，也面向个人。**
-
-本地部署，7×24 自动运转。你定目标，AI 数字人替你把活干完，关键节点你来拍板。
-
-## 一句话理解
-
-把 Claude Code 完整的 Agent 能力，装进一个人人都能上手的可视化界面——再加上**本地化、远程操控、AI 浏览器、AI 数字人**，让它从“编程工具”长成一个能接管日常业务的工作站。
-
-底层采用**可插拔引擎架构**，同时支持 Claude Code、Codex 等前沿 Agent；完整产品层超过 30 万行代码，经上万用户与企业环境验证。
-
-## 它能为你做什么
-
-| 能力 | 说明 |
-|------|------|
-| **每天的 AI 伙伴** | 写代码、做产品、跑运营、写作、调研——日常工作的全能搭子 |
-| **100% 本地，零云依赖** | 数据不出本机，满足企业合规要求 |
-| **AI 数字人** | 7×24 自主运行的 AI 员工，接管监控、报表、日常运维 |
-| **AI 浏览器** | 内嵌浏览器由 AI 直接操控，自动化任意网页系统 |
-| **企微 / 微信原生操控** | 在企业 IM 里指挥 AI，零培训成本 |
-| **远程访问** | 手机 / H5 / 微信 / 安卓随时操控，管理者在路上也能看进度 |
-| **下载即用** | 零配置、无后端，IT 分钟级完成全员部署 |
-
-> 100% 兼容 Claude Code 的 Agent 能力、MCP 与 Skills。
-
-## AI 数字人：你的自主 AI 工作队
-
-传统 RPA 靠死脚本，环境一变就崩。Halo 换了思路：**AI 做决策，浏览器 Skill 做执行**——既懂上下文、能随变化调整，又能精准落地。
-
-创建一个数字人，给它一个任务和运行频率，它就按时自主运转：巡检内部 OA / CRM / ERP、汇总 CI/CD 与工单、生成每日简报、定时跑合规检查……不用盯屏，不用守脚本。
-
-它和对话模式用的是**同一套** Agent 能力——同样的引擎、MCP 工具链、AI 浏览器，只是按计划自动触发，不需要你守在电脑前。
-
-## 它远不止一个界面
-
-Halo 底层与 Claude Code 完全对等：命令行能做的，你都能用自然语言交给它——写代码、部署服务、整理文件、生成报告、操控浏览器，凡是 Agent 能力所及，一概支持。
-
-可以这样理解：**Windows 把 DOS 变成了可视化桌面，Halo 把 Claude Code CLI 变成了可视化 AI 工作站。**
-
-## 名字的含义
-
-Halo 读作 `/ˈheɪləʊ/`，也可以用谐音 **Hello** 来记忆。
-
-光环（Halo）有两层含义：它是本地桌面的守护进程，也是可以随时远程召唤的光环——无论你在哪里，都能掌控它。
-
-## Halo 的故事
-
-### 从一个问题开始
-
-2025 年 10 月，cursor 调整了会员策略，编程成本骤增。那段时间，我们反复在问一件事：
-
-> 有没有一款工具，既具备 Claude Code 那样强大的 Agent 能力——**但随时随地远程操作电脑桌面**、**驱动 AI 浏览器自主完成任务**，同时又有友好的可视化界面，**文件管理、产物预览**一应俱全，让开发者和产品人都能直接上手？
-
-我们做了市场调研，结论很清晰——不存在。市面上要么是 Open Web UI、LobeChat 这类能自定义 API 的聊天工具，要么是 Claude Code CLI、Gemini CLI 这类极客向的终端交互。
-
-没有我们想要的东西，就自己做。
-
-### 一个周末的诞生
-
-我们花了一个周末，用 Claude Code 实现了 Claude Code 自己的可视化桌面。第一个版本同时支持 macOS、Windows、Linux、Web 四端，近乎没有瑕疵，约 95% 的功能开箱即用。
-
-更不可思议的是：从那以后，Halo 100% 的代码都由 AI 自己生成，我们再也没有打开过 Cursor 或官方 CLI。
-
-几个月后，市面上出现大量类似的 Cowork / xxClaw。Halo 是最早一批将远程指挥 + 完整 Agent 能力带到普通桌面的客户端。
-
-## Halo 的目标
-
-**Halo 不追随热点，只追求效率。**
-
-我们聚焦一件事：提升个人与组织的运转效率，消除一切人工与等待。
-
-市面上的概念和热词换得飞快，我们既不追逐，也不与之比较。Halo 100% 由 Halo 自身构建，这本身就是一次效率边界的探索：我们不参考、不跟随任何外部概念，因为我们相信——
-
-> 最好的方向，来自个人与团队最直接的反馈，来自效率本身的反馈；而不是任何概念的演化与改良。
-
-市面上的名词每天都在变。我们只问一个问题：**它有没有让人更快、更省心。**
-
-<!-- public:start -->
+title: Halo 是什么：开源的 Claude Code 桌面版 AI 工作台
+description: Halo 是开源免费的 AI 桌面应用，把 Claude Code 的 Agent 能力做成人人能用的界面：说一句话就能做文档、操作网页，还能让数字人按计划干活、接入企业微信和飞书。
+type: explanation
+audience: [all]
+related: [getting-started/install, digital-humans/overview, guide/from-claude-code, advanced/security]
 ---
 
-## 开源与哲学
+# Halo 是什么
 
-Halo 不是商业产品，是个人与社区共同驱动的实验。我们诞生于一句话：
+::: say
+> 你能帮我做什么？举几个和我工作相关的例子。
 
-> **Kill Ugly Raw Source, AI Rewrites.**
-
-过去，这句话意味着用 AI 重构糟糕的代码。今天，它的意义已全面进化——消除数字世界中原始、低效、重复的人工干预，用 7×24 小时静默运行的数字人，重写任务的执行方式。
-
-我们相信，未来的计算平台应该是一个标准化的 Agent 运行时，让 AI 智能体能够持久化、自主化地接管复杂业务流。这一切应该是开源的、可共建的，而不是被商业公司垄断的。
-
-::: info 参与共建
-欢迎在 [GitHub](https://github.com/openkursar/hello-halo) 提交 Issue 或 PR，共同完善 Halo。
+Halo 会查自己的官方文档，按你的工作给出能直接照着说的例子。
 :::
-<!-- public:end -->
 
----
+## 一句话理解 {#in-one-sentence}
 
-## 下一步
+你用平常说话的方式交代任务，Halo 在你的电脑上把事情做完：写文档、整理表格、操作网页、改代码。重复的工作可以交给数字人，它按计划自己干活，在企业微信、飞书或微信里接活，几位数字人还能组成团队分工协作。
 
-- [安装 Halo](/getting-started/install) — 一键下载 AI 桌面助手
-- [AI 浏览器自动化](/features/ai-browser) — 让 AI 操控网页
-- [数字人概述](/digital-humans/overview) — 创建 7×24 小时 AI 智能体
-- [远程访问](/features/remote-access) — 随时随地控制你的 AI
+## 它能为你做什么 {#what-it-does}
+
+| 你是 | Halo 能帮你 | 从这里开始 |
+|---|---|---|
+| 办公用户 | 一句话做出 Word、Excel、PPT 和 PDF；整理文件；让 AI 打开网页查资料、填表 | [快速开始](/getting-started/) |
+| 想让 AI 自己干活的人 | 建数字人，每天定时汇总、巡检、出报告；接入企业微信、飞书、微信；组团队分工 | [数字人概述](/digital-humans/overview) |
+| 开发者 | Claude Code 完整的 Agent 能力，加上文件预览、变更与代码评审、终端（macOS 和 Windows）、技能和 MCP | [从 Claude Code / Codex 迁移](/guide/from-claude-code) |
+| IT 管理员 | 远程访问、手机客户端、无界面的 Halo Server、跨网络团队的联邦网关、私有商店 | [管理员与 IT](/advanced/) |
+
+更多例子见 [场景示例](/use-cases/)。
+
+## 它是怎么工作的 {#how-it-works}
+
+- **装在你的电脑上**：支持 macOS 12 及以上、64 位 Windows 和 64 位 Linux。也可以用浏览器或 Android 应用远程连回你的电脑，见 [远程访问](/features/remote-access)。
+- **用你自己选的 AI 模型**：用 Claude、ChatGPT、GitHub Copilot、腾讯、Kiro 账号登录，或者填一个 API Key，见 [连接 AI 模型](/getting-started/setup-ai)。Halo 本身免费；模型的费用由你登录的账号或 Key 所属的平台收取。
+- **默认用 Claude Code 引擎干活**：读写文件、运行命令、操作 [AI 浏览器](/features/ai-browser)、使用 [技能](/features/skills) 和 [MCP](/features/mcp)。设置里还有几种实验性的引擎可选，见 [Agent 引擎](/features/agent-engines)。
+- **数字人在后台按计划运行**：Halo 开着、电脑没睡时，它们按时开工，见 [让数字人一直在线](/digital-humans/keep-running)。
+
+## 数据在哪里 {#data}
+
+对话、文件、数字人和它们的记忆都保存在你的电脑上。发给 AI 模型的内容，由你选的模型服务商处理。Halo 还会连接哪些服务（更新、商店、使用统计等），哪些能关、怎样关，见 [安全、隐私与数据流](/advanced/security#data-flow)。
+
+## 和 Claude Code 是什么关系 {#claude-code}
+
+Halo 用 Claude Code 的 Agent 能力做底层，命令行能做的事，大部分都可以在 Halo 里用说话的方式交给它。在这之上，Halo 加了可视化的文件和预览、变更视图、远程访问、数字人和团队。已经在用 Claude Code 或 Codex，见 [从 Claude Code / Codex 迁移](/guide/from-claude-code)。
+
+## 名字的含义 {#name}
+
+Halo 读作 `/ˈheɪləʊ/`，也可以用谐音 Hello 来记。
+
 <!-- public:start -->
-- [核心理念](/guide/philosophy) — 了解 Halo 的设计哲学
+## 开源 {#open-source}
+
+Halo 是开源项目，代码在 [GitHub](https://github.com/openkursar/hello-halo) 上，欢迎提 Issue 或 PR。它是怎么来的、想做成什么样，见 [核心理念](/guide/philosophy#story)。
+
+想了解 Halo 和其他 AI 桌面助手有什么不同，见 [AI 桌面助手](/seo/ai-desktop-agent)。
 <!-- public:end -->
+
+## 下一步 {#next-steps}
+
+- [安装 Halo](/getting-started/install)：下载、安装、第一次打开。
+- [完成第一个任务](/getting-started/first-chat)：用一句话做出一份真实的文件。
+- [数字人概述](/digital-humans/overview)：让 AI 按计划自己干活。

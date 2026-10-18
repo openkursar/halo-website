@@ -65,9 +65,9 @@ QR flow, including reconnecting after a session expiry.
   reply is sent (`message-channels/index.md` §2).
 - **The digital human's questions** (Halo 3.0 and later): with no permission control there is no
   owner list, so a question is sent only to the direct chats that have **Auto-sync run result**
-  (自动同步运行结果) on in the digital human's bot sessions, and `/answer <number> <answer>` is
-  accepted from any direct chat with this account — like every other ability here, anyone who can
-  message it can answer. Details in `message-channels/index.md` §2.
+  (自动同步运行结果) on in the digital human's bot sessions. The answer is a plain reply in that
+  chat — there is no `/answer` command or question number in 3.0.4 — and, like every other ability
+  here, whoever writes in that chat can give it. Details in `message-channels/index.md` §2.
 
 ## 5. Diagnosis
 

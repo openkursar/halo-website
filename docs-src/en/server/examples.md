@@ -1,193 +1,188 @@
 ---
-title: "Halo Server Integration Examples"
-description: "End-to-end copy-pasteable examples: a full curl walkthrough of the customer-service flow, a streaming WebSocket example, and Java backend code that wraps the async API into a synchronous ask(); plus a contract-review digital-employee scenario."
----
-# Integration Examples
-
-This page provides copy-pasteable end-to-end examples. Read the [Integration Guide](./integration.md) first for the overall flow and constraints.
-
-Placeholders:
-
-- `<host>` — the Halo Server host
-- `<base>` — Base URL; direct `http://<host>:8080`, or behind a proxy prefix `https://<host>/fc-xxxx`
-- `<token>` — the access token (i.e. `HALO_REMOTE_PASSWORD`)
-- `<appId>` — the digital-human App ID
-- `<spaceId>` — the space ID the digital human lives in
-
+title: "Halo Server integration examples: curl and Java"
+description: "Halo Server integration examples: a curl walkthrough for a support Digital Human, a WebSocket event stream and a Java ask() wrapper."
+type: how-to
+audience: [developer]
 ---
 
-## Scenario 1: E-commerce customer-service digital human
+# Halo Server integration examples
 
-Flow: validate token → send message (with conversationId) → get the result (polling / WebSocket).
+This page has end-to-end examples you can copy. The overall flow and its constraints are in the [Halo Server integration guide](/en/server/integration).
 
-### 1. Validate the token (optional)
+Placeholders used below:
+
+- `$HALO_URL`, `$HALO_TOKEN`: the base URL and access password, set as in the [quickstart](/en/developers/quickstart#set-variables). The base URL is `http://<HOST>:8080` for a direct connection, or `https://<HOST>/<PATH_PREFIX>` behind a reverse proxy.
+- `<APP_ID>`: the Digital Human's id.
+- `<SPACE_ID>`: the id of the Digital Human's workspace.
+
+## Case 1: a support Digital Human for an online shop {#support}
+
+The flow: check the password → install the Digital Human → send a message in the user's own thread → get the reply.
+
+### 1. Check the access password {#check-password}
 
 ```bash
-curl -sS -X POST "<base>/api/remote/login" \
+curl -s -X POST "$HALO_URL/api/remote/login" \
   -H "Content-Type: application/json" \
-  -d '{"token":"<token>"}'
-# => {"success":true}
+  -d "{\"token\":\"$HALO_TOKEN\"}"
 ```
 
-### 2. (One-time) Create the customer-service digital human
-
-If you don't have a digital human yet, install one via API. **In production you typically create and tune the persona in the admin UI**; here is the API form:
-
-```bash
-curl -sS -X POST "<base>/api/apps/install" \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-        "spaceId": "<spaceId>",
-        "spec": {
-          "type": "automation",
-          "name": "Support Assistant",
-          "version": "1.0.0",
-          "author": "acme",
-          "description": "An e-commerce support digital employee answering order, shipping, and return questions.",
-          "system_prompt": "You are ACME'\''s e-commerce support assistant. Answer questions about orders, shipping, and returns politely, concisely, and accurately. When unsure, ask the user for their order number.",
-          "store": {}
-        }
-      }'
-# => {"success":true,"data":{"appId":"<appId>"}}
-```
-
-### 3. Send a message (with the end-user's conversationId)
-
-Send a query for end-user `user-12345`:
-
-```bash
-curl -sS -X POST "<base>/api/apps/<appId>/chat/send" \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-        "spaceId": "<spaceId>",
-        "conversationId": "user-12345",
-        "message": "Where is my order A1001?"
-      }'
-# => {"success":true,"data":{"conversationId":"app-chat:<appId>"}}
-```
-
-::: warning
-The returned `conversationId` is always the default `app-chat:<appId>`, not the `user-12345` you passed. Use your own value to retrieve results.
-:::
-
-### 4a. Get the result by polling (default conversation only)
-
-> Polling is correct only when you **don't do multi-user isolation** (omit `conversationId`, everyone shares the default conversation). The loop below demonstrates polling on the default conversation.
-
-```bash
-# Send without conversationId → lands in the default conversation
-curl -sS -X POST "<base>/api/apps/<appId>/chat/send" \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{"spaceId":"<spaceId>","message":"What is your return policy?"}'
-
-# Poll status until isGenerating=false
-while true; do
-  status=$(curl -sS "<base>/api/apps/<appId>/chat/status" \
-    -H "Authorization: Bearer <token>" | grep -o '"isGenerating":[a-z]*')
-  echo "$status"
-  [ "$status" = '"isGenerating":false' ] && break
-  sleep 1
-done
-
-# Fetch messages; take the last assistant content
-curl -sS "<base>/api/apps/<appId>/chat/messages" \
-  -H "Authorization: Bearer <token>"
-# => {"success":true,"data":[
-#      {"id":"session-msg-1","role":"user","content":"What is your return policy?","timestamp":"..."},
-#      {"id":"session-msg-2","role":"assistant","content":"We offer 7-day no-questions-asked returns...","timestamp":"...","thoughts":[],"thoughtsSummary":{"count":0,"types":{}}}
-#    ]}
-```
-
-### 4b. Get the result over WebSocket (recommended; isolation + streaming)
-
-Below uses [`websocat`](https://github.com/vi/websocat) to show the handshake and events; in production, implement the same frame sequence with your language's WS client.
-
-```bash
-# Open a WS connection (note ws/wss and the path prefix)
-websocat "<base-as-ws>/ws"
-```
-
-Send these frames in order (one JSON frame per line):
+Output:
 
 ```json
-{"type":"auth","payload":{"token":"<token>"}}
-{"type":"subscribe","payload":{"conversationId":"user-12345"}}
+{"success":true}
 ```
 
-The server first confirms auth, then — after your `chat/send` — pushes the event stream (excerpt):
+### 2. Install the support Digital Human (once) {#install}
+
+In production you usually create and fine-tune the Digital Human in Halo. Installing it through the API looks like this:
+
+```bash
+curl -s -X POST "$HALO_URL/api/apps/install" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "spaceId": "<SPACE_ID>",
+        "spec": {
+          "type": "automation",
+          "name": "Support assistant",
+          "version": "1.0.0",
+          "author": "example",
+          "description": "Answers questions about orders, shipping and returns for an online shop.",
+          "system_prompt": "You are the support assistant of an online shop. Answer questions about orders, shipping and returns politely, briefly and accurately. When unsure, ask for the order number."
+        }
+      }'
+```
+
+Output:
+
+```json
+{"success":true,"data":{"appId":"<APP_ID>"}}
+```
+
+### 3. A user sends a message {#send}
+
+User 12345's thread key is `app-chat:<APP_ID>:http:direct:user-12345`:
+
+```bash
+curl -s -X POST "$HALO_URL/api/apps/<APP_ID>/chat/send" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "spaceId": "<SPACE_ID>",
+        "conversationId": "app-chat:<APP_ID>:http:direct:user-12345",
+        "message": "Where is my order A1001?"
+      }'
+```
+
+Output:
+
+```json
+{"success":true,"data":{"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+```
+
+### 4a. Get the reply by polling {#polling}
+
+```bash
+THREAD='app-chat:<APP_ID>:http:direct:user-12345'
+
+# Wait until this thread stops generating, doubling the interval each time
+delay=2
+until curl -s "$HALO_URL/api/apps/<APP_ID>/chat/status?conversationId=$THREAD" \
+    -H "Authorization: Bearer $HALO_TOKEN" | grep -q '"isGenerating":false'; do
+  sleep "$delay"
+  delay=$((delay * 2))
+done
+
+# Read the transcript; the last assistant message is the reply
+curl -s "$HALO_URL/api/apps/<APP_ID>/chat/messages?conversationId=$THREAD" \
+  -H "Authorization: Bearer $HALO_TOKEN"
+```
+
+Output (shortened):
+
+```json
+{"success":true,"data":[
+  {"id":"…","role":"user","content":"Where is my order A1001?","timestamp":"…"},
+  {"id":"…","role":"assistant","content":"Your order A1001 is out for delivery…","timestamp":"…"}
+]}
+```
+
+### 4b. Get the reply over the WebSocket {#websocket}
+
+With any WebSocket client (the command-line tool `websocat`, for example), connect to `ws://<HOST>:8080/ws`, send these two frames, and then call `chat/send` from step 3:
+
+```json
+{"type":"auth","payload":{"token":"<YOUR_ACCESS_PASSWORD>"}}
+{"type":"subscribe","payload":{"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+```
+
+The server confirms the sign-in, then streams events (shortened, `spaceId` left out):
 
 ```json
 {"type":"auth:success"}
-{"type":"event","channel":"agent:message","data":{"type":"message","content":"","isNewTextBlock":true,"spaceId":"<spaceId>","conversationId":"user-12345"}}
-{"type":"event","channel":"agent:message","data":{"type":"message","delta":"Your order","isStreaming":true,"spaceId":"<spaceId>","conversationId":"user-12345"}}
-{"type":"event","channel":"agent:message","data":{"type":"message","delta":" A1001 is out for delivery...","isStreaming":true,"spaceId":"<spaceId>","conversationId":"user-12345"}}
-{"type":"event","channel":"agent:message","data":{"type":"message","content":"Your order A1001 is out for delivery and should arrive tomorrow.","isComplete":true,"spaceId":"<spaceId>","conversationId":"user-12345"}}
-{"type":"event","channel":"agent:complete","data":{"type":"complete","tokenUsage":{"inputTokens":1234,"outputTokens":56},"spaceId":"<spaceId>","conversationId":"user-12345"}}
+{"type":"event","channel":"agent:message","data":{"type":"message","content":"","isComplete":false,"isStreaming":false,"isNewTextBlock":true,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+{"type":"event","channel":"agent:message","data":{"type":"message","delta":"Your order","isComplete":false,"isStreaming":true,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+{"type":"event","channel":"agent:message","data":{"type":"message","delta":" A1001 is out for delivery…","isComplete":false,"isStreaming":true,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+{"type":"event","channel":"agent:message","data":{"type":"message","content":"Your order A1001 is out for delivery and should arrive tomorrow.","isComplete":true,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+{"type":"event","channel":"agent:complete","data":{"type":"complete","duration":6120,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
 ```
 
-Retrieval logic: **accumulate `agent:message` `delta`s for streaming display; take the `content` of the `isComplete:true` message as the final reply; treat `agent:complete` as the end of the turn.**
+Append each `delta` for a typewriter display; the `content` of the event with `isComplete: true` is the final answer; `agent:complete` ends the turn. The rules are in [assembling the reply](/en/developers/api/websocket#assemble-reply).
 
-> `<base-as-ws>`: map the Base URL `http`→`ws`, `https`→`wss`. E.g. `https://<host>/fc-xxxx` → `wss://<host>/fc-xxxx`.
+## Wrapping the async API as a synchronous ask() in Java {#java}
 
----
-
-## Wrapping the async API into a synchronous `ask(userId, question)` (Java)
-
-Business systems often want a single call that returns a single answer. The Java pseudo-code below uses one long-lived WebSocket to wrap Halo's async event stream into a blocking `ask()`, isolating each user via their own `conversationId`.
+Business systems often want one call that returns one answer. This Java example wraps the event stream into a blocking `ask()` over a single long-lived WebSocket, with a thread per user:
 
 ```java
-// Deps: any WebSocket client (e.g. Java-WebSocket), an HTTP client (e.g. java.net.http), a JSON library.
+// Needs java.net.http (HttpClient, WebSocket) and any JSON library (Jackson's JsonNode here).
 public class HaloAgentClient {
 
-  private final String base;      // e.g. https://<host>/fc-xxxx
-  private final String token;     // HALO_REMOTE_PASSWORD
+  private final String base;      // for example https://<HOST>/<PATH_PREFIX>
+  private final String token;     // the access password, read from configuration or a secret store
   private final String appId;
   private final String spaceId;
 
   private final HttpClient http = HttpClient.newHttpClient();
   private WebSocket ws;
 
-  // conversationId -> future awaiting that turn's final reply
+  // thread key -> future waiting for the final answer of the turn
   private final Map<String, CompletableFuture<String>> pending = new ConcurrentHashMap<>();
 
   public HaloAgentClient(String base, String token, String appId, String spaceId) {
     this.base = base; this.token = token; this.appId = appId; this.spaceId = spaceId;
   }
 
-  /** Establish and authenticate the long-lived WS. Reuse one connection for the process lifetime. */
+  /** Opens and authenticates one WebSocket for the whole process. Reconnect and resubscribe after a drop. */
   public void connect() {
     String wsUrl = base.replaceFirst("^http", "ws") + "/ws";
-    this.ws = HttpClient.newHttpClient()
-        .newWebSocketBuilder()
+    this.ws = http.newWebSocketBuilder()
         .buildAsync(URI.create(wsUrl), new WebSocket.Listener() {
           @Override public void onOpen(WebSocket webSocket) {
-            webSocket.sendText("{\"type\":\"auth\",\"payload\":{\"token\":\"" + token + "\"}}", true);
+            webSocket.sendText("{\"type\":\"auth\",\"payload\":{\"token\":" + jsonString(token) + "}}", true);
             webSocket.request(1);
           }
           @Override public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
-            handleFrame(data.toString());   // see below
+            handleFrame(data.toString());
             webSocket.request(1);
             return null;
           }
         }).join();
   }
 
-  /** Synchronous Q&A: send the question, block until the user's conversation returns a final reply. */
+  /** Synchronous question and answer: sends the question and blocks until the user's thread returns the final answer. */
   public String ask(String userId, String question) throws Exception {
-    String conversationId = "user-" + userId;       // your naming scheme
+    String thread = "app-chat:" + appId + ":http:direct:user-" + userId; // userId: letters, digits, _ and - only
     CompletableFuture<String> future = new CompletableFuture<>();
-    pending.put(conversationId, future);
+    pending.put(thread, future);
 
-    // 1) Subscribe the user's conversation (idempotent; re-subscribing has no side effects)
-    ws.sendText("{\"type\":\"subscribe\",\"payload\":{\"conversationId\":\"" + conversationId + "\"}}", true);
+    // 1) Subscribe to the thread (subscribing twice is harmless)
+    ws.sendText("{\"type\":\"subscribe\",\"payload\":{\"conversationId\":" + jsonString(thread) + "}}", true);
 
-    // 2) Trigger the agent asynchronously
-    String body = String.format(
-        "{\"spaceId\":\"%s\",\"conversationId\":\"%s\",\"message\":%s}",
-        spaceId, conversationId, jsonString(question));
+    // 2) Send the message; Halo works on it in the background
+    String body = "{\"spaceId\":" + jsonString(spaceId)
+        + ",\"conversationId\":" + jsonString(thread)
+        + ",\"message\":" + jsonString(question) + "}";
     http.send(HttpRequest.newBuilder()
         .uri(URI.create(base + "/api/apps/" + appId + "/chat/send"))
         .header("Authorization", "Bearer " + token)
@@ -195,98 +190,91 @@ public class HaloAgentClient {
         .POST(HttpRequest.BodyPublishers.ofString(body))
         .build(), HttpResponse.BodyHandlers.ofString());
 
-    // 3) Block for the final reply (with a timeout fallback)
+    // 3) Wait for the final answer, with a timeout
     try {
-      return future.get(60, TimeUnit.SECONDS);
+      return future.get(120, TimeUnit.SECONDS);
     } finally {
-      pending.remove(conversationId);
+      pending.remove(thread);
     }
   }
 
-  /** Handle one WS frame: route final reply/error to the right future by conversationId. */
+  /** Hands the final answer or error of a thread to its future. */
   private void handleFrame(String json) {
     JsonNode msg = parse(json);
     if (!"event".equals(msg.path("type").asText())) return;
 
     String channel = msg.path("channel").asText();
     JsonNode d = msg.path("data");
-    String conversationId = d.path("conversationId").asText();
-    CompletableFuture<String> f = pending.get(conversationId);
-    if (f == null) return;
+    CompletableFuture<String> f = pending.get(d.path("conversationId").asText());
+    if (f == null) return; // status events of other threads arrive too; ignore them
 
     if ("agent:message".equals(channel) && d.path("isComplete").asBoolean(false)) {
-      f.complete(d.path("content").asText());          // final reply
+      f.complete(d.path("content").asText());
     } else if ("agent:error".equals(channel)) {
-      f.completeExceptionally(new RuntimeException(d.path("error").asText())); // error
+      f.completeExceptionally(new RuntimeException(d.path("error").asText()));
     }
-    // agent:complete can serve as a secondary "turn finished" confirmation;
-    // ignore it if already completed at isComplete.
   }
 }
 ```
 
+Implement `jsonString()` (string escaping) and `parse()` with your JSON library.
+
 Key points:
 
-- **One WS connection serves all users**, multiplexed by `conversationId` — no reconnecting per question.
-- **Final reply** = the `content` of the `agent:message` with `isComplete:true`; **errors** arrive via `agent:error`.
-- A **timeout fallback** is essential (60s here) to avoid blocking forever if a turn produces no terminal event.
-- For streaming UX, additionally handle `agent:message` `delta`s (`isStreaming:true`) in `handleFrame` and push them incrementally to the frontend.
+- **One connection serves every user**: events are routed by thread key, so you never reconnect per question.
+- **The final answer** is the `content` of the `agent:message` with `isComplete: true`; **errors** arrive as `agent:error`.
+- **Always set a timeout**, so a turn without an end event can never block forever.
+- **Ask one question at a time per user**: do not send the next message in a thread before the previous turn ends.
+- For a typewriter display, push each `delta` to the front end from `handleFrame`.
 
----
+## Case 2: a contract review Digital Human {#contract-review}
 
-## Scenario 2: Contract-review digital employee
-
-The same API, a different persona, yields an entirely different digital employee. A contract-review assistant spec:
+The same endpoints with a different persona give you a different Digital Human. The spec of a contract review assistant:
 
 ```bash
-curl -sS -X POST "<base>/api/apps/install" \
-  -H "Authorization: Bearer <token>" \
+curl -s -X POST "$HALO_URL/api/apps/install" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-        "spaceId": "<spaceId>",
+        "spaceId": "<SPACE_ID>",
         "spec": {
           "type": "automation",
-          "name": "Contract Review Assistant",
+          "name": "Contract reviewer",
           "version": "1.0.0",
-          "author": "acme-legal",
-          "description": "Reviews contract clauses, flags risks, and proposes edits.",
-          "system_prompt": "You are a corporate legal contract-review assistant. Review each clause the user submits, identify risks unfavorable to our side (liability, indemnity, breach, IP, dispute resolution, etc.), list them by severity (high/medium/low), and propose drop-in replacement wording. Quote the original clause text.",
-          "store": {}
+          "author": "example",
+          "description": "Reviews contract clauses, flags risks and proposes changes.",
+          "system_prompt": "You are the contract review assistant of a legal team. Review each clause the user submits, find the risks for our side (liability, compensation, breach, intellectual property, dispute resolution and similar), list them as high, medium or low, quote the original clause, and propose replacement wording."
         }
       }'
 ```
 
-The call pattern is identical to the support scenario — assign a `conversationId` per contract/review task (e.g. `contract-2026-0042`), send the clause text, and stream the review verdict over WebSocket:
+Call it exactly like the support case: give each review its own thread, such as `app-chat:<APP_ID>:http:direct:contract-2026-0042`, send the clause text, and get the findings over the WebSocket:
 
 ```bash
-curl -sS -X POST "<base>/api/apps/<appId>/chat/send" \
-  -H "Authorization: Bearer <token>" \
+curl -s -X POST "$HALO_URL/api/apps/<APP_ID>/chat/send" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-        "spaceId": "<spaceId>",
-        "conversationId": "contract-2026-0042",
-        "message": "Review: Clause 8 - The Supplier shall under all circumstances bear unlimited joint liability for all losses of the Buyer."
+        "spaceId": "<SPACE_ID>",
+        "conversationId": "app-chat:<APP_ID>:http:direct:contract-2026-0042",
+        "message": "Please review: clause 8, the supplier shall be jointly and without limit liable for all losses of the buyer under any circumstances."
       }'
 ```
 
-The business side gets a synchronous verdict via the same `HaloAgentClient.ask("contract-2026-0042", clauseText)`. **The persona difference is entirely driven by `system_prompt`; the integration code is unchanged.** This is the value of the "one digital human = one persona, many isolated conversations" model: write the backend integration once, and it carries any number of digital employees.
+The difference in persona comes entirely from `system_prompt`; the integration code stays the same. Write the integration once and it can host any number of Digital Humans.
 
----
-
-## Troubleshooting
+## Troubleshooting {#troubleshooting}
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `401 Invalid token` | Wrong token or missing Bearer header | Verify `<token>` and the `Authorization` header |
-| WS closes right after connecting | Auth frame not sent, or wrong token | The first frame must be `auth`; wait for `auth:success` before subscribing |
-| No events received | Subscribed `conversationId` differs from the sent one | Ensure `subscribe` and `chat/send` use the same `conversationId` |
-| Polling returns someone else's history | Used a custom `conversationId` but polled | Multi-user isolation must use WebSocket; polling is default-conversation only |
-| `503` | App Manager/Runtime not ready (cold start) | Retry shortly |
+| `401 Invalid token` | Wrong access password, or no Bearer header | Check `$HALO_TOKEN` and the `Authorization` header |
+| `400 Invalid conversationId` | Malformed thread key, such as a bare `user-12345` | Use `app-chat:<APP_ID>:http:direct:<USER_KEY>` |
+| The WebSocket closes right after connecting | No `auth` first, or a wrong password | Send `auth` as the first frame and subscribe after `auth:success` |
+| No reply arrives for a thread | The subscribed key differs from the one used to send | Use the same `conversationId` for `subscribe` and `chat/send` |
+| `503` | The service is still starting | Wait a moment after a cold start and retry |
 
----
+## Related {#related}
 
-## Related docs
-
-- [Integration Guide](./integration.md) — flow, conversation lifecycle, polling vs WebSocket trade-offs.
-- [Configuration](./configuration.md) — token, port, LLM gateway.
-- [Digital Humans docs](../digital-humans/overview) — digital-human spec and persona design.
+- [Halo Server integration guide](/en/server/integration): threads, the two ways to get replies, and error handling
+- [WebSocket events](/en/developers/api/websocket): every event channel
+- [Halo Server configuration](/en/server/configuration): access password, port and LLM gateway

@@ -1,0 +1,2010 @@
+{
+  "schemaVersion": 1,
+  "appVersion": "3.0.4",
+  "source": "src/main/apps/spec/schema.ts",
+  "specTypes": [
+    "automation",
+    "mcp",
+    "skill",
+    "extension"
+  ],
+  "fields": {
+    "automation": [
+      {
+        "id": "spec_version",
+        "path": "spec_version",
+        "type": "string",
+        "required": false,
+        "default": "1",
+        "description": "Spec format version (default \"1\", for forward compatibility)"
+      },
+      {
+        "id": "name",
+        "path": "name",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Canonical name. For skills this is the ecosystem identifier — it becomes the skill directory, the SKILL.md frontmatter `name` and therefore the slash command — so it is normalized to ASCII at parse time. For every other type it doubles as the display name."
+      },
+      {
+        "id": "display_name",
+        "path": "display_name",
+        "type": "string",
+        "required": false,
+        "description": "Display name shown in the UI when `name` is not presentable, i.e. a skill whose author wrote it in a non-ASCII script. Per-locale `i18n` entries take precedence over it."
+      },
+      {
+        "id": "version",
+        "path": "version",
+        "type": "string",
+        "required": true,
+        "format": "version",
+        "description": "App version"
+      },
+      {
+        "id": "author",
+        "path": "author",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "App author"
+      },
+      {
+        "id": "description",
+        "path": "description",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "App description"
+      },
+      {
+        "id": "icon",
+        "path": "icon",
+        "type": "string",
+        "required": false,
+        "description": "Icon identifier or URL"
+      },
+      {
+        "id": "permissions",
+        "path": "permissions",
+        "type": "string[]",
+        "required": false,
+        "description": "Permission declarations"
+      },
+      {
+        "id": "requires",
+        "path": "requires",
+        "type": "object",
+        "required": false,
+        "description": "Dependency declarations"
+      },
+      {
+        "id": "requires.mcps",
+        "path": "requires.mcps",
+        "type": "object[]",
+        "required": false,
+        "description": "MCP server dependencies"
+      },
+      {
+        "id": "requires.mcps[].id",
+        "path": "requires.mcps[].id",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "MCP server identifier"
+      },
+      {
+        "id": "requires.mcps[].reason",
+        "path": "requires.mcps[].reason",
+        "type": "string",
+        "required": false,
+        "description": "Human-readable reason for this dependency (shown during install)"
+      },
+      {
+        "id": "requires.mcps[].bundled",
+        "path": "requires.mcps[].bundled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether this MCP is bundled within the app package"
+      },
+      {
+        "id": "requires.mcps[].enabled",
+        "path": "requires.mcps[].enabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether this digital human actually uses the dependency. Optional; absent means enabled. Set to `false` to keep the declaration (and its reason) but stop injecting the MCP for THIS digital human only — a per-app switch that never touches the shared MCP server's own state. The runtime skips `enabled: false` entries (see getMcpServersForRequires)."
+      },
+      {
+        "id": "requires.skills",
+        "path": "requires.skills",
+        "type": "(string | object)[]",
+        "required": false,
+        "description": "Skill dependencies (by name/id or structured declaration)"
+      },
+      {
+        "id": "requires.skills[].id",
+        "path": "requires.skills[].id",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "requires.skills[].reason",
+        "path": "requires.skills[].reason",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "requires.skills[].bundled",
+        "path": "requires.skills[].bundled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "id": "requires.skills[].files",
+        "path": "requires.skills[].files",
+        "type": "string[]",
+        "required": false,
+        "description": "Relative file paths within skills/{id}/ (required when bundled: true)"
+      },
+      {
+        "id": "config_schema",
+        "path": "config_schema",
+        "type": "object[]",
+        "required": false,
+        "description": "User configuration schema — rendered as a form during install"
+      },
+      {
+        "id": "config_schema[].key",
+        "path": "config_schema[].key",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Unique key for this config field"
+      },
+      {
+        "id": "config_schema[].label",
+        "path": "config_schema[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Display label for the UI"
+      },
+      {
+        "id": "config_schema[].type",
+        "path": "config_schema[].type",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "url",
+          "text",
+          "string",
+          "number",
+          "select",
+          "boolean",
+          "email"
+        ],
+        "description": "Field type -- determines UI widget"
+      },
+      {
+        "id": "config_schema[].description",
+        "path": "config_schema[].description",
+        "type": "string",
+        "required": false,
+        "description": "Description / help text"
+      },
+      {
+        "id": "config_schema[].required",
+        "path": "config_schema[].required",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the field is required (default: false)"
+      },
+      {
+        "id": "config_schema[].default",
+        "path": "config_schema[].default",
+        "type": "any",
+        "required": false,
+        "description": "Default value"
+      },
+      {
+        "id": "config_schema[].placeholder",
+        "path": "config_schema[].placeholder",
+        "type": "string",
+        "required": false,
+        "description": "Placeholder text"
+      },
+      {
+        "id": "config_schema[].options",
+        "path": "config_schema[].options",
+        "type": "object[]",
+        "required": false,
+        "description": "Options for select type"
+      },
+      {
+        "id": "config_schema[].options[].label",
+        "path": "config_schema[].options[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "config_schema[].options[].value",
+        "path": "config_schema[].options[].value",
+        "type": "string | number | boolean",
+        "required": true
+      },
+      {
+        "id": "store",
+        "path": "store",
+        "type": "object",
+        "required": false,
+        "description": "Store/registry metadata (for distribution and discovery)"
+      },
+      {
+        "id": "store.slug",
+        "path": "store.slug",
+        "type": "string",
+        "required": false,
+        "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\/[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)?$",
+        "description": "URL-safe unique identifier (single-file: filename, bundle: directory name)"
+      },
+      {
+        "id": "store.category",
+        "path": "store.category",
+        "type": "string",
+        "required": false,
+        "description": "Primary category for store navigation"
+      },
+      {
+        "id": "store.tags",
+        "path": "store.tags",
+        "type": "string[]",
+        "required": false,
+        "default": [],
+        "description": "Free-form tags for discovery"
+      },
+      {
+        "id": "store.locale",
+        "path": "store.locale",
+        "type": "string",
+        "required": false,
+        "description": "Primary locale (BCP 47)"
+      },
+      {
+        "id": "store.min_app_version",
+        "path": "store.min_app_version",
+        "type": "string",
+        "required": false,
+        "description": "Minimum client version required"
+      },
+      {
+        "id": "store.license",
+        "path": "store.license",
+        "type": "string",
+        "required": false,
+        "description": "License identifier (SPDX)"
+      },
+      {
+        "id": "store.homepage",
+        "path": "store.homepage",
+        "type": "string",
+        "required": false,
+        "format": "url",
+        "description": "Project homepage URL"
+      },
+      {
+        "id": "store.repository",
+        "path": "store.repository",
+        "type": "string",
+        "required": false,
+        "format": "url",
+        "description": "Source repository URL"
+      },
+      {
+        "id": "store.registry_id",
+        "path": "store.registry_id",
+        "type": "string",
+        "required": false,
+        "description": "Install provenance: which registry this app was installed from"
+      },
+      {
+        "id": "store.install_source",
+        "path": "store.install_source",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "store",
+          "builtin",
+          "manual",
+          "bundled"
+        ],
+        "description": "Install provenance: how this app reached the user's machine. - 'store':   downloaded from a registry (default for store installs) - 'builtin': bundled with the Halo build itself, auto-installed by the built-in loader at startup (see apps/manager/builtin-loader.ts). Built-in apps are protected from permanent deletion and are re-synced from disk on every launch (spec content auto-upgrades with the application; user-controlled state — userConfig, status, overrides — is preserved across upgrades). - 'manual':  added directly via IPC/HTTP without going through the store (e.g. drag-and-drop a SKILL.md file). Older records may not carry this field; treat 'undefined' as 'store' for backwards-compatibility purposes."
+      },
+      {
+        "id": "i18n",
+        "path": "i18n",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Locale-specific display text overrides"
+      },
+      {
+        "id": "i18n.<locale>.name",
+        "path": "i18n.<locale>.name",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.description",
+        "path": "i18n.<locale>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema",
+        "path": "i18n.<locale>.config_schema",
+        "type": "map<string, object>",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.label",
+        "path": "i18n.<locale>.config_schema.<key>.label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.description",
+        "path": "i18n.<locale>.config_schema.<key>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.placeholder",
+        "path": "i18n.<locale>.config_schema.<key>.placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.options",
+        "path": "i18n.<locale>.config_schema.<key>.options",
+        "type": "map<string, string>",
+        "required": false,
+        "description": "Map of option value (as string) → translated label"
+      },
+      {
+        "id": "i18n.<locale>.browser_login",
+        "path": "i18n.<locale>.browser_login",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Per-URL label overrides for browser_login entries"
+      },
+      {
+        "id": "i18n.<locale>.browser_login.<key>.label",
+        "path": "i18n.<locale>.browser_login.<key>.label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "type",
+        "path": "type",
+        "type": "literal",
+        "required": true,
+        "values": [
+          "automation"
+        ]
+      },
+      {
+        "id": "system_prompt",
+        "path": "system_prompt",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Core system prompt — the \"soul\" of the automation"
+      },
+      {
+        "id": "subscriptions",
+        "path": "subscriptions",
+        "type": "object[]",
+        "required": false,
+        "description": "Subscription definitions — makes the app \"active\" in the background"
+      },
+      {
+        "id": "subscriptions[].id",
+        "path": "subscriptions[].id",
+        "type": "string",
+        "required": false,
+        "description": "Unique ID within this spec (auto-generated if omitted)"
+      },
+      {
+        "id": "subscriptions[].source",
+        "path": "subscriptions[].source",
+        "type": "object",
+        "required": true,
+        "description": "Event source definition"
+      },
+      {
+        "id": "subscriptions[].source.type",
+        "path": "subscriptions[].source.type",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "schedule",
+          "file",
+          "webhook",
+          "webpage",
+          "rss",
+          "custom",
+          "wecom"
+        ]
+      },
+      {
+        "id": "subscriptions[].source.config@schedule",
+        "path": "subscriptions[].source.config",
+        "type": "object",
+        "required": true,
+        "variant": "schedule"
+      },
+      {
+        "id": "subscriptions[].source.config.every@schedule",
+        "path": "subscriptions[].source.config.every",
+        "type": "string",
+        "required": false,
+        "variant": "schedule",
+        "format": "duration",
+        "pattern": "^\\d+[smhd]$",
+        "description": "Interval duration, e.g. \"30m\", \"2h\""
+      },
+      {
+        "id": "subscriptions[].source.config.cron@schedule",
+        "path": "subscriptions[].source.config.cron",
+        "type": "string",
+        "required": false,
+        "variant": "schedule",
+        "format": "cron",
+        "description": "Cron expression, e.g. \"0 8 * * *\""
+      },
+      {
+        "id": "subscriptions[].source.config.workday_calendar@schedule",
+        "path": "subscriptions[].source.config.workday_calendar",
+        "type": "boolean",
+        "required": false,
+        "variant": "schedule",
+        "description": "Run only on mainland China working days (holidays and make-up workdays included)"
+      },
+      {
+        "id": "subscriptions[].source.config@file",
+        "path": "subscriptions[].source.config",
+        "type": "object",
+        "required": true,
+        "variant": "file"
+      },
+      {
+        "id": "subscriptions[].source.config.pattern@file",
+        "path": "subscriptions[].source.config.pattern",
+        "type": "string",
+        "required": false,
+        "variant": "file",
+        "description": "Glob pattern to watch, e.g. \"src/**/*.ts\""
+      },
+      {
+        "id": "subscriptions[].source.config.path@file",
+        "path": "subscriptions[].source.config.path",
+        "type": "string",
+        "required": false,
+        "variant": "file",
+        "description": "Directory to watch"
+      },
+      {
+        "id": "subscriptions[].source.config@webhook",
+        "path": "subscriptions[].source.config",
+        "type": "object",
+        "required": true,
+        "variant": "webhook"
+      },
+      {
+        "id": "subscriptions[].source.config.path@webhook",
+        "path": "subscriptions[].source.config.path",
+        "type": "string",
+        "required": false,
+        "variant": "webhook",
+        "description": "Webhook path (under /hooks/), e.g. \"github\""
+      },
+      {
+        "id": "subscriptions[].source.config.secret@webhook",
+        "path": "subscriptions[].source.config.secret",
+        "type": "string",
+        "required": false,
+        "variant": "webhook",
+        "description": "Secret for HMAC verification"
+      },
+      {
+        "id": "subscriptions[].source.config@webpage",
+        "path": "subscriptions[].source.config",
+        "type": "object",
+        "required": true,
+        "variant": "webpage"
+      },
+      {
+        "id": "subscriptions[].source.config.watch@webpage",
+        "path": "subscriptions[].source.config.watch",
+        "type": "string",
+        "required": false,
+        "variant": "webpage",
+        "description": "What to watch on the page: \"price-element\", \"full-page\", CSS selector, etc."
+      },
+      {
+        "id": "subscriptions[].source.config.selector@webpage",
+        "path": "subscriptions[].source.config.selector",
+        "type": "string",
+        "required": false,
+        "variant": "webpage",
+        "description": "CSS selector to focus on"
+      },
+      {
+        "id": "subscriptions[].source.config.url@webpage",
+        "path": "subscriptions[].source.config.url",
+        "type": "string",
+        "required": false,
+        "variant": "webpage",
+        "description": "URL to watch (may be overridden by config_key reference)"
+      },
+      {
+        "id": "subscriptions[].source.config@rss",
+        "path": "subscriptions[].source.config",
+        "type": "object",
+        "required": true,
+        "variant": "rss"
+      },
+      {
+        "id": "subscriptions[].source.config.url@rss",
+        "path": "subscriptions[].source.config.url",
+        "type": "string",
+        "required": false,
+        "variant": "rss",
+        "description": "RSS feed URL"
+      },
+      {
+        "id": "subscriptions[].source.config@custom",
+        "path": "subscriptions[].source.config",
+        "type": "map<string, any>",
+        "required": true,
+        "variant": "custom"
+      },
+      {
+        "id": "subscriptions[].source.config@wecom",
+        "path": "subscriptions[].source.config",
+        "type": "object",
+        "required": true,
+        "variant": "wecom"
+      },
+      {
+        "id": "subscriptions[].source.config.chatId@wecom",
+        "path": "subscriptions[].source.config.chatId",
+        "type": "string",
+        "required": false,
+        "variant": "wecom",
+        "description": "Optional: only trigger for specific chat IDs"
+      },
+      {
+        "id": "subscriptions[].frequency",
+        "path": "subscriptions[].frequency",
+        "type": "object",
+        "required": false,
+        "description": "Frequency bounds (overrides schedule source's own interval for UI adjustment)"
+      },
+      {
+        "id": "subscriptions[].frequency.default",
+        "path": "subscriptions[].frequency.default",
+        "type": "string",
+        "required": true,
+        "format": "duration",
+        "pattern": "^\\d+[smhd]$",
+        "description": "Default check interval"
+      },
+      {
+        "id": "subscriptions[].frequency.min",
+        "path": "subscriptions[].frequency.min",
+        "type": "string",
+        "required": false,
+        "format": "duration",
+        "pattern": "^\\d+[smhd]$",
+        "description": "Minimum interval (user cannot go faster)"
+      },
+      {
+        "id": "subscriptions[].frequency.max",
+        "path": "subscriptions[].frequency.max",
+        "type": "string",
+        "required": false,
+        "format": "duration",
+        "pattern": "^\\d+[smhd]$",
+        "description": "Maximum interval (user cannot go slower)"
+      },
+      {
+        "id": "subscriptions[].config_key",
+        "path": "subscriptions[].config_key",
+        "type": "string",
+        "required": false,
+        "description": "Reference to a config_schema key whose value provides dynamic source input"
+      },
+      {
+        "id": "filters",
+        "path": "filters",
+        "type": "object[]",
+        "required": false,
+        "description": "Rule-based event filters (zero LLM cost pre-filtering)"
+      },
+      {
+        "id": "filters[].field",
+        "path": "filters[].field",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Payload field path, e.g. \"price_change_percent\" or \"payload.extension\""
+      },
+      {
+        "id": "filters[].op",
+        "path": "filters[].op",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "eq",
+          "neq",
+          "contains",
+          "matches",
+          "gt",
+          "lt",
+          "gte",
+          "lte"
+        ],
+        "description": "Comparison operator"
+      },
+      {
+        "id": "filters[].value",
+        "path": "filters[].value",
+        "type": "any",
+        "required": true,
+        "description": "Value to compare against"
+      },
+      {
+        "id": "memory_schema",
+        "path": "memory_schema",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Memory schema — what the AI should track in its memory file"
+      },
+      {
+        "id": "memory_schema.<field>.type",
+        "path": "memory_schema.<field>.type",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "memory_schema.<field>.description",
+        "path": "memory_schema.<field>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "output",
+        "path": "output",
+        "type": "object",
+        "required": false,
+        "description": "Output configuration"
+      },
+      {
+        "id": "output.notify",
+        "path": "output.notify",
+        "type": "object",
+        "required": false,
+        "description": "Notification configuration for completed runs"
+      },
+      {
+        "id": "output.notify.system",
+        "path": "output.notify.system",
+        "type": "boolean",
+        "required": false,
+        "description": "Send system desktop notification (default: true)"
+      },
+      {
+        "id": "output.notify.channels",
+        "path": "output.notify.channels",
+        "type": "enum[]",
+        "required": false,
+        "values": [
+          "email",
+          "wecom",
+          "dingtalk",
+          "feishu",
+          "webhook"
+        ],
+        "description": "External notification channels to deliver to"
+      },
+      {
+        "id": "output.format",
+        "path": "output.format",
+        "type": "string",
+        "required": false,
+        "description": "Output format template string"
+      },
+      {
+        "id": "escalation",
+        "path": "escalation",
+        "type": "object",
+        "required": false,
+        "description": "Escalation behavior configuration"
+      },
+      {
+        "id": "escalation.enabled",
+        "path": "escalation.enabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether AI is allowed to escalate to user (default: true for automation)"
+      },
+      {
+        "id": "escalation.timeout_hours",
+        "path": "escalation.timeout_hours",
+        "type": "number",
+        "required": false,
+        "constraints": [
+          "> 0"
+        ],
+        "description": "Timeout in hours before an unanswered escalation auto-fails (default: 24)"
+      },
+      {
+        "id": "recommended_model",
+        "path": "recommended_model",
+        "type": "string",
+        "required": false,
+        "description": "Optional model recommendation (informational only)"
+      },
+      {
+        "id": "browser_login",
+        "path": "browser_login",
+        "type": "object[]",
+        "required": false,
+        "description": "Websites the user needs to log into before the automation can run"
+      },
+      {
+        "id": "browser_login[].url",
+        "path": "browser_login[].url",
+        "type": "string",
+        "required": true,
+        "format": "url",
+        "description": "URL the user should navigate to for login"
+      },
+      {
+        "id": "browser_login[].label",
+        "path": "browser_login[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Display label for the website (e.g. \"小红书\")"
+      }
+    ],
+    "mcp": [
+      {
+        "id": "spec_version",
+        "path": "spec_version",
+        "type": "string",
+        "required": false,
+        "default": "1",
+        "description": "Spec format version (default \"1\", for forward compatibility)"
+      },
+      {
+        "id": "name",
+        "path": "name",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Canonical name. For skills this is the ecosystem identifier — it becomes the skill directory, the SKILL.md frontmatter `name` and therefore the slash command — so it is normalized to ASCII at parse time. For every other type it doubles as the display name."
+      },
+      {
+        "id": "display_name",
+        "path": "display_name",
+        "type": "string",
+        "required": false,
+        "description": "Display name shown in the UI when `name` is not presentable, i.e. a skill whose author wrote it in a non-ASCII script. Per-locale `i18n` entries take precedence over it."
+      },
+      {
+        "id": "version",
+        "path": "version",
+        "type": "string",
+        "required": true,
+        "format": "version",
+        "description": "App version"
+      },
+      {
+        "id": "author",
+        "path": "author",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "App author"
+      },
+      {
+        "id": "description",
+        "path": "description",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "App description"
+      },
+      {
+        "id": "icon",
+        "path": "icon",
+        "type": "string",
+        "required": false,
+        "description": "Icon identifier or URL"
+      },
+      {
+        "id": "permissions",
+        "path": "permissions",
+        "type": "string[]",
+        "required": false,
+        "description": "Permission declarations"
+      },
+      {
+        "id": "requires",
+        "path": "requires",
+        "type": "object",
+        "required": false,
+        "description": "Dependency declarations"
+      },
+      {
+        "id": "requires.mcps",
+        "path": "requires.mcps",
+        "type": "object[]",
+        "required": false,
+        "description": "MCP server dependencies"
+      },
+      {
+        "id": "requires.mcps[].id",
+        "path": "requires.mcps[].id",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "MCP server identifier"
+      },
+      {
+        "id": "requires.mcps[].reason",
+        "path": "requires.mcps[].reason",
+        "type": "string",
+        "required": false,
+        "description": "Human-readable reason for this dependency (shown during install)"
+      },
+      {
+        "id": "requires.mcps[].bundled",
+        "path": "requires.mcps[].bundled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether this MCP is bundled within the app package"
+      },
+      {
+        "id": "requires.mcps[].enabled",
+        "path": "requires.mcps[].enabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether this digital human actually uses the dependency. Optional; absent means enabled. Set to `false` to keep the declaration (and its reason) but stop injecting the MCP for THIS digital human only — a per-app switch that never touches the shared MCP server's own state. The runtime skips `enabled: false` entries (see getMcpServersForRequires)."
+      },
+      {
+        "id": "requires.skills",
+        "path": "requires.skills",
+        "type": "(string | object)[]",
+        "required": false,
+        "description": "Skill dependencies (by name/id or structured declaration)"
+      },
+      {
+        "id": "requires.skills[].id",
+        "path": "requires.skills[].id",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "requires.skills[].reason",
+        "path": "requires.skills[].reason",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "requires.skills[].bundled",
+        "path": "requires.skills[].bundled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "id": "requires.skills[].files",
+        "path": "requires.skills[].files",
+        "type": "string[]",
+        "required": false,
+        "description": "Relative file paths within skills/{id}/ (required when bundled: true)"
+      },
+      {
+        "id": "config_schema",
+        "path": "config_schema",
+        "type": "object[]",
+        "required": false,
+        "description": "User configuration schema — rendered as a form during install"
+      },
+      {
+        "id": "config_schema[].key",
+        "path": "config_schema[].key",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Unique key for this config field"
+      },
+      {
+        "id": "config_schema[].label",
+        "path": "config_schema[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Display label for the UI"
+      },
+      {
+        "id": "config_schema[].type",
+        "path": "config_schema[].type",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "url",
+          "text",
+          "string",
+          "number",
+          "select",
+          "boolean",
+          "email"
+        ],
+        "description": "Field type -- determines UI widget"
+      },
+      {
+        "id": "config_schema[].description",
+        "path": "config_schema[].description",
+        "type": "string",
+        "required": false,
+        "description": "Description / help text"
+      },
+      {
+        "id": "config_schema[].required",
+        "path": "config_schema[].required",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the field is required (default: false)"
+      },
+      {
+        "id": "config_schema[].default",
+        "path": "config_schema[].default",
+        "type": "any",
+        "required": false,
+        "description": "Default value"
+      },
+      {
+        "id": "config_schema[].placeholder",
+        "path": "config_schema[].placeholder",
+        "type": "string",
+        "required": false,
+        "description": "Placeholder text"
+      },
+      {
+        "id": "config_schema[].options",
+        "path": "config_schema[].options",
+        "type": "object[]",
+        "required": false,
+        "description": "Options for select type"
+      },
+      {
+        "id": "config_schema[].options[].label",
+        "path": "config_schema[].options[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "config_schema[].options[].value",
+        "path": "config_schema[].options[].value",
+        "type": "string | number | boolean",
+        "required": true
+      },
+      {
+        "id": "store",
+        "path": "store",
+        "type": "object",
+        "required": false,
+        "description": "Store/registry metadata (for distribution and discovery)"
+      },
+      {
+        "id": "store.slug",
+        "path": "store.slug",
+        "type": "string",
+        "required": false,
+        "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\/[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)?$",
+        "description": "URL-safe unique identifier (single-file: filename, bundle: directory name)"
+      },
+      {
+        "id": "store.category",
+        "path": "store.category",
+        "type": "string",
+        "required": false,
+        "description": "Primary category for store navigation"
+      },
+      {
+        "id": "store.tags",
+        "path": "store.tags",
+        "type": "string[]",
+        "required": false,
+        "default": [],
+        "description": "Free-form tags for discovery"
+      },
+      {
+        "id": "store.locale",
+        "path": "store.locale",
+        "type": "string",
+        "required": false,
+        "description": "Primary locale (BCP 47)"
+      },
+      {
+        "id": "store.min_app_version",
+        "path": "store.min_app_version",
+        "type": "string",
+        "required": false,
+        "description": "Minimum client version required"
+      },
+      {
+        "id": "store.license",
+        "path": "store.license",
+        "type": "string",
+        "required": false,
+        "description": "License identifier (SPDX)"
+      },
+      {
+        "id": "store.homepage",
+        "path": "store.homepage",
+        "type": "string",
+        "required": false,
+        "format": "url",
+        "description": "Project homepage URL"
+      },
+      {
+        "id": "store.repository",
+        "path": "store.repository",
+        "type": "string",
+        "required": false,
+        "format": "url",
+        "description": "Source repository URL"
+      },
+      {
+        "id": "store.registry_id",
+        "path": "store.registry_id",
+        "type": "string",
+        "required": false,
+        "description": "Install provenance: which registry this app was installed from"
+      },
+      {
+        "id": "store.install_source",
+        "path": "store.install_source",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "store",
+          "builtin",
+          "manual",
+          "bundled"
+        ],
+        "description": "Install provenance: how this app reached the user's machine. - 'store':   downloaded from a registry (default for store installs) - 'builtin': bundled with the Halo build itself, auto-installed by the built-in loader at startup (see apps/manager/builtin-loader.ts). Built-in apps are protected from permanent deletion and are re-synced from disk on every launch (spec content auto-upgrades with the application; user-controlled state — userConfig, status, overrides — is preserved across upgrades). - 'manual':  added directly via IPC/HTTP without going through the store (e.g. drag-and-drop a SKILL.md file). Older records may not carry this field; treat 'undefined' as 'store' for backwards-compatibility purposes."
+      },
+      {
+        "id": "i18n",
+        "path": "i18n",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Locale-specific display text overrides"
+      },
+      {
+        "id": "i18n.<locale>.name",
+        "path": "i18n.<locale>.name",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.description",
+        "path": "i18n.<locale>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema",
+        "path": "i18n.<locale>.config_schema",
+        "type": "map<string, object>",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.label",
+        "path": "i18n.<locale>.config_schema.<key>.label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.description",
+        "path": "i18n.<locale>.config_schema.<key>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.placeholder",
+        "path": "i18n.<locale>.config_schema.<key>.placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.options",
+        "path": "i18n.<locale>.config_schema.<key>.options",
+        "type": "map<string, string>",
+        "required": false,
+        "description": "Map of option value (as string) → translated label"
+      },
+      {
+        "id": "i18n.<locale>.browser_login",
+        "path": "i18n.<locale>.browser_login",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Per-URL label overrides for browser_login entries"
+      },
+      {
+        "id": "i18n.<locale>.browser_login.<key>.label",
+        "path": "i18n.<locale>.browser_login.<key>.label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "type",
+        "path": "type",
+        "type": "literal",
+        "required": true,
+        "values": [
+          "mcp"
+        ]
+      },
+      {
+        "id": "mcp_server",
+        "path": "mcp_server",
+        "type": "object",
+        "required": true,
+        "description": "MCP server configuration"
+      },
+      {
+        "id": "mcp_server.transport",
+        "path": "mcp_server.transport",
+        "type": "enum",
+        "required": false,
+        "default": "stdio",
+        "values": [
+          "stdio",
+          "sse",
+          "streamable-http"
+        ],
+        "description": "Transport protocol (default: stdio)"
+      },
+      {
+        "id": "mcp_server.command",
+        "path": "mcp_server.command",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Command to start the MCP server"
+      },
+      {
+        "id": "mcp_server.args",
+        "path": "mcp_server.args",
+        "type": "string[]",
+        "required": false,
+        "description": "Command arguments"
+      },
+      {
+        "id": "mcp_server.env",
+        "path": "mcp_server.env",
+        "type": "map<string, string>",
+        "required": false,
+        "description": "Environment variables (values coerced from number/boolean to string)"
+      },
+      {
+        "id": "mcp_server.headers",
+        "path": "mcp_server.headers",
+        "type": "map<string, string>",
+        "required": false,
+        "description": "HTTP/SSE request headers (values coerced from number/boolean to string)"
+      },
+      {
+        "id": "mcp_server.cwd",
+        "path": "mcp_server.cwd",
+        "type": "string",
+        "required": false,
+        "description": "Working directory"
+      }
+    ],
+    "skill": [
+      {
+        "id": "spec_version",
+        "path": "spec_version",
+        "type": "string",
+        "required": false,
+        "default": "1",
+        "description": "Spec format version (default \"1\", for forward compatibility)"
+      },
+      {
+        "id": "name",
+        "path": "name",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Canonical name. For skills this is the ecosystem identifier — it becomes the skill directory, the SKILL.md frontmatter `name` and therefore the slash command — so it is normalized to ASCII at parse time. For every other type it doubles as the display name."
+      },
+      {
+        "id": "display_name",
+        "path": "display_name",
+        "type": "string",
+        "required": false,
+        "description": "Display name shown in the UI when `name` is not presentable, i.e. a skill whose author wrote it in a non-ASCII script. Per-locale `i18n` entries take precedence over it."
+      },
+      {
+        "id": "version",
+        "path": "version",
+        "type": "string",
+        "required": true,
+        "format": "version",
+        "description": "App version"
+      },
+      {
+        "id": "author",
+        "path": "author",
+        "type": "string",
+        "required": false,
+        "description": "Author is optional for skills — SKILL.md format does not include an author field"
+      },
+      {
+        "id": "description",
+        "path": "description",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "App description"
+      },
+      {
+        "id": "icon",
+        "path": "icon",
+        "type": "string",
+        "required": false,
+        "description": "Icon identifier or URL"
+      },
+      {
+        "id": "permissions",
+        "path": "permissions",
+        "type": "string[]",
+        "required": false,
+        "description": "Permission declarations"
+      },
+      {
+        "id": "requires",
+        "path": "requires",
+        "type": "object",
+        "required": false,
+        "description": "Dependency declarations"
+      },
+      {
+        "id": "requires.mcps",
+        "path": "requires.mcps",
+        "type": "object[]",
+        "required": false,
+        "description": "MCP server dependencies"
+      },
+      {
+        "id": "requires.mcps[].id",
+        "path": "requires.mcps[].id",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "MCP server identifier"
+      },
+      {
+        "id": "requires.mcps[].reason",
+        "path": "requires.mcps[].reason",
+        "type": "string",
+        "required": false,
+        "description": "Human-readable reason for this dependency (shown during install)"
+      },
+      {
+        "id": "requires.mcps[].bundled",
+        "path": "requires.mcps[].bundled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether this MCP is bundled within the app package"
+      },
+      {
+        "id": "requires.mcps[].enabled",
+        "path": "requires.mcps[].enabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether this digital human actually uses the dependency. Optional; absent means enabled. Set to `false` to keep the declaration (and its reason) but stop injecting the MCP for THIS digital human only — a per-app switch that never touches the shared MCP server's own state. The runtime skips `enabled: false` entries (see getMcpServersForRequires)."
+      },
+      {
+        "id": "requires.skills",
+        "path": "requires.skills",
+        "type": "(string | object)[]",
+        "required": false,
+        "description": "Skill dependencies (by name/id or structured declaration)"
+      },
+      {
+        "id": "requires.skills[].id",
+        "path": "requires.skills[].id",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "requires.skills[].reason",
+        "path": "requires.skills[].reason",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "requires.skills[].bundled",
+        "path": "requires.skills[].bundled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "id": "requires.skills[].files",
+        "path": "requires.skills[].files",
+        "type": "string[]",
+        "required": false,
+        "description": "Relative file paths within skills/{id}/ (required when bundled: true)"
+      },
+      {
+        "id": "config_schema",
+        "path": "config_schema",
+        "type": "object[]",
+        "required": false,
+        "description": "User configuration schema — rendered as a form during install"
+      },
+      {
+        "id": "config_schema[].key",
+        "path": "config_schema[].key",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Unique key for this config field"
+      },
+      {
+        "id": "config_schema[].label",
+        "path": "config_schema[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Display label for the UI"
+      },
+      {
+        "id": "config_schema[].type",
+        "path": "config_schema[].type",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "url",
+          "text",
+          "string",
+          "number",
+          "select",
+          "boolean",
+          "email"
+        ],
+        "description": "Field type -- determines UI widget"
+      },
+      {
+        "id": "config_schema[].description",
+        "path": "config_schema[].description",
+        "type": "string",
+        "required": false,
+        "description": "Description / help text"
+      },
+      {
+        "id": "config_schema[].required",
+        "path": "config_schema[].required",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the field is required (default: false)"
+      },
+      {
+        "id": "config_schema[].default",
+        "path": "config_schema[].default",
+        "type": "any",
+        "required": false,
+        "description": "Default value"
+      },
+      {
+        "id": "config_schema[].placeholder",
+        "path": "config_schema[].placeholder",
+        "type": "string",
+        "required": false,
+        "description": "Placeholder text"
+      },
+      {
+        "id": "config_schema[].options",
+        "path": "config_schema[].options",
+        "type": "object[]",
+        "required": false,
+        "description": "Options for select type"
+      },
+      {
+        "id": "config_schema[].options[].label",
+        "path": "config_schema[].options[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "config_schema[].options[].value",
+        "path": "config_schema[].options[].value",
+        "type": "string | number | boolean",
+        "required": true
+      },
+      {
+        "id": "store",
+        "path": "store",
+        "type": "object",
+        "required": false,
+        "description": "Store/registry metadata (for distribution and discovery)"
+      },
+      {
+        "id": "store.slug",
+        "path": "store.slug",
+        "type": "string",
+        "required": false,
+        "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\/[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)?$",
+        "description": "URL-safe unique identifier (single-file: filename, bundle: directory name)"
+      },
+      {
+        "id": "store.category",
+        "path": "store.category",
+        "type": "string",
+        "required": false,
+        "description": "Primary category for store navigation"
+      },
+      {
+        "id": "store.tags",
+        "path": "store.tags",
+        "type": "string[]",
+        "required": false,
+        "default": [],
+        "description": "Free-form tags for discovery"
+      },
+      {
+        "id": "store.locale",
+        "path": "store.locale",
+        "type": "string",
+        "required": false,
+        "description": "Primary locale (BCP 47)"
+      },
+      {
+        "id": "store.min_app_version",
+        "path": "store.min_app_version",
+        "type": "string",
+        "required": false,
+        "description": "Minimum client version required"
+      },
+      {
+        "id": "store.license",
+        "path": "store.license",
+        "type": "string",
+        "required": false,
+        "description": "License identifier (SPDX)"
+      },
+      {
+        "id": "store.homepage",
+        "path": "store.homepage",
+        "type": "string",
+        "required": false,
+        "format": "url",
+        "description": "Project homepage URL"
+      },
+      {
+        "id": "store.repository",
+        "path": "store.repository",
+        "type": "string",
+        "required": false,
+        "format": "url",
+        "description": "Source repository URL"
+      },
+      {
+        "id": "store.registry_id",
+        "path": "store.registry_id",
+        "type": "string",
+        "required": false,
+        "description": "Install provenance: which registry this app was installed from"
+      },
+      {
+        "id": "store.install_source",
+        "path": "store.install_source",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "store",
+          "builtin",
+          "manual",
+          "bundled"
+        ],
+        "description": "Install provenance: how this app reached the user's machine. - 'store':   downloaded from a registry (default for store installs) - 'builtin': bundled with the Halo build itself, auto-installed by the built-in loader at startup (see apps/manager/builtin-loader.ts). Built-in apps are protected from permanent deletion and are re-synced from disk on every launch (spec content auto-upgrades with the application; user-controlled state — userConfig, status, overrides — is preserved across upgrades). - 'manual':  added directly via IPC/HTTP without going through the store (e.g. drag-and-drop a SKILL.md file). Older records may not carry this field; treat 'undefined' as 'store' for backwards-compatibility purposes."
+      },
+      {
+        "id": "i18n",
+        "path": "i18n",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Locale-specific display text overrides"
+      },
+      {
+        "id": "i18n.<locale>.name",
+        "path": "i18n.<locale>.name",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.description",
+        "path": "i18n.<locale>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema",
+        "path": "i18n.<locale>.config_schema",
+        "type": "map<string, object>",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.label",
+        "path": "i18n.<locale>.config_schema.<key>.label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.description",
+        "path": "i18n.<locale>.config_schema.<key>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.placeholder",
+        "path": "i18n.<locale>.config_schema.<key>.placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.options",
+        "path": "i18n.<locale>.config_schema.<key>.options",
+        "type": "map<string, string>",
+        "required": false,
+        "description": "Map of option value (as string) → translated label"
+      },
+      {
+        "id": "i18n.<locale>.browser_login",
+        "path": "i18n.<locale>.browser_login",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Per-URL label overrides for browser_login entries"
+      },
+      {
+        "id": "i18n.<locale>.browser_login.<key>.label",
+        "path": "i18n.<locale>.browser_login.<key>.label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "type",
+        "path": "type",
+        "type": "literal",
+        "required": true,
+        "values": [
+          "skill"
+        ]
+      },
+      {
+        "id": "skill_content",
+        "path": "skill_content",
+        "type": "string",
+        "required": false,
+        "description": "Single-file content (manual add / legacy). Used when skill is a single .md file."
+      },
+      {
+        "id": "skill_files",
+        "path": "skill_files",
+        "type": "map<string, string>",
+        "required": false,
+        "description": "All files in the skill folder, keyed by filename (e.g. { 'SKILL.md': '...' }). Used for registry installs."
+      }
+    ],
+    "extension": [
+      {
+        "id": "spec_version",
+        "path": "spec_version",
+        "type": "string",
+        "required": false,
+        "default": "1",
+        "description": "Spec format version (default \"1\", for forward compatibility)"
+      },
+      {
+        "id": "name",
+        "path": "name",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Canonical name. For skills this is the ecosystem identifier — it becomes the skill directory, the SKILL.md frontmatter `name` and therefore the slash command — so it is normalized to ASCII at parse time. For every other type it doubles as the display name."
+      },
+      {
+        "id": "display_name",
+        "path": "display_name",
+        "type": "string",
+        "required": false,
+        "description": "Display name shown in the UI when `name` is not presentable, i.e. a skill whose author wrote it in a non-ASCII script. Per-locale `i18n` entries take precedence over it."
+      },
+      {
+        "id": "version",
+        "path": "version",
+        "type": "string",
+        "required": true,
+        "format": "version",
+        "description": "App version"
+      },
+      {
+        "id": "author",
+        "path": "author",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "App author"
+      },
+      {
+        "id": "description",
+        "path": "description",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "App description"
+      },
+      {
+        "id": "icon",
+        "path": "icon",
+        "type": "string",
+        "required": false,
+        "description": "Icon identifier or URL"
+      },
+      {
+        "id": "permissions",
+        "path": "permissions",
+        "type": "string[]",
+        "required": false,
+        "description": "Permission declarations"
+      },
+      {
+        "id": "requires",
+        "path": "requires",
+        "type": "object",
+        "required": false,
+        "description": "Dependency declarations"
+      },
+      {
+        "id": "requires.mcps",
+        "path": "requires.mcps",
+        "type": "object[]",
+        "required": false,
+        "description": "MCP server dependencies"
+      },
+      {
+        "id": "requires.mcps[].id",
+        "path": "requires.mcps[].id",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "MCP server identifier"
+      },
+      {
+        "id": "requires.mcps[].reason",
+        "path": "requires.mcps[].reason",
+        "type": "string",
+        "required": false,
+        "description": "Human-readable reason for this dependency (shown during install)"
+      },
+      {
+        "id": "requires.mcps[].bundled",
+        "path": "requires.mcps[].bundled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether this MCP is bundled within the app package"
+      },
+      {
+        "id": "requires.mcps[].enabled",
+        "path": "requires.mcps[].enabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether this digital human actually uses the dependency. Optional; absent means enabled. Set to `false` to keep the declaration (and its reason) but stop injecting the MCP for THIS digital human only — a per-app switch that never touches the shared MCP server's own state. The runtime skips `enabled: false` entries (see getMcpServersForRequires)."
+      },
+      {
+        "id": "requires.skills",
+        "path": "requires.skills",
+        "type": "(string | object)[]",
+        "required": false,
+        "description": "Skill dependencies (by name/id or structured declaration)"
+      },
+      {
+        "id": "requires.skills[].id",
+        "path": "requires.skills[].id",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "requires.skills[].reason",
+        "path": "requires.skills[].reason",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "requires.skills[].bundled",
+        "path": "requires.skills[].bundled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "id": "requires.skills[].files",
+        "path": "requires.skills[].files",
+        "type": "string[]",
+        "required": false,
+        "description": "Relative file paths within skills/{id}/ (required when bundled: true)"
+      },
+      {
+        "id": "config_schema",
+        "path": "config_schema",
+        "type": "object[]",
+        "required": false,
+        "description": "User configuration schema — rendered as a form during install"
+      },
+      {
+        "id": "config_schema[].key",
+        "path": "config_schema[].key",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Unique key for this config field"
+      },
+      {
+        "id": "config_schema[].label",
+        "path": "config_schema[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty",
+        "description": "Display label for the UI"
+      },
+      {
+        "id": "config_schema[].type",
+        "path": "config_schema[].type",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "url",
+          "text",
+          "string",
+          "number",
+          "select",
+          "boolean",
+          "email"
+        ],
+        "description": "Field type -- determines UI widget"
+      },
+      {
+        "id": "config_schema[].description",
+        "path": "config_schema[].description",
+        "type": "string",
+        "required": false,
+        "description": "Description / help text"
+      },
+      {
+        "id": "config_schema[].required",
+        "path": "config_schema[].required",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the field is required (default: false)"
+      },
+      {
+        "id": "config_schema[].default",
+        "path": "config_schema[].default",
+        "type": "any",
+        "required": false,
+        "description": "Default value"
+      },
+      {
+        "id": "config_schema[].placeholder",
+        "path": "config_schema[].placeholder",
+        "type": "string",
+        "required": false,
+        "description": "Placeholder text"
+      },
+      {
+        "id": "config_schema[].options",
+        "path": "config_schema[].options",
+        "type": "object[]",
+        "required": false,
+        "description": "Options for select type"
+      },
+      {
+        "id": "config_schema[].options[].label",
+        "path": "config_schema[].options[].label",
+        "type": "string",
+        "required": true,
+        "format": "non-empty"
+      },
+      {
+        "id": "config_schema[].options[].value",
+        "path": "config_schema[].options[].value",
+        "type": "string | number | boolean",
+        "required": true
+      },
+      {
+        "id": "store",
+        "path": "store",
+        "type": "object",
+        "required": false,
+        "description": "Store/registry metadata (for distribution and discovery)"
+      },
+      {
+        "id": "store.slug",
+        "path": "store.slug",
+        "type": "string",
+        "required": false,
+        "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\/[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)?$",
+        "description": "URL-safe unique identifier (single-file: filename, bundle: directory name)"
+      },
+      {
+        "id": "store.category",
+        "path": "store.category",
+        "type": "string",
+        "required": false,
+        "description": "Primary category for store navigation"
+      },
+      {
+        "id": "store.tags",
+        "path": "store.tags",
+        "type": "string[]",
+        "required": false,
+        "default": [],
+        "description": "Free-form tags for discovery"
+      },
+      {
+        "id": "store.locale",
+        "path": "store.locale",
+        "type": "string",
+        "required": false,
+        "description": "Primary locale (BCP 47)"
+      },
+      {
+        "id": "store.min_app_version",
+        "path": "store.min_app_version",
+        "type": "string",
+        "required": false,
+        "description": "Minimum client version required"
+      },
+      {
+        "id": "store.license",
+        "path": "store.license",
+        "type": "string",
+        "required": false,
+        "description": "License identifier (SPDX)"
+      },
+      {
+        "id": "store.homepage",
+        "path": "store.homepage",
+        "type": "string",
+        "required": false,
+        "format": "url",
+        "description": "Project homepage URL"
+      },
+      {
+        "id": "store.repository",
+        "path": "store.repository",
+        "type": "string",
+        "required": false,
+        "format": "url",
+        "description": "Source repository URL"
+      },
+      {
+        "id": "store.registry_id",
+        "path": "store.registry_id",
+        "type": "string",
+        "required": false,
+        "description": "Install provenance: which registry this app was installed from"
+      },
+      {
+        "id": "store.install_source",
+        "path": "store.install_source",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "store",
+          "builtin",
+          "manual",
+          "bundled"
+        ],
+        "description": "Install provenance: how this app reached the user's machine. - 'store':   downloaded from a registry (default for store installs) - 'builtin': bundled with the Halo build itself, auto-installed by the built-in loader at startup (see apps/manager/builtin-loader.ts). Built-in apps are protected from permanent deletion and are re-synced from disk on every launch (spec content auto-upgrades with the application; user-controlled state — userConfig, status, overrides — is preserved across upgrades). - 'manual':  added directly via IPC/HTTP without going through the store (e.g. drag-and-drop a SKILL.md file). Older records may not carry this field; treat 'undefined' as 'store' for backwards-compatibility purposes."
+      },
+      {
+        "id": "i18n",
+        "path": "i18n",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Locale-specific display text overrides"
+      },
+      {
+        "id": "i18n.<locale>.name",
+        "path": "i18n.<locale>.name",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.description",
+        "path": "i18n.<locale>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema",
+        "path": "i18n.<locale>.config_schema",
+        "type": "map<string, object>",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.label",
+        "path": "i18n.<locale>.config_schema.<key>.label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.description",
+        "path": "i18n.<locale>.config_schema.<key>.description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.placeholder",
+        "path": "i18n.<locale>.config_schema.<key>.placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "i18n.<locale>.config_schema.<key>.options",
+        "path": "i18n.<locale>.config_schema.<key>.options",
+        "type": "map<string, string>",
+        "required": false,
+        "description": "Map of option value (as string) → translated label"
+      },
+      {
+        "id": "i18n.<locale>.browser_login",
+        "path": "i18n.<locale>.browser_login",
+        "type": "map<string, object>",
+        "required": false,
+        "description": "Per-URL label overrides for browser_login entries"
+      },
+      {
+        "id": "i18n.<locale>.browser_login.<key>.label",
+        "path": "i18n.<locale>.browser_login.<key>.label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "id": "type",
+        "path": "type",
+        "type": "literal",
+        "required": true,
+        "values": [
+          "extension"
+        ]
+      }
+    ]
+  }
+}

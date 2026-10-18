@@ -1,323 +1,200 @@
 ---
-title: "Halo Server 集成指南"
-description: "把 Halo Server 作为 AI 智能体后端接入企业业务系统：数字人创建、会话隔离、结果获取（轮询 vs WebSocket）、多用户隔离、鉴权与错误处理。"
----
-# 集成指南
-
-本文面向**业务后端工程师**（如 Java 后端），讲解如何把 Halo Server 作为「数字员工」的 AI 智能体后端，接入自己的业务系统。
-
-典型链路：
-
-```
-最终用户咨询  →  业务后台(Java)  →  Halo Server(数字人 Agent 处理)  →  返回结果
-```
-
-业务后台负责**用户身份、入口、UI 与同步阻塞/流式体验**；Halo Server 负责**运行数字人 Agent**（人格、工具、技能、记忆）。两者通过 HTTP + WebSocket API 对接。
-
+title: "Halo Server 集成指南：把数字人接入业务系统"
+description: "Halo Server 集成指南：把数字人作为业务系统的 AI 后端，为每个用户分配聊天线程，用 WebSocket 或轮询取回复。"
+type: how-to
+audience: [developer]
 ---
 
-## 基础约定
+# Halo Server 集成指南
 
-### 服务地址（Base URL）
+这一页面向后台工程师，讲怎样把 Halo 的数字人作为你的业务系统的 AI 后端。典型链路：
 
-所有调用都基于一个可配置的 **Base URL**。请把它做成配置项，不要写死。
+```text
+最终用户提问 → 你的后台 → Halo（数字人处理）→ 回复
+```
 
-- 直连：`http://<host>:8080`
-- 经反向代理（平台常把服务挂在路径前缀下，如 `/fc-xxxx/`）：`https://<host>/fc-xxxx`
+你的后台负责用户身份、入口、界面，以及同步或流式的体验；Halo 负责运行数字人（人设、工具、技能和记忆）。两者通过 HTTP API 和 WebSocket 对接。同样的做法也适用于开启了远程访问的 Halo 桌面版。
 
-::: warning 路径前缀
-当部署在反向代理的路径前缀下时，**所有** HTTP 接口和 WebSocket 都在该前缀之下。例如发送消息的实际路径是
-`https://<host>/fc-xxxx/api/apps/<appId>/chat/send`，WebSocket 是
-`wss://<host>/fc-xxxx/ws`。把 Base URL 设为 `https://<host>/fc-xxxx`，再拼接 `/api/...` 与 `/ws` 即可。
-:::
+## 开始之前 {#before-you-start}
 
-### 鉴权
+- 一台运行中的 [Halo Server](/server/)，以及它的基础地址和访问密码。
+- 读过 [HTTP API 概览](/developers/api/)，了解鉴权、响应信封和错误约定。
 
-Halo Server 使用单一令牌鉴权，令牌即 `HALO_REMOTE_PASSWORD`（默认 `halo123`，生产环境务必改成强随机值，见[配置说明](./configuration.md)）。
+## 基本约定 {#basics}
 
-所有 `/api/*` 调用都需带上标准 Bearer 头：
+### 基础地址 {#base-url}
+
+把基础地址做成配置项，不要写死：
+
+- 直连：`http://<HOST>:8080`
+- 经反向代理的路径前缀：`https://<HOST>/<PATH_PREFIX>`
+
+所有 HTTP 接口和 WebSocket 都在基础地址之下，例如发消息是 `<BASE_URL>/api/apps/<APP_ID>/chat/send`，WebSocket 是把 `<BASE_URL>` 的 `http` 换成 `ws` 后再加 `/ws`。
+
+下文的命令用 shell 变量 `$HALO_URL` 表示基础地址，`$HALO_TOKEN` 表示访问密码，设置方法见[快速上手](/developers/quickstart#set-variables)。
+
+### 鉴权 {#auth}
+
+每个 `/api/` 请求都带上访问密码：
 
 ```http
-Authorization: Bearer <token>
+Authorization: Bearer <YOUR_ACCESS_PASSWORD>
 ```
 
-可选的登录校验接口（用于在正式调用前验证令牌是否正确）：
+没有“登录换取会话令牌”的流程：`POST /api/remote/login` 只用来校验密码，真正的凭据始终是这个访问密码。
 
-```http
-POST /api/remote/login
-Content-Type: application/json
-
-{ "token": "<token>" }
-```
-
-成功返回 `{ "success": true }`。
-
-::: tip 令牌即密码
-这里没有「用户名 + 密码换取会话 token」的流程。`/api/remote/login` 只是校验令牌；真正的调用凭据始终是同一个 `<token>`，以 `Authorization: Bearer <token>` 携带。
+::: danger 访问密码只留在你的后台
+访问密码可以完全控制这台 Halo。只在后台服务里使用它，不要下发到浏览器或移动端，也不要写进代码仓库。
 :::
 
-### 统一响应包络
+### 响应信封 {#envelope}
 
-REST 接口统一返回如下结构：
+接口返回 `{ "success": true, "data": … }` 或 `{ "success": false, "error": "…" }`。先判断 `success`，再读取 `data`：很多失败的 HTTP 状态码也是 200。
 
-```json
-{ "success": true, "data": { /* ... */ } }
-```
+## 1. 准备数字人 {#digital-human}
 
-失败时：
+一个数字人有固定的人设（`system_prompt`）、可用的工具和技能、记忆与权限，可以同时服务你的所有最终用户。
 
-```json
-{ "success": false, "error": "错误描述" }
-```
+- **推荐**：在 Halo 界面里[创建数字人](/digital-humans/create)并调试好，再交给业务系统调用。
+- **用 API 安装**：调用 [`POST /api/apps/install`](/developers/api/digital-human#post-api-apps-install)，传入完整的 spec。
 
-调用方应先判断 `success`，再读取 `data`。
-
----
-
-## 第一步：创建数字人（App）
-
-「数字人」在 Halo 中对应一个 `type: automation` 的 **App**。它封装了这个智能体的人格（`system_prompt`）、可用工具/技能、记忆、权限等。
-
-创建有两种方式：
-
-1. **管理界面（推荐）**：在 Halo 的应用/数字人界面里创建并调试。这是最直观、最不易出错的方式，适合产品/运营配置好人格后交给业务系统调用。
-2. **API 安装**：用 `POST /api/apps/install` 以编程方式安装。
-
-一个最小化的 automation 数字人 spec：
+最小的数字人 spec：
 
 ```json
 {
-  "spaceId": "<spaceId>",
+  "spaceId": "<SPACE_ID>",
   "spec": {
     "type": "automation",
     "name": "客服助手",
     "version": "1.0.0",
-    "author": "acme",
-    "description": "电商客服数字员工，回答订单、物流、退换货问题。",
-    "system_prompt": "你是 ACME 电商的客服助手。礼貌、简洁、准确地回答用户关于订单、物流、退换货的问题。无法确定时，引导用户提供订单号。",
-    "store": {}
+    "author": "example",
+    "description": "网店客服，回答订单、物流和退换货问题。",
+    "system_prompt": "你是一家网店的客服助手。礼貌、简洁、准确地回答订单、物流和退换货问题。不确定时，请用户提供订单号。"
   }
 }
-```
-
-通过 API 安装：
-
-```http
-POST /api/apps/install
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{ "spaceId": "<spaceId>", "spec": { /* 上面的 spec */ } }
 ```
 
 返回：
 
 ```json
-{ "success": true, "data": { "appId": "<appId>" } }
+{ "success": true, "data": { "appId": "<APP_ID>" } }
 ```
 
-记下返回的 `appId` —— 后续所有对话调用都基于它。一个数字人（一个 `appId`）= 一种固定人格，服务于所有最终用户。
+之后的调用都要用到数字人的 `appId` 和它所在工作区的 `spaceId`。已有的数字人用 [`GET /api/apps`](/developers/api/digital-human#get-api-apps) 查询，条目里的 `id` 就是 `appId`。
 
-::: tip 数字人 spec 的完整字段
-`system_prompt`、`config_schema`、`subscriptions`、`permissions`、记忆等完整字段，请参考[数字人文档](../digital-humans/overview)。本文聚焦「如何调用一个已创建好的数字人」。
+## 2. 为每个最终用户分配聊天线程 {#threads}
+
+同一个数字人服务你的所有最终用户。每个用户用自己的聊天线程，线程之间的上下文互不干扰。线程由 `conversationId` 指定，接受以下形式：
+
+| `conversationId` | 用途 |
+|---|---|
+| 不传，或 `app-chat:<APP_ID>` | 主线程。所有人共用一个上下文，只适合单用户或演示 |
+| `app-chat:<APP_ID>:http:direct:<USER_KEY>` | 你自己命名的线程。`<USER_KEY>` 只能包含字母、数字、`_` 和 `-`，长度 1–128 |
+| [`POST /api/apps/:appId/sessions/create`](/developers/api/digital-human#post-api-apps-appid-sessions-create) 返回的 `conversationId` | Halo 新建的线程 |
+
+推荐用第二种：例如用户 12345 的线程是 `app-chat:<APP_ID>:http:direct:user-12345`。同一个用户回来时继续用这个键，上下文就会延续；新用户用新的键。
+
+::: warning 其他形式会被拒绝
+直接传 `user-12345` 这类自定义字符串，会返回 `400`，错误信息里列出允许的格式。已绑定到即时通讯聊天的线程也不能通过 API 发消息：API 不会替真人在真实的聊天里说话。
 :::
 
----
+## 3. 发送消息 {#send}
 
-## 第二步：为每个最终用户分配 conversationId
-
-这是多用户隔离的核心。
-
-- **同一个数字人**（同一个 `appId`）服务于你的所有最终用户。
-- 每个最终用户拥有**业务侧自己的会话标识** `conversationId`，由你定义命名方案，例如 `user-12345`、`order-svc-u12345` 等。
-- **不同的 `conversationId` = 相互独立的会话上下文**（各自的对话历史、记忆窗口），但**共用同一个人格**。
-- 老用户回来时**复用其 `conversationId`**，即可延续上下文；新用户则**分配一个新的 `conversationId`**。
-
-Halo Server 内部把会话键定为 `app-chat:{appId}`（默认会话）或你传入的自定义 `conversationId`。两个不同的 `conversationId` 落在两个独立的 Agent 会话里，互不串话。
-
-::: warning 默认会话 vs 自定义会话（务必理解）
-如果**不传** `conversationId`，所有调用都会落到唯一的**默认会话** `app-chat:{appId}`，所有用户共享一个上下文 —— 这只适合单用户/演示场景。
-
-要做**真正的多用户隔离**，必须为每个用户传入各自的 `conversationId`。但要注意：**REST 的状态查询与历史读取接口只作用于默认会话**（见下文「获取结果」）。因此，使用自定义 `conversationId` 做多用户隔离时，**结果获取应走 WebSocket**（WebSocket 按 `conversationId` 精确订阅）。这是本文最重要的工程约束。
-:::
-
----
-
-## 第三步：发送消息
-
-```http
-POST /api/apps/<appId>/chat/send
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "spaceId": "<spaceId>",
-  "conversationId": "user-12345",
-  "message": "我的订单 A1001 到哪了？"
-}
+```bash
+curl -sX POST "$HALO_URL/api/apps/<APP_ID>/chat/send" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"spaceId":"<SPACE_ID>","conversationId":"app-chat:<APP_ID>:http:direct:user-12345","message":"我的订单 A1001 到哪了？"}'
 ```
-
-请求体字段：
 
 | 字段 | 必填 | 说明 |
 |---|---|---|
-| `spaceId` | 是 | 数字人所在空间 ID |
-| `message` | 是 | 用户消息文本 |
-| `conversationId` | 否 | 业务侧会话标识。不传则落到默认会话 `app-chat:{appId}` |
-| `images` | 否 | 多模态图片附件 |
-| `thinkingEnabled` | 否 | 是否开启扩展思考 |
+| `spaceId` | 是 | 数字人所在的工作区，即它在 `GET /api/apps` 中的 `spaceId` |
+| `message` | 是 | 用户消息 |
+| `conversationId` | 否 | 聊天线程，见[第 2 步](#threads)；不传时用主线程 |
+| `images` | 否 | 图片附件（base64）。整个 JSON 请求体不能超过 100 KB |
+| `reasoningEffort` | 否 | 思考强度：`off`、`minimal`、`low`、`medium`、`high`、`xhigh` 或 `max` |
 
-立即返回（**注意：这是异步触发，不等待 Agent 跑完**）：
-
-```json
-{ "success": true, "data": { "conversationId": "app-chat:<appId>" } }
-```
-
-::: warning 返回的 conversationId 是默认值
-即使你传入了自定义 `conversationId`，该接口返回的 `data.conversationId` **始终是默认值** `app-chat:{appId}`，并非你传入的值。请**以你自己传入的 `conversationId` 为准**来订阅/查询结果，不要依赖返回值。
-:::
-
-发送是**即发即走（fire-and-forget）**：HTTP 立刻返回，Agent 在后台运行。结果通过下一步的两种方式之一获取。
-
----
-
-## 第四步：获取结果
-
-异步模型是有意为之 —— 业务层在其上**自行组合**同步阻塞或流式 UX。有两种获取方式。
-
-### 方式 A：WebSocket（推荐，支持多用户隔离与流式）
-
-WebSocket 按 `conversationId` 精确投递事件，是多用户隔离场景的**唯一正确选择**，也能拿到 Agent 的思考/工具调用过程，实现打字机式流式。
-
-连接与握手流程：
-
-1. 连接 `wss://<base>/ws`（`<base>` 含路径前缀）。
-2. 发送鉴权帧：`{ "type": "auth", "payload": { "token": "<token>" } }`，等待服务端回 `{ "type": "auth:success" }`。鉴权失败会回 `{ "type": "auth:failed" }` 并关闭连接。
-3. 订阅会话：`{ "type": "subscribe", "payload": { "conversationId": "user-12345" } }`。
-4. 接收事件：服务端推送 `{ "type": "event", "channel": "...", "data": { ... } }`。每个 `data` 都带 `spaceId` 和 `conversationId`，可据此路由到对应用户。
-5. 取消订阅：`{ "type": "unsubscribe", "payload": { "conversationId": "user-12345" } }`。
-6. 心跳：可发送 `{ "type": "ping" }`，服务端回 `{ "type": "pong" }`。
-
-::: tip 订阅时机
-应在**发送消息之前或同时**完成连接、鉴权与订阅，以免错过早期事件。一个连接可订阅多个 `conversationId`，复用单条长连接服务多个用户。
-:::
-
-#### 事件通道（channel）
-
-| channel | 含义 | 关键 data 字段 |
-|---|---|---|
-| `agent:message` | 助手文本。流式增量 + 最终完整文本 | `delta`（流式增量）/ `content` + `isComplete: true`（最终）/ `isNewTextBlock`（新文本块开始） |
-| `agent:thought` | 思考块（thinking）或阶段性结果块 | `thought`（含 `type`、`content` 等） |
-| `agent:thought-delta` | 思考内容的增量 | `thoughtId`、`delta`、`content` |
-| `agent:tool-call` | Agent 发起工具调用 | 工具调用详情 |
-| `agent:tool-result` | 工具调用返回 | 工具结果 |
-| `agent:complete` | 本轮回复结束 | `tokenUsage` |
-| `agent:error` | 出错 | `error`、可选 `errorType`/`errorCode` |
-| `agent:compact` | 上下文被压缩 | `trigger`、`preTokens` |
-| `agent:session-info` | 会话元信息 | 会话相关字段 |
-
-::: warning 最终回复怎么取
-**没有** `agent:result` 这个通道。最终回复文本通过 `agent:message`（`isComplete: true`，其 `content` 即完整回复）下发，紧随其后是 `agent:complete`（携带 `tokenUsage`）标志本轮结束。
-
-获取「一句完整答复」的可靠做法：监听 `agent:message`，取 `isComplete === true` 那一条的 `content`；把 `agent:complete` 当作「本轮结束」信号。若中途需要流式展示，则持续拼接 `agent:message` 的 `delta`。
-:::
-
-### 方式 B：轮询（仅适合默认会话）
-
-轮询只用两个 REST 接口：先查是否跑完，再拉取回复。
-
-查状态：
-
-```http
-GET /api/apps/<appId>/chat/status
-Authorization: Bearer <token>
-```
+返回：
 
 ```json
-{ "success": true, "data": { "isGenerating": false, "conversationId": "app-chat:<appId>" } }
+{ "success": true, "data": { "conversationId": "app-chat:<APP_ID>:http:direct:user-12345" } }
 ```
 
-拉取消息（Agent 跑完后）：
+`data.conversationId` 是这条消息实际进入的线程。接口在数字人读到消息之前就会返回，回复随后生成，用下一步的方法取回。同一线程还在回复时发来的消息不会另起一个处理过程：它会在当前步骤之后并入正在进行的回复，或等这一轮结束后合并处理。每个线程请一次发一条，等回复完成再发下一条，这样每条回复对应一条消息。
 
-```http
-GET /api/apps/<appId>/chat/messages
-Authorization: Bearer <token>
-```
+## 4. 获取回复 {#reply}
 
-```json
-{
-  "success": true,
-  "data": [
-    { "id": "session-msg-1", "role": "user", "content": "我的订单 A1001 到哪了？", "timestamp": "..." },
-    { "id": "session-msg-2", "role": "assistant", "content": "您的订单 A1001 正在派送中……", "timestamp": "...", "thoughts": [], "thoughtsSummary": { "count": 0, "types": {} } }
-  ]
-}
-```
+### 方式 A：WebSocket（推荐） {#websocket}
 
-消息记录字段：`id`、`role`（`user` / `assistant`）、`content`、`timestamp`，可选 `thoughts[]` 与 `thoughtsSummary`。取最后一条 `role: "assistant"` 的 `content` 即本轮回复。
+WebSocket 能拿到逐字生成的回复和处理过程，适合生产环境和流式体验：
 
-::: danger 轮询的关键限制
-`GET .../chat/status` 与 `GET .../chat/messages` **只作用于默认会话** `app-chat:{appId}`，它们**不接受也不区分 `conversationId`**。
+1. 连接 `<BASE_URL>` 对应的 `ws(s)://…/ws`，发送 `{ "type": "auth", "payload": { "token": "<YOUR_ACCESS_PASSWORD>" } }`，等到 `auth:success`。
+2. 在发消息之前订阅线程：`{ "type": "subscribe", "payload": { "conversationId": "app-chat:<APP_ID>:http:direct:user-12345" } }`。一个连接可以订阅多个线程。
+3. 处理事件：用 `agent:message` 拼接回复（规则见[拼接回复文本](/developers/api/websocket#assemble-reply)），`isComplete: true` 的那条就是完整答复；`agent:complete` 表示这一轮结束；`agent:error` 表示出错。
+4. 按 `data.conversationId` 把事件分发给对应的用户。所有会话的状态事件（如 `agent:complete`）都会发给每个连接，别的线程的事件要忽略。
+5. 断线后重新鉴权，并重新订阅所有线程。
 
-因此：
-- 若你**不做多用户隔离**（所有用户共享默认会话），轮询可用。
-- 若你**用自定义 `conversationId` 做多用户隔离**，轮询会**串话**（拿到的是默认会话而非该用户的历史）—— 此时**必须走 WebSocket**。
+完整协议见 [WebSocket 事件](/developers/api/websocket)。
+
+### 方式 B：轮询 {#polling}
+
+只需要最终答复时，可以轮询两个接口，都传同一个 `conversationId`：
+
+1. 查询是否生成完：
+
+   ```bash
+   curl -s "$HALO_URL/api/apps/<APP_ID>/chat/status?conversationId=app-chat:<APP_ID>:http:direct:user-12345" \
+     -H "Authorization: Bearer $HALO_TOKEN"
+   ```
+
+   返回 `{"success":true,"data":{"isGenerating":false,"conversationId":"…"}}`。间隔逐次加倍（2 秒、4 秒……），直到 `isGenerating` 为 `false`。
+
+2. 读取聊天记录：
+
+   ```bash
+   curl -s "$HALO_URL/api/apps/<APP_ID>/chat/messages?conversationId=app-chat:<APP_ID>:http:direct:user-12345" \
+     -H "Authorization: Bearer $HALO_TOKEN"
+   ```
+
+   返回的列表中，最后一条 `role` 为 `assistant` 的消息的 `content` 就是这一轮的回复。
+
+不传 `conversationId` 时，`chat/status` 报告这个数字人是否有任何线程正在生成，`chat/messages` 读取主线程。
+
+### 两种方式对比 {#compare}
+
+| | WebSocket | 轮询 |
+|---|---|---|
+| 每个用户独立的线程 | 支持 | 支持（传 `conversationId`） |
+| 逐字显示和处理过程 | 支持 | 不支持，只能拿到最终结果 |
+| 延迟 | 实时推送 | 取决于轮询间隔 |
+| 实现 | 长连接、鉴权、重连和重新订阅 | 简单的请求循环 |
+
+## 线程的生命周期 {#lifecycle}
+
+- **延续**：对同一个 `conversationId` 反复调用 `chat/send`，上下文自动延续。
+- **停止生成**：[`POST /api/apps/:appId/chat/stop`](/developers/api/digital-human#post-api-apps-appid-chat-stop)，请求体 `{"conversationId":"…"}` 停止一个线程；`{"all":true}` 停止这个数字人的所有线程。
+- **清空历史**：[`POST /api/apps/:appId/chat/clear`](/developers/api/digital-human#post-api-apps-appid-chat-clear)，请求体 `{"spaceId":"<SPACE_ID>","conversationId":"…"}` 清空一个线程；不传 `conversationId` 时清空主线程。
+- **删除线程**：[`POST /api/apps/:appId/sessions/delete`](/developers/api/digital-human#post-api-apps-appid-sessions-delete)，请求体 `{"spaceId":"<SPACE_ID>","conversationId":"…"}`。删除后无法恢复。
+
+## 错误处理 {#errors}
+
+| 情况 | 表现 | 处理 |
+|---|---|---|
+| 访问密码缺失或错误 | HTTP `401`，`"No authorization token"` 或 `"Invalid token"` | 检查 `Authorization` 头和服务端的 `HALO_REMOTE_PASSWORD` |
+| 登录或 WebSocket 鉴权被锁定 | HTTP `429`，`"code": "LOCKED"`，带 `Retry-After` | 按 `Retry-After` 退避，排查是谁在用错误密码 |
+| 服务还在启动 | HTTP `503` | 冷启动后稍等再试 |
+| `conversationId` 格式不对 | HTTP `400`，错误信息列出允许的格式 | 按[第 2 步](#threads)的格式构造 |
+| 数字人不存在 | HTTP `404` 或 `"success": false` | 核对 `appId` |
+| 请求体过大 | HTTP `413` | 压缩图片，整个 JSON 请求体不超过 100 KB |
+| 处理过程中出错 | WebSocket `agent:error`，`data.error`；`errorType` 为 `interrupted` 表示被中断 | 向用户展示降级提示，记录 `errorCode` 便于排查 |
+
+::: tip 把异步调用包成同步
+需要“一次调用拿到一句答复”的同步语义时：连接 WebSocket，订阅该用户的线程，调用 `chat/send`，等到这个线程的 `isComplete: true` 的 `agent:message` 或 `agent:error`，再返回结果，并设置超时。完整代码见 [Halo Server 集成示例](/server/examples)。
 :::
 
-### 两种方式对比
+## 下一步 {#next-steps}
 
-| 维度 | WebSocket | 轮询 |
-|---|---|---|
-| 多用户隔离 | ✅ 按 `conversationId` 精确投递 | ❌ 仅默认会话 |
-| 流式/过程可见 | ✅ 思考、工具、增量文本 | ❌ 只能拿最终历史 |
-| 实时性 | ✅ 推送，低延迟 | ⚠️ 取决于轮询间隔 |
-| 实现复杂度 | 长连接、重连、鉴权握手 | 简单的请求循环 |
-| 适用场景 | 生产、多用户、流式 UX | 单用户/演示，或仅需最终结果的默认会话 |
-
-**建议**：生产环境、多用户、需要流式体验 → WebSocket。仅做单数字人单会话的简单同步问答 → 轮询亦可。
-
----
-
-## 会话生命周期
-
-- **延续**：对同一 `conversationId` 反复 `chat/send`，上下文自动延续（同一 Agent 会话，内存复用；进程重建后通过保存的 session id 从磁盘恢复历史）。
-- **停止生成**：`POST /api/apps/<appId>/chat/stop` 中止该数字人当前正在进行的生成。
-- **清空历史**：`POST /api/apps/<appId>/chat/clear`，请求体 `{ "spaceId": "<spaceId>" }`，重置为全新会话（清空默认会话历史）。
-
----
-
-## 多用户隔离小结
-
-把以上拼起来，多用户隔离的标准姿势是：
-
-1. 创建一个数字人，拿到 `appId`（一种人格服务所有用户）。
-2. 为每个最终用户分配业务侧 `conversationId`（如 `user-12345`）。
-3. 建立一条 WebSocket 长连接，鉴权后为活跃用户 `subscribe` 各自的 `conversationId`。
-4. 用户发消息时，`POST .../chat/send` 带上该用户的 `conversationId` 和 `message`。
-5. 通过 WebSocket 事件（按 `data.conversationId` 路由）拿到流式过程与最终 `agent:message`（`isComplete: true`）。
-6. 老用户复用 `conversationId` 延续上下文；新用户分配新的。
-
----
-
-## 错误处理
-
-| 场景 | 表现 | 建议处理 |
-|---|---|---|
-| 令牌缺失/错误 | HTTP `401`，`{ success:false, error:"..." }` | 检查 `Authorization` 头与 `HALO_REMOTE_PASSWORD` |
-| 登录被锁定 | HTTP `429`，`code: "LOCKED"`，带 `Retry-After` | 退避重试，避免暴力尝试令牌 |
-| 服务尚未就绪 | HTTP `503`（App Manager/Runtime 未初始化） | 冷启动后稍候重试 |
-| App 不存在 | `404` 或 `{ success:false }` | 核对 `appId` |
-| Agent 运行出错 | WebSocket `agent:error` 事件，`data.error` | 向用户展示降级提示，可记录 `errorCode` |
-| 空响应/被中断 | `agent:error`，`errorType: "interrupted"` | 提示用户重发或继续 |
-
-::: tip 把异步包成同步
-业务层若需要「一次 `ask(userId, question)` 调用拿到一句答复」的同步语义，可在内部：连 WS → 订阅该用户会话 → `chat/send` → 等到该 `conversationId` 的 `agent:message(isComplete:true)` 或 `agent:complete` → 返回 `content`，并设置超时与 `agent:error` 兜底。具体代码见[集成示例](./examples.md)。
-:::
-
----
-
-## 下一步
-
-- [集成示例](./examples.md) —— 完整的 curl 走查、WebSocket 示例，以及把异步 API 包成同步 `ask()` 的后端伪代码。
-- [配置说明](./configuration.md) —— 令牌、端口、大模型网关等环境变量。
-- [数字人文档](../digital-humans/overview) —— 数字人 spec 的完整字段与人格设计。
+- [Halo Server 集成示例](/server/examples)：完整的 curl 走查、WebSocket 事件流和 Java 封装代码
+- [WebSocket 事件](/developers/api/websocket)：全部事件频道
+- [API：数字人](/developers/api/digital-human)：与数字人对话相关的全部接口

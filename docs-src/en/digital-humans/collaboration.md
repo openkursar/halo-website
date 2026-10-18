@@ -1,401 +1,93 @@
 ---
-title: "Digital Human Collaboration"
-description: "Enable multi-agent collaboration between Halo digital humans via REST API communication."
----
-# Digital Human Collaboration & Communication
-
-When Remote Access is enabled in Halo, each digital human exposes a REST API. One digital human can call another using `curl`, enabling task distribution and collaboration.
-
-This is a **hands-on guide** — follow the steps top to bottom. All commands are copy-paste ready.
-
+title: "Digital Human Collaboration: teams that split work"
+description: "Let several Halo Digital Humans team up on a bigger job: start a temporary collaboration in one sentence, keep it, and bring in colleagues' Digital Humans."
+type: explanation
+audience: [office]
+since: "3.0"
+related: [digital-humans/team-workbench, digital-humans/saved-teams, digital-humans/cross-computer-teams]
 ---
 
-## Step 1: Enable Remote Access
+# Digital Human teams
 
-Open Halo, go to **Settings (gear icon in bottom-left) → Remote Access**.
+::: say
+> Put together a small team: one researcher, one writer and one reviewer, and get me a comparison report on three note-taking apps.
 
-<!-- Screenshot placeholder: screenshot-remote-settings.png -->
+Halo assembles a temporary team in the current workspace and gives each member a role. A team panel appears below the conversation showing what each member is doing; members' reports arrive in the conversation, and Halo hands you the result at the end.
 
-1. Toggle **"Enable Remote Access"** on
-2. Note the **Local Address** shown, e.g. `http://localhost:3847`
-3. Click **"Show"** next to the password to reveal the 6-digit PIN, e.g. `583921`
-
-::: tip Set a Custom Password
-The default PIN changes on every restart. Click **"Edit"** next to the password and set a 4-32 character alphanumeric password. You won't need to update it after restarts.
+**Prerequisite**: **Team Collaboration** under **＋ › Capabilities** in the message box must be on. It's on by default in new conversations.
 :::
 
-These three values are all you need going forward:
+One AI doing everything has limited attention. Splitting the work lets each member handle one stage, hand over to the next and check each other. Halo's teams work that way: several Digital Humans do the work, and you set the direction and make the decisions.
 
-| Item | Example | Where to find it |
-|------|---------|------------------|
-| URL | `http://localhost:3847` | Settings → "Local Address" |
-| Port | `3847` | Part after the colon in the URL |
-| Password | `583921` (or custom) | Settings → "Access Password" |
+## When a team is worth it {#when}
 
----
+- The job splits into parts that can run in parallel, such as researching several subjects.
+- It needs different roles, such as one writer and one reviewer.
+- The work needs checking, such as verifying data and conclusions.
 
-## Step 2: Try It Out
+Simple tasks are faster in a plain conversation: each extra member uses more model quota. Halo also forms a team only when it's worth it.
 
-These examples use Bash/zsh (macOS and Linux terminals; on Windows, use Git Bash). Replace placeholders such as `your-password`, `<appId>`, and `<spaceId>` with your actual values, keeping the straight single quotes in the commands.
+## Two kinds of team {#two-kinds}
 
-### 2.1 List All Digital Humans
+| | Temporary collaboration | Saved team |
+|---|---|---|
+| Where it comes from | You ask Halo for a team in a conversation | Created under **Digital Humans › Teams**, or a temporary collaboration you kept |
+| Who coordinates | The conversation itself | The team's own lead |
+| Members | New members Halo creates for this job, up to 5 | Your Digital Humans, and colleagues' Digital Humans from their computers |
+| Where you follow it | The team panel below the conversation, or the team view in the canvas | The team workbench under **Digital Humans › Teams** |
+| Scheduled runs | No | Yes |
 
-```bash
-curl -s http://localhost:3847/api/apps \
-  -H 'Authorization: Bearer your-password'
-```
+## Start a temporary collaboration in one sentence {#start}
 
-Response:
+1. In a conversation, click **＋** in the message box and check that **Team Collaboration** under **Capabilities** is on.
+2. Say what you want. You can describe how to split the work, or leave it to Halo.
+3. Once the team is formed, a panel below the conversation reads "Team: name · N/M working", with one row per member showing their status and what they're doing.
+4. Members' reports appear in the conversation as collapsed messages labelled with the member's and the team's names. Expanded, they say "Sent by a team member, not by you".
+5. To see the team's full conversation, click **Open team view** on the panel. It opens in the canvas on the right.
 
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "e7b3c9a1-2f4d-4e6b-8a5c-1d3f5e7b9a2c",
-      "specId": "stock-monitor",
-      "spaceId": "f8a3b2c1-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-      "spec": { "name": "Stock Monitor", "type": "automation", "description": "Monitors stock prices" },
-      "status": "active"
-    },
-    {
-      "id": "d6f8e2b1-3c5a-4d7e-9f1b-2a4c6d8e0f1a",
-      "specId": "alert-notifier",
-      "spaceId": "f8a3b2c1-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-      "spec": { "name": "Alert Notifier", "type": "automation", "description": "Sends alert notifications" },
-      "status": "active"
-    }
-  ]
-}
-```
+You can keep talking to Halo about other things while the team works. When everything is done, the panel says "finished".
 
-From the response, note two key fields:
+![The team panel below a conversation: the team name and "0/2 working", one row for each of the two members with its current task, and "Open team view" on the right](/images/digital-humans/collaboration/team-panel.en.webp)
 
-- **`id`** — The digital human's UUID. You'll use this to send messages and trigger runs.
-- **`spaceId`** — The space UUID. Required when sending messages.
+### When a member needs your decision {#decisions}
 
-::: tip Filter by space
-Add `?spaceId=<spaceId>` to filter:
-```bash
-curl -s "http://localhost:3847/api/apps?spaceId=f8a3b2c1-4d5e-6f7a-8b9c-0d1e2f3a4b5c" \
-  -H 'Authorization: Bearer your-password'
-```
+When a member hits something the team can't decide, it asks you. Its status on the panel changes to "waiting for your decision"; open the team view to see the question and answer it.
+
+## Keep the team {#keep}
+
+If you like how it worked, keep the temporary collaboration as a standing team:
+
+- click **Keep this team** at the top of the team view, or
+- tell Halo: "Keep this team for later."
+
+![The team view of a temporary collaboration: the Temporary collaboration tag and the Keep this team button at the top right, team messages in the middle and three members on the right](/images/digital-humans/collaboration/team-view.en.webp)
+
+The team then appears under **Digital Humans › Teams**. Once this collaboration has finished, it can take tasks of its own and run on a schedule. See [Saved teams and schedules](/en/digital-humans/saved-teams).
+
+::: warning One temporary collaboration per conversation at a time
+If you form a new team in the same conversation, the previous temporary collaboration (finished but not kept) is dissolved, and the members Halo created for it are deleted. To keep it, keep it first.
 :::
 
-### 2.2 Get a Single Digital Human's Details
+## Hand work to a saved team {#delegate}
 
-Replace `<appId>` with the `id` from the previous step:
+In a conversation, just say:
 
-```bash
-curl -s http://localhost:3847/api/apps/<appId> \
-  -H 'Authorization: Bearer your-password'
-```
+> Have the competitor research team do another round, this time with a price comparison.
 
-Returns the full digital human config, including `system_prompt`, `subscriptions`, `config_schema`, and more.
+> How is the competitor research team doing?
 
-### 2.3 Send a Message to a Digital Human
+Halo passes the job to that team's lead and stays with you; when you ask for progress, it sums up the team's tasks, results and decisions waiting for you. Only teams in the current workspace are available here.
 
-This is the core of inter-digital-human communication — send a message to trigger another digital human to act.
+## Colleagues' Digital Humans can join too {#across-computers}
 
-```bash
-curl -s -X POST http://localhost:3847/api/apps/<targetAppId>/chat/send \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer your-password' \
-  -d '{
-    "spaceId": "<spaceId>",
-    "message": "This is a message from another digital human"
-  }'
-```
+A saved team can invite colleagues to bring their own Digital Humans. Each runs on its owner's computer, and data stays on each computer. See [Teams across computers](/en/digital-humans/cross-computer-teams).
 
-Two required fields in the `-d` body:
-
-| Field | Meaning | Source |
-|-------|---------|--------|
-| `spaceId` | Space UUID | `spaceId` field from step 2.1 |
-| `message` | Message content | Whatever you want to tell the target |
-
-Success response:
-
-```json
-{ "success": true, "data": { "conversationId": "conv-xxx..." } }
-```
-
-::: warning
-Sending is **async**. `curl` returns immediately. The target digital human executes in the background. Want to know when it's done? See the next step.
+::: info Want programs to call Digital Humans over HTTP?
+To have programs or other systems call Digital Humans through Halo's HTTP API, see [API recipes](/en/developers/api/recipes).
 :::
 
-### 2.4 Check Digital Human State
-
-```bash
-curl -s http://localhost:3847/api/apps/<targetAppId>/state \
-  -H 'Authorization: Bearer your-password'
-```
-
-Response:
-
-```json
-{
-  "success": true,
-  "data": {
-    "status": "idle",
-    "lastRunAt": 1715000000000,
-    "lastRunStatus": "completed"
-  }
-}
-```
-
-`status` values:
-- `idle` — Not running
-- `running` — Currently executing
-
-### 2.5 Manually Trigger a Run
-
-```bash
-curl -s -X POST http://localhost:3847/api/apps/<targetAppId>/trigger \
-  -H 'Authorization: Bearer your-password'
-```
-
-Triggers the digital human to run immediately, regardless of its schedule.
-
----
-
-## Step 3: Parameter Cheat Sheet
-
-Where does each parameter come from? Here's the complete reference:
-
-| Parameter | What it is | Where to find it |
-|-----------|------------|------------------|
-| **Port** | Remote access port, default `3847` | Settings → Remote Access → "Local Address", the number after the colon |
-| **Password (Token)** | Remote access PIN or custom password | Settings → Remote Access → "Access Password", click "Show" |
-| **appId** | Digital human's UUID | From `curl /api/apps`, the `id` field, e.g. `"e7b3c9a1-..."` |
-| **spaceId** | Space UUID | Same response, the `spaceId` field. Or Settings → Space Management |
-
----
-
-## Step 4: Make It Automatic
-
-Now that you can `curl` manually, let's make digital humans do it themselves:
-
-1. Expose password and port as user-configurable fields via `config_schema`
-2. Write `system_prompt` rules for when and who to call
-3. The digital human's AI will use its `Bash` tool to run `curl` commands
-
----
-
-### Full Example: Stock Monitor + Alert Notifier
-
-**Scenario**: App A (Stock Monitor) checks prices every 10 minutes. When a stock crosses the threshold, it notifies App B (Alert Notifier) to send email alerts.
-
-#### App A — The Monitor
-
-```yaml
-spec_version: "1"
-name: "Stock Monitor"
-version: "1.0.0"
-author: "your-name"
-description: "Checks stock prices every 10 min, notifies Alert Notifier on threshold breach"
-type: automation
-icon: "trending-up"
-
-system_prompt: |
-  You are a stock monitor. You run every 10 minutes.
-
-  ## Configuration (from User Configuration)
-  - Access Password: {halo_token}
-  - Port: {halo_port}      ← default 3847
-  - Target App ID: {alert_app_id}
-  - Space ID: {space_id}
-  - Symbols: {symbols}    ← comma-separated, e.g. AAPL,GOOGL
-
-  ## Steps
-
-  1. Fetch current prices for {symbols}. Use web_search or your configured data source.
-  2. Compare against the last recorded prices from memory (last_prices).
-
-  3. For any symbol exceeding the threshold, run this Bash command:
-
-  ```
-  curl -s -X POST http://localhost:{halo_port}/api/apps/{alert_app_id}/chat/send \
-    -H 'Content-Type: application/json' \
-    -H 'Authorization: Bearer {halo_token}' \
-    -d '{"spaceId":"{space_id}","message":"ALERT: {symbol} price change {pct}%, current price {price}"}'
-  ```
-
-  4. Update last_prices in memory.
-
-  ## Forbidden
-  - Do NOT use WebFetch for POST requests (WebFetch is GET-only and returns LLM summaries)
-  - All message sending must use Bash + curl
-
-subscriptions:
-  - id: watch-trigger
-    source:
-      type: schedule
-      config:
-        every: "10m"
-
-config_schema:
-  - key: halo_token
-    label: "Halo Remote Access Password"
-    type: text
-    required: true
-    description: "Settings → Remote Access → Access Password"
-  - key: halo_port
-    label: "Halo HTTP Port"
-    type: number
-    required: false
-    description: "Default 3847"
-  - key: alert_app_id
-    label: "Alert Notifier App ID"
-    type: text
-    required: true
-    description: "The target digital human's id from curl /api/apps"
-  - key: space_id
-    label: "Space ID"
-    type: text
-    required: true
-    description: "Current space UUID"
-  - key: symbols
-    label: "Symbols to Monitor"
-    type: text
-    required: true
-    description: "Comma-separated, e.g. AAPL,GOOGL,TSLA"
-
-memory_schema:
-  last_prices:
-    type: object
-    description: "Last recorded prices {AAPL: 150.23, GOOGL: 140.56}"
-
-output:
-  notify:
-    system: false
-```
-
-#### App B — The Alert Handler
-
-```yaml
-spec_version: "1"
-name: "Alert Notifier"
-version: "1.0.0"
-author: "your-name"
-description: "Receives alert messages and sends notifications"
-type: automation
-icon: "bell"
-
-system_prompt: |
-  You are an alert handler.
-  - Normally idle
-  - When you receive a message from another digital human, analyze and act immediately
-
-  ## Processing Rules
-  1. Analyze the alert content and determine severity
-  2. Use notify_channel to send notifications
-  3. Log to memory to prevent duplicate alerts within 1 hour for the same symbol
-
-  ## Forbidden
-  - Do not act unless triggered
-  - Notification content must include "alert source" and "recommended action"
-
-output:
-  notify:
-    system: true
-    channels:
-      - email
-
-memory_schema:
-  alerted_symbols:
-    type: object
-    description: "{AAPL: 1715000000000, ...} timestamps for deduplication"
-```
-
----
-
-#### Install and Configure
-
-1. Install both digital humans in Halo
-2. Open App A's config and fill in:
-   - `halo_token`: your remote access password
-   - `halo_port`: `3847`
-   - `alert_app_id`: App B's UUID (from `curl /api/apps`)
-   - `space_id`: current space UUID
-   - `symbols`: `AAPL,GOOGL`
-
-3. App B needs no extra config — it only receives, never calls out
-
----
-
-## Security Notes
-
-### Never hardcode passwords in specs
-
-Use `config_schema` to let the user fill in the token. Reference it as `{halo_token}` in the system_prompt.
-
-```yaml
-# ✓ Correct: via variable
-'Authorization: Bearer {halo_token}'
-
-# ✗ Wrong: hardcoded (leaks to anyone with spec access)
-'Authorization: Bearer 583921'
-```
-
-### Public Tunnel Scenarios
-
-If you enable the public tunnel, anyone with the URL and password can call your digital human APIs. Recommendations:
-- Turn off the tunnel when not in use
-- Use a custom password instead of random PIN (easier to manage)
-- Rotate passwords periodically
-
-### Limit Collaboration Scope
-
-- Don't want a digital human callable? Just don't give it the password in config_schema
-- Only want specific digital humans to collaborate? Only configure the password in those specific digital humans
-
----
-
-## Alternative: Webhook (No Password)
-
-If you prefer not to manage passwords, use Webhooks with HMAC signatures instead.
-
-App B subscribes to a webhook:
-
-```yaml
-subscriptions:
-  - id: from-app-a
-    source:
-      type: webhook
-      config:
-        path: "app-a-to-b"
-        secret: "your-shared-secret"
-```
-
-App A calls via Bash with HMAC:
-
-```bash
-BODY='your message content'
-SIGNATURE=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "your-shared-secret" | sed 's/^.* //')
-curl -s -X POST http://localhost:3847/hooks/app-a-to-b \
-  -H 'Content-Type: application/json' \
-  -H "x-hub-signature-256: sha256=$SIGNATURE" \
-  -d "$BODY"
-```
-
-No password needed — just a shared `secret` agreed upon by both parties.
-
----
-
-## Current Limitations
-
-| Limitation | Impact |
-|------------|--------|
-| Messages are **async** — returns before the target finishes | Poll `/api/apps/:appId/state` or `/api/apps/:appId/activity` to confirm completion |
-| No callback mechanism | The caller has no automatic way to learn the callee's execution result |
-| Automation digital humans lack built-in `list_automation_apps` or `trigger_automation_app` tools | Target App IDs must be pre-configured; no runtime auto-discovery |
-| Webhook path names must be **globally unique** | Multiple digital humans cannot share the same webhook path |
-
----
-
-## Next Steps
-
-- [Creating Digital Humans](/en/digital-humans/create) — Learn the full spec format
-- [Production-Grade Digital Humans](/digital-humans/production-guide) — Encapsulate curl calls in Skill scripts (Chinese)
-- [Remote Access](/en/features/remote-access) — Manage remote access toggle and password
+## Next steps {#next-steps}
+
+- [The team workbench](/en/digital-humans/team-workbench): tasks, results and the decisions waiting for you.
+- [Saved teams and schedules](/en/digital-humans/saved-teams): build a team by hand and give it a schedule.
+- [Teams across computers](/en/digital-humans/cross-computer-teams): invite colleagues and their Digital Humans.

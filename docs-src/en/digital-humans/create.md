@@ -1,130 +1,99 @@
 ---
-title: "Create a Digital Human"
-description: "Create your own Halo digital human using natural language or spec.yaml configuration."
+title: "Create a Digital Human: three ways"
+description: "Create a Digital Human in Halo: tell Halo what it should do, install a ready-made one from the Store, or build one with a form or an imported file."
+type: how-to
+audience: [office, beginner]
+related: [digital-humans/triggers, digital-humans/store, digital-humans/channels]
 ---
+
 # Create a Digital Human
 
-You have two ways to create your own Digital Human: **natural language conversation** or **writing a spec.yaml directly**.
+::: say
+> Set up a Digital Human that sums up the previous day's tech news in 5 points every weekday at 9 am.
 
----
-
-## Method 1: Natural Language (Recommended)
-
-Describe the Digital Human you want in a Halo conversation, and the AI will automatically generate the configuration and install it.
-
-Example:
-
-```
-Create a Digital Human for me that opens Hacker News every morning at 8 AM,
-summarizes the top 10 trending articles of the day, and emails them to me.
-My email address is xxx@example.com
-```
-
-Halo will automatically:
-1. Understand your requirements
-2. Generate the corresponding spec.yaml
-3. Install and start the Digital Human
-
-::: tip Better results with top-tier models
-Using a more powerful model like Claude 4.5 Opus produces higher-quality, more stable Digital Humans from natural language.
+Halo first reads the official guide for creating Digital Humans, asks you a few questions (when it should run, where results go, whether to post them to a group), then creates the Digital Human in the current workspace and tells you it's ready. It then appears under **Digital Humans › My Digital Humans**.
 :::
 
----
+The Digital Human is created in the workspace where you ask. The more specific you are, the better: what it should do each time, how often, who gets the result, and when it should check with you first. Where something is unclear, Halo asks; it never guesses a schedule.
 
-## Method 2: Write spec.yaml
+![A conversation in the Halo Workspace: Halo asks about the run time, the content and where results go, then creates a daily news brief Digital Human and sums up its schedule and where to see results](/images/digital-humans/create/create-by-chat.en.webp)
 
-For users with a technical background, you can write the spec file directly to control every detail precisely.
+## Before you start {#before-you-start}
 
-### Basic Structure
+- [Connect an AI model](/en/getting-started/setup-ai).
+- For a Digital Human that takes requests or posts results in WeCom, Feishu or WeChat, you also need a bot. You can create the Digital Human first and see [Message channels overview](/en/digital-humans/channels) afterwards.
 
-```yaml
-spec_version: "1"
-name: "HN Daily Brief"
-version: "1.0.0"
-author: "your-name"
-description: "Summarizes top Hacker News content every morning and sends an email digest"
-type: automation
-icon: "news"
+## Four ways to create one {#ways}
 
-system_prompt: |
-  You are a concise tech analyst.
+| Way | Best when |
+|---|---|
+| Tell Halo (above) | Most of the time; no configuration knowledge needed |
+| [Install from the Store](#from-store) | You want a ready-made Digital Human and only fill in a few settings |
+| [Use the form](#form) | You want to write the job description yourself, field by field |
+| [Import a file](#import) | A colleague shared a Digital Human file with you |
 
-  On each run:
-  1. Open https://news.ycombinator.com and find the top 10 highest-scoring items
-  2. Read each title, article (if accessible), and top comments
-  3. Write a summary that includes:
-     - A one-sentence summary of each item
-     - "Why it matters" for the 2–3 most important items
-  4. Keep it concise, plain text format
+## Install from the Store {#from-store}
 
-requires:
-  mcps:
-    - id: ai-browser
-      reason: "Needs to open web pages and read articles"
+1. Click **Store** on the left rail, switch to the **Digital Human** tab, and click a card to see its details.
+2. Click **Install**.
+3. Choose the workspace to install it in. A Digital Human goes into one workspace; if you have only one, there's nothing to choose.
+4. If it has settings to fill in, click **Next**, fill in the required ones as the card describes, then click **Install**; if it has none, just click **Install**.
+5. When the button says **Installed**, click **Use** to open it.
 
-subscriptions:
-  - id: morning-digest
-    source:
-      type: schedule
-      config:
-        cron: "0 8 * * *"     # Every day at 8 AM
+More in [Store](/en/digital-humans/store).
 
-config_schema:
-  - key: email
-    label: "Recipient email"
-    type: email
-    required: true
+## Use the form {#form}
 
-output:
-  notify:
-    system: true
-    channels:
-      - email
+1. Click **Digital Humans** on the left rail, then **Create Digital Human** in **My Digital Humans**.
+2. Stay on the **Visual** tab and fill in:
+   - **App Name**, **Description** and **Author**;
+   - **System Prompt**: the Digital Human's job description, which it follows on every run.
+3. The **Schedule** switch is on by default, with a run every hour. Change the timing as you need, or turn it off (then it works only when you run it or a bot message arrives). How to set the timing: [Schedules and triggers](/en/digital-humans/triggers).
+4. Choose a model (it follows the global setting by default) and pick a workspace under **Install to**. You can also create a new workspace right there.
+5. Click **Create Digital Human**.
+
+![The Visual tab of the Create Digital Human dialog: App Name, Description, Author, System Prompt, and the Schedule switch turned on with interval choices](/images/digital-humans/create/create-dialog.en.webp)
+
+How to write the **System Prompt**: say who it is, the few things it does on each run, the format of the result and who gets it, and when it should ask you first. For example:
+
+```text
+You compile tech news every day. On each run:
+1. Search for the previous day's AI and internet news;
+2. Pick the 5 most important stories, summarize each in one sentence, and add the source link;
+3. Put the result together as a short brief.
+If there's no news worth reporting that day, say "No important news today."
 ```
 
----
+For every field in the YAML, see the [Digital Human spec reference](/en/developers/digital-humans/spec).
 
-## spec Field Reference
+## Import a file {#import}
 
-### Trigger Types (subscriptions)
+1. In the **Create Digital Human** dialog, switch to the **Import** tab.
+2. Drag the file onto "Drop a digital human file here". `.zip`, `.dhpkg` and `.yaml` are supported; you can also click **Browse folder...** to pick a folder.
+3. Check the preview, choose a workspace under **Install to**, and install. "Installation complete" means you're done.
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `schedule` | Runs on a schedule | `every: "1h"` or a cron expression |
-| `file` | Triggered by file changes | Monitor a specified directory |
-| `webhook` | Triggered by an HTTP request | Push from an external system |
-| `webpage` | Triggered by web page content changes | Monitor a specified URL |
-| `rss` | Triggered by new RSS content | Subscribe to an RSS feed |
+Skills included in the file are installed along with the Digital Human.
 
-Common `every` values: `30m`, `1h`, `24h`, `7d`
+::: done
+The Digital Human appears under **Digital Humans › My Digital Humans** as **Standing by** or **Running**. Open it to see its runs in **Work activity**; to try it right away, click **Run now**.
+:::
 
-### Output Notifications (output.notify)
+## Troubleshooting {#troubleshooting}
 
-| Channel | Configuration |
-|---------|---------------|
-| System desktop notification | `system: true` |
-| Email | `channels: [email]` |
-| WeCom (Enterprise WeChat) | `channels: [wecom]` |
-| Feishu | `channels: [feishu]` |
-| DingTalk | `channels: [dingtalk]` |
-| Webhook | `channels: [webhook]` |
+### "A digital human with the same name already exists in this workspace"
 
-Message channel credentials (email password, Webhook URL, etc.) are managed centrally under **Settings → Message Channels**.
+A workspace can't have two Digital Humans with the same name. Use another name, or uninstall the old one first.
 
----
+### It was created in the wrong workspace
 
-## Installing a spec
+Open the Digital Human, click **⋮** at the top right, and choose **Move to another workspace**. Files and history stay where they are; new work starts in the new workspace.
 
-Once you have written your spec.yaml, tell the AI in Halo:
+### You asked Halo, but it didn't create anything
 
-```
-Install this Digital Human spec for me
-```
+Make sure you asked in a conversation (not during another Digital Human's scheduled run). Also, **Digital Humans** under **Settings › Advanced › Built-in MCP Extensions** must be on (it is by default); when it's off, Halo can't create or manage Digital Humans for you.
 
-Paste the spec content, and the AI will complete the installation automatically.
+## Next steps {#next-steps}
 
----
-
-## Publish to the Store
-
-Want to share your Digital Human with everyone? See → [DHP Protocol](/en/digital-humans/dhp-protocol)
+- [Schedules and triggers](/en/digital-humans/triggers): have it work at set times, or only on working days.
+- [Message channels overview](/en/digital-humans/channels): let it take requests and report in WeCom, Feishu or WeChat.
+- [Runs and management](/en/digital-humans/manage): see what it did and answer its questions.

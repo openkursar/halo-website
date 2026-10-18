@@ -1,323 +1,200 @@
 ---
-title: "Halo Server Integration Guide"
-description: "Integrate Halo Server as an AI agent backend for your business system: digital-human creation, conversation isolation, result delivery (polling vs WebSocket), multi-user isolation, auth, and error handling."
----
-# Integration Guide
-
-This guide is for **business backend engineers** (e.g. Java developers) who want to use Halo Server as the AI agent backend for a "digital employee" and integrate it into their own systems.
-
-The canonical flow:
-
-```
-End-user query  →  Business backend (Java)  →  Halo Server (digital-human agent)  →  Response
-```
-
-The business backend owns **user identity, entry points, UI, and the synchronous/streaming experience**; Halo Server runs the **digital-human agent** (its persona, tools, skills, memory). The two communicate over HTTP + WebSocket.
-
+title: "Halo Server integration guide: AI agent back end"
+description: "Halo Server integration guide: use Digital Humans as your AI back end, give each user a chat thread, and get replies by WebSocket or polling."
+type: how-to
+audience: [developer]
 ---
 
-## Basics
+# Halo Server integration guide
 
-### Base URL
+This page is for back-end engineers. It shows how to use Halo's Digital Humans as the AI back end of your system. The typical flow:
 
-Every call is relative to a configurable **Base URL**. Make it a config value — never hardcode it.
+```text
+End user asks → your back end → Halo (a Digital Human works on it) → reply
+```
 
-- Direct: `http://<host>:8080`
-- Behind a reverse proxy (platforms often mount the service under a path prefix such as `/fc-xxxx/`): `https://<host>/fc-xxxx`
+Your back end owns user identity, the entry point, the interface and the synchronous or streaming experience; Halo runs the Digital Human (persona, tools, skills and memory). The two talk over the HTTP API and the WebSocket. The same approach works with Halo desktop when Remote Access is on.
 
-::: warning Path prefix
-When deployed under a reverse-proxy path prefix, **all** HTTP endpoints and the WebSocket live under that prefix. For example, sending a message hits
-`https://<host>/fc-xxxx/api/apps/<appId>/chat/send`, and the WebSocket is
-`wss://<host>/fc-xxxx/ws`. Set Base URL to `https://<host>/fc-xxxx`, then append `/api/...` and `/ws`.
-:::
+## Before you start {#before-you-start}
 
-### Authentication
+- A running [Halo Server](/en/server/), with its base URL and access password.
+- The [HTTP API overview](/en/developers/api/), for authentication, the response envelope and error conventions.
 
-Halo Server uses a single-token scheme. The token is `HALO_REMOTE_PASSWORD` (default `halo123`; change it to a strong random value in production — see [Configuration](./configuration.md)).
+## Basics {#basics}
 
-Every `/api/*` call must carry the standard Bearer header:
+### Base URL {#base-url}
+
+Make the base URL a configuration value; never hard-code it:
+
+- Direct: `http://<HOST>:8080`
+- Behind a reverse proxy path prefix: `https://<HOST>/<PATH_PREFIX>`
+
+Every HTTP endpoint and the WebSocket live under the base URL: sending a message is `<BASE_URL>/api/apps/<APP_ID>/chat/send`, and the WebSocket is `<BASE_URL>` with `http` replaced by `ws`, plus `/ws`.
+
+The commands below use the shell variables `$HALO_URL` for the base URL and `$HALO_TOKEN` for the access password; the [quickstart](/en/developers/quickstart#set-variables) shows how to set them.
+
+### Authentication {#auth}
+
+Every `/api/` request carries the access password:
 
 ```http
-Authorization: Bearer <token>
+Authorization: Bearer <YOUR_ACCESS_PASSWORD>
 ```
 
-An optional login endpoint (to verify the token before making real calls):
+There is no "log in for a session token" flow: `POST /api/remote/login` only checks a password, and the credential is always the access password itself.
 
-```http
-POST /api/remote/login
-Content-Type: application/json
-
-{ "token": "<token>" }
-```
-
-Returns `{ "success": true }` on success.
-
-::: tip The token IS the password
-There is no "username + password exchanged for a session token" flow. `/api/remote/login` merely validates the token; the actual credential is always the same `<token>`, carried as `Authorization: Bearer <token>`.
+::: danger Keep the access password in your back end
+The access password grants full control of this Halo. Use it only inside your back-end services; never send it to browsers or mobile apps, and never commit it to a repository.
 :::
 
-### Response envelope
+### Response envelope {#envelope}
 
-REST endpoints return a uniform shape:
+Endpoints answer `{ "success": true, "data": … }` or `{ "success": false, "error": "…" }`. Check `success` before reading `data`: many failures also come back with HTTP 200.
 
-```json
-{ "success": true, "data": { /* ... */ } }
-```
+## 1. Prepare a Digital Human {#digital-human}
 
-On failure:
+A Digital Human has a fixed persona (`system_prompt`), tools and skills, memory and permissions, and can serve all your end users at once.
 
-```json
-{ "success": false, "error": "description" }
-```
+- **Recommended**: [create the Digital Human](/en/digital-humans/create) in Halo and fine-tune it there, then call it from your system.
+- **Install through the API**: call [`POST /api/apps/install`](/en/developers/api/digital-human#post-api-apps-install) with a full spec.
 
-Always check `success` before reading `data`.
-
----
-
-## Step 1: Create a digital human (App)
-
-A "digital human" maps to a `type: automation` **App** in Halo. It encapsulates the agent's persona (`system_prompt`), available tools/skills, memory, and permissions.
-
-Two ways to create one:
-
-1. **Admin UI (recommended)**: create and tune it in Halo's apps/digital-human UI. The least error-prone path — let product/ops configure the persona, then have the business system call it.
-2. **API install**: install programmatically via `POST /api/apps/install`.
-
-A minimal automation digital-human spec:
+A minimal Digital Human spec:
 
 ```json
 {
-  "spaceId": "<spaceId>",
+  "spaceId": "<SPACE_ID>",
   "spec": {
     "type": "automation",
-    "name": "Support Assistant",
+    "name": "Support assistant",
     "version": "1.0.0",
-    "author": "acme",
-    "description": "An e-commerce support digital employee answering order, shipping, and return questions.",
-    "system_prompt": "You are ACME's e-commerce support assistant. Answer questions about orders, shipping, and returns politely, concisely, and accurately. When unsure, ask the user for their order number.",
-    "store": {}
+    "author": "example",
+    "description": "Answers questions about orders, shipping and returns for an online shop.",
+    "system_prompt": "You are the support assistant of an online shop. Answer questions about orders, shipping and returns politely, briefly and accurately. When unsure, ask for the order number."
   }
 }
 ```
 
-Install via API:
-
-```http
-POST /api/apps/install
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{ "spaceId": "<spaceId>", "spec": { /* the spec above */ } }
-```
-
-Returns:
+Response:
 
 ```json
-{ "success": true, "data": { "appId": "<appId>" } }
+{ "success": true, "data": { "appId": "<APP_ID>" } }
 ```
 
-Record the returned `appId` — all subsequent chat calls use it. One digital human (one `appId`) = one fixed persona that serves all end-users.
+Every later call needs the Digital Human's `appId` and the `spaceId` of its workspace. For existing Digital Humans, use [`GET /api/apps`](/en/developers/api/digital-human#get-api-apps); an entry's `id` is the `appId`.
 
-::: tip Full spec fields
-For the full `system_prompt`, `config_schema`, `subscriptions`, `permissions`, memory, etc., see the [Digital Humans docs](../digital-humans/overview). This guide focuses on **calling an already-created digital human**.
+## 2. Give each end user a chat thread {#threads}
+
+One Digital Human serves all your end users. Each user gets a chat thread of their own, so their contexts never mix. The thread is chosen with `conversationId`, which accepts these forms:
+
+| `conversationId` | Use |
+|---|---|
+| Left out, or `app-chat:<APP_ID>` | The main thread. Everyone shares one context, so use it only for a single user or a demo |
+| `app-chat:<APP_ID>:http:direct:<USER_KEY>` | A thread you name. `<USER_KEY>` may contain only letters, digits, `_` and `-`, 1–128 characters |
+| The `conversationId` returned by [`POST /api/apps/:appId/sessions/create`](/en/developers/api/digital-human#post-api-apps-appid-sessions-create) | A new thread created by Halo |
+
+The second form is the one to use: user 12345's thread is `app-chat:<APP_ID>:http:direct:user-12345`. When the user comes back, keep using the same key and the context continues; a new user gets a new key.
+
+::: warning Other forms are refused
+A bare custom string such as `user-12345` returns `400`, with the accepted forms in the error message. A thread bound to an IM chat cannot be written to through the API either: the API never speaks for a person in a real chat.
 :::
 
----
+## 3. Send a message {#send}
 
-## Step 2: Assign each end-user a conversationId
-
-This is the heart of multi-user isolation.
-
-- **One digital human** (one `appId`) serves all your end-users.
-- Each end-user gets a **business-side conversation id** `conversationId`, whose naming scheme you define — e.g. `user-12345`, `order-svc-u12345`.
-- **Different `conversationId` = independent conversation context** (separate history and memory window) but the **same persona**.
-- A returning user **reuses their `conversationId`** to continue the context; a new user gets a **new `conversationId`**.
-
-Internally, Halo Server keys the session as `app-chat:{appId}` (the default conversation) or the custom `conversationId` you pass. Two different `conversationId`s land in two independent agent sessions that never cross-talk.
-
-::: warning Default vs custom conversation (must read)
-If you **omit** `conversationId`, every call lands in the single **default conversation** `app-chat:{appId}`, and all users share one context — only suitable for single-user/demo scenarios.
-
-For **true multi-user isolation**, you must pass each user's own `conversationId`. But note: **the REST status and history endpoints only operate on the default conversation** (see "Getting the result" below). Therefore, when using a custom `conversationId` for isolation, **retrieve results over WebSocket** (which subscribes precisely by `conversationId`). This is the single most important engineering constraint in this guide.
-:::
-
----
-
-## Step 3: Send a message
-
-```http
-POST /api/apps/<appId>/chat/send
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "spaceId": "<spaceId>",
-  "conversationId": "user-12345",
-  "message": "Where is my order A1001?"
-}
+```bash
+curl -sX POST "$HALO_URL/api/apps/<APP_ID>/chat/send" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"spaceId":"<SPACE_ID>","conversationId":"app-chat:<APP_ID>:http:direct:user-12345","message":"Where is my order A1001?"}'
 ```
-
-Request body fields:
 
 | Field | Required | Description |
 |---|---|---|
-| `spaceId` | yes | The space ID the digital human lives in |
-| `message` | yes | User message text |
-| `conversationId` | no | Business-side conversation id. Omit → default conversation `app-chat:{appId}` |
-| `images` | no | Multimodal image attachments |
-| `thinkingEnabled` | no | Enable extended thinking |
+| `spaceId` | Yes | The Digital Human's workspace: its `spaceId` in `GET /api/apps` |
+| `message` | Yes | The user's message |
+| `conversationId` | No | The chat thread, see [step 2](#threads); the main thread when left out |
+| `images` | No | Image attachments (base64). The whole JSON body must stay under 100 KB |
+| `reasoningEffort` | No | How hard the model thinks: `off`, `minimal`, `low`, `medium`, `high`, `xhigh` or `max` |
 
-Returns immediately (**note: this is an async trigger — it does not wait for the agent to finish**):
-
-```json
-{ "success": true, "data": { "conversationId": "app-chat:<appId>" } }
-```
-
-::: warning The returned conversationId is always the default
-Even if you pass a custom `conversationId`, this endpoint's `data.conversationId` is **always the default** `app-chat:{appId}`, not your value. **Use the `conversationId` you passed in** to subscribe/query results — do not rely on the response value.
-:::
-
-Sending is **fire-and-forget**: the HTTP call returns instantly and the agent runs in the background. Retrieve the result via one of the two methods below.
-
----
-
-## Step 4: Getting the result
-
-The async model is intentional — the business layer **composes** synchronous-blocking or streaming UX on top. Two retrieval methods.
-
-### Method A: WebSocket (recommended; supports isolation and streaming)
-
-The WebSocket delivers events scoped precisely by `conversationId`. It is the **only correct choice** for multi-user isolation and also exposes the agent's thinking/tool process for typewriter-style streaming.
-
-Connection and handshake:
-
-1. Connect to `wss://<base>/ws` (`<base>` includes the path prefix).
-2. Send the auth frame: `{ "type": "auth", "payload": { "token": "<token>" } }` and wait for `{ "type": "auth:success" }`. On failure the server replies `{ "type": "auth:failed" }` and closes the connection.
-3. Subscribe: `{ "type": "subscribe", "payload": { "conversationId": "user-12345" } }`.
-4. Receive events: the server pushes `{ "type": "event", "channel": "...", "data": { ... } }`. Every `data` carries `spaceId` and `conversationId`, so you can route to the right user.
-5. Unsubscribe: `{ "type": "unsubscribe", "payload": { "conversationId": "user-12345" } }`.
-6. Heartbeat: send `{ "type": "ping" }`; the server replies `{ "type": "pong" }`.
-
-::: tip Subscribe early
-Connect, authenticate, and subscribe **before or at the same time as** sending the message, so you don't miss early events. A single connection can subscribe to many `conversationId`s — reuse one long-lived connection for many users.
-:::
-
-#### Event channels
-
-| channel | Meaning | Key `data` fields |
-|---|---|---|
-| `agent:message` | Assistant text. Streaming deltas + final full text | `delta` (streaming delta) / `content` + `isComplete: true` (final) / `isNewTextBlock` (new text block start) |
-| `agent:thought` | Thinking block, or a stage result block | `thought` (has `type`, `content`, ...) |
-| `agent:thought-delta` | Incremental thinking content | `thoughtId`, `delta`, `content` |
-| `agent:tool-call` | Agent invokes a tool | tool-call details |
-| `agent:tool-result` | Tool returns | tool result |
-| `agent:complete` | This reply turn finished | `tokenUsage` |
-| `agent:error` | Error | `error`, optional `errorType`/`errorCode` |
-| `agent:compact` | Context was compacted | `trigger`, `preTokens` |
-| `agent:session-info` | Session metadata | session fields |
-
-::: warning How to get the final reply
-There is **no** `agent:result` channel. The final reply text arrives via `agent:message` (`isComplete: true`, whose `content` is the full reply), immediately followed by `agent:complete` (carrying `tokenUsage`) marking the end of the turn.
-
-Reliable way to get "one complete answer": listen to `agent:message`, take the `content` of the one where `isComplete === true`; treat `agent:complete` as the "turn finished" signal. For live streaming, keep appending `agent:message` `delta`s in the meantime.
-:::
-
-### Method B: Polling (default conversation only)
-
-Polling uses two REST endpoints: check whether it's done, then fetch the reply.
-
-Check status:
-
-```http
-GET /api/apps/<appId>/chat/status
-Authorization: Bearer <token>
-```
+Response:
 
 ```json
-{ "success": true, "data": { "isGenerating": false, "conversationId": "app-chat:<appId>" } }
+{ "success": true, "data": { "conversationId": "app-chat:<APP_ID>:http:direct:user-12345" } }
 ```
 
-Fetch messages (after the agent finishes):
+`data.conversationId` is the thread the message went to. The call returns before the Digital Human has read the message; the reply is written afterwards, and you fetch it as described in the next step. A message sent while the same thread is still answering doesn't start a second session: it joins the running turn after its current step, or is merged into the next one. Send one message at a time per thread and wait for the reply, so each reply answers one message.
 
-```http
-GET /api/apps/<appId>/chat/messages
-Authorization: Bearer <token>
-```
+## 4. Get the reply {#reply}
 
-```json
-{
-  "success": true,
-  "data": [
-    { "id": "session-msg-1", "role": "user", "content": "Where is my order A1001?", "timestamp": "..." },
-    { "id": "session-msg-2", "role": "assistant", "content": "Your order A1001 is out for delivery...", "timestamp": "...", "thoughts": [], "thoughtsSummary": { "count": 0, "types": {} } }
-  ]
-}
-```
+### Option A: WebSocket (recommended) {#websocket}
 
-Message record fields: `id`, `role` (`user` / `assistant`), `content`, `timestamp`, with optional `thoughts[]` and `thoughtsSummary`. Take the `content` of the last `role: "assistant"` record as the reply.
+The WebSocket delivers the reply as it is written, together with the work behind it, which suits production and streaming interfaces:
 
-::: danger Critical polling limitation
-`GET .../chat/status` and `GET .../chat/messages` **only operate on the default conversation** `app-chat:{appId}`; they **do not accept or distinguish a `conversationId`**.
+1. Connect to the `ws(s)://…/ws` address of your `<BASE_URL>`, send `{ "type": "auth", "payload": { "token": "<YOUR_ACCESS_PASSWORD>" } }` and wait for `auth:success`.
+2. Subscribe to the thread before sending the message: `{ "type": "subscribe", "payload": { "conversationId": "app-chat:<APP_ID>:http:direct:user-12345" } }`. One connection can subscribe to many threads.
+3. Handle events: assemble the reply from `agent:message` (rules in [assembling the reply](/en/developers/api/websocket#assemble-reply)); the event with `isComplete: true` holds the complete answer; `agent:complete` ends the turn; `agent:error` reports a failure.
+4. Route events to users by `data.conversationId`. Status events of every conversation, such as `agent:complete`, reach every connection, so ignore the threads that are not yours.
+5. After a disconnect, authenticate and subscribe to every thread again.
 
-Therefore:
-- If you **don't do multi-user isolation** (all users share the default conversation), polling works.
-- If you use a **custom `conversationId` for isolation**, polling will **cross-talk** (you'd read the default conversation, not that user's history) — you **must use WebSocket** instead.
+The full protocol is in [WebSocket events](/en/developers/api/websocket).
+
+### Option B: polling {#polling}
+
+If you only need the final answer, poll two endpoints, passing the same `conversationId` to both:
+
+1. Check whether the reply is done:
+
+   ```bash
+   curl -s "$HALO_URL/api/apps/<APP_ID>/chat/status?conversationId=app-chat:<APP_ID>:http:direct:user-12345" \
+     -H "Authorization: Bearer $HALO_TOKEN"
+   ```
+
+   It returns `{"success":true,"data":{"isGenerating":false,"conversationId":"…"}}`. Double the interval each time (2 s, 4 s, …) until `isGenerating` is `false`.
+
+2. Read the transcript:
+
+   ```bash
+   curl -s "$HALO_URL/api/apps/<APP_ID>/chat/messages?conversationId=app-chat:<APP_ID>:http:direct:user-12345" \
+     -H "Authorization: Bearer $HALO_TOKEN"
+   ```
+
+   In the returned list, the `content` of the last message whose `role` is `assistant` is the reply.
+
+Without `conversationId`, `chat/status` reports whether any thread of the Digital Human is generating, and `chat/messages` reads the main thread.
+
+### Comparing the two {#compare}
+
+| | WebSocket | Polling |
+|---|---|---|
+| A thread per user | Yes | Yes (pass `conversationId`) |
+| Text as it is written, and the work behind it | Yes | No, only the final result |
+| Latency | Pushed in real time | Depends on the polling interval |
+| Implementation | Long-lived connection, authentication, reconnecting and resubscribing | A simple request loop |
+
+## Thread lifecycle {#lifecycle}
+
+- **Continue**: calling `chat/send` again with the same `conversationId` continues the context.
+- **Stop a reply**: [`POST /api/apps/:appId/chat/stop`](/en/developers/api/digital-human#post-api-apps-appid-chat-stop) with `{"conversationId":"…"}` stops one thread; `{"all":true}` stops every thread of the Digital Human.
+- **Clear the history**: [`POST /api/apps/:appId/chat/clear`](/en/developers/api/digital-human#post-api-apps-appid-chat-clear) with `{"spaceId":"<SPACE_ID>","conversationId":"…"}` clears one thread; without `conversationId` it clears the main thread.
+- **Delete a thread**: [`POST /api/apps/:appId/sessions/delete`](/en/developers/api/digital-human#post-api-apps-appid-sessions-delete) with `{"spaceId":"<SPACE_ID>","conversationId":"…"}`. This cannot be undone.
+
+## Error handling {#errors}
+
+| Situation | What you see | What to do |
+|---|---|---|
+| Access password missing or wrong | HTTP `401`, `"No authorization token"` or `"Invalid token"` | Check the `Authorization` header and the server's `HALO_REMOTE_PASSWORD` |
+| Sign-in or WebSocket authentication locked | HTTP `429`, `"code": "LOCKED"`, with `Retry-After` | Back off for `Retry-After`, and find who is using a wrong password |
+| The service is still starting | HTTP `503` | Wait a moment after a cold start and retry |
+| Malformed `conversationId` | HTTP `400`, the message lists the accepted forms | Build it as in [step 2](#threads) |
+| The Digital Human does not exist | HTTP `404` or `"success": false` | Check the `appId` |
+| Request body too large | HTTP `413` | Shrink images; the whole JSON body must stay under 100 KB |
+| Processing fails | WebSocket `agent:error` with `data.error`; `errorType` `interrupted` means it was interrupted | Show the user a fallback message, and log `errorCode` for troubleshooting |
+
+::: tip Wrapping the asynchronous API as a synchronous call
+For "one call, one answer" semantics: connect the WebSocket, subscribe to the user's thread, call `chat/send`, wait for that thread's `agent:message` with `isComplete: true` or an `agent:error`, then return the result, with a timeout. Full code is in [Halo Server integration examples](/en/server/examples).
 :::
 
-### Comparison
+## Next steps {#next-steps}
 
-| Dimension | WebSocket | Polling |
-|---|---|---|
-| Multi-user isolation | ✅ Precise delivery by `conversationId` | ❌ Default conversation only |
-| Streaming / process visibility | ✅ Thinking, tools, text deltas | ❌ Only the final history |
-| Latency | ✅ Push, low latency | ⚠️ Depends on poll interval |
-| Implementation complexity | Long-lived connection, reconnect, auth handshake | Simple request loop |
-| Best for | Production, multi-user, streaming UX | Single-user/demo, or final-result-only on the default conversation |
-
-**Recommendation**: production, multi-user, streaming → WebSocket. A simple single-persona single-conversation sync Q&A → polling is fine.
-
----
-
-## Conversation lifecycle
-
-- **Continuation**: repeatedly `chat/send` to the same `conversationId` and the context continues automatically (same agent session, in-memory reuse; after a process rebuild, history is restored from disk via the saved session id).
-- **Stop generation**: `POST /api/apps/<appId>/chat/stop` aborts the digital human's current in-flight generation.
-- **Clear history**: `POST /api/apps/<appId>/chat/clear` with body `{ "spaceId": "<spaceId>" }` resets to a fresh conversation (clears the default conversation history).
-
----
-
-## Multi-user isolation, summarized
-
-Putting it together, the standard pattern for multi-user isolation:
-
-1. Create one digital human, get its `appId` (one persona for all users).
-2. Assign each end-user a business-side `conversationId` (e.g. `user-12345`).
-3. Open one long-lived WebSocket; after auth, `subscribe` each active user's `conversationId`.
-4. When a user sends a message, `POST .../chat/send` with that user's `conversationId` and `message`.
-5. Receive the streaming process and final `agent:message` (`isComplete: true`) via WebSocket events, routed by `data.conversationId`.
-6. Returning users reuse their `conversationId`; new users get new ones.
-
----
-
-## Error handling
-
-| Scenario | Symptom | Suggested handling |
-|---|---|---|
-| Missing/invalid token | HTTP `401`, `{ success:false, error:"..." }` | Check the `Authorization` header and `HALO_REMOTE_PASSWORD` |
-| Login locked out | HTTP `429`, `code: "LOCKED"`, with `Retry-After` | Back off and retry; don't brute-force the token |
-| Service not ready | HTTP `503` (App Manager/Runtime not initialized) | Retry shortly after cold start |
-| App not found | `404` or `{ success:false }` | Verify the `appId` |
-| Agent runtime error | WebSocket `agent:error` event, `data.error` | Show a graceful fallback; optionally log `errorCode` |
-| Empty/interrupted response | `agent:error`, `errorType: "interrupted"` | Prompt the user to resend or continue |
-
-::: tip Wrapping async into sync
-If the business layer needs "one `ask(userId, question)` call that returns one answer", do this internally: connect WS → subscribe the user's conversation → `chat/send` → wait for that `conversationId`'s `agent:message(isComplete:true)` or `agent:complete` → return `content`, with a timeout and `agent:error` fallback. See [Examples](./examples.md) for code.
-:::
-
----
-
-## Next steps
-
-- [Examples](./examples.md) — a full curl walkthrough, a WebSocket example, and backend pseudo-code that wraps the async API into a synchronous `ask()`.
-- [Configuration](./configuration.md) — token, port, LLM gateway, and other environment variables.
-- [Digital Humans docs](../digital-humans/overview) — full digital-human spec fields and persona design.
+- [Halo Server integration examples](/en/server/examples): a complete curl walkthrough, a WebSocket event stream and Java wrapper code
+- [WebSocket events](/en/developers/api/websocket): every event channel
+- [API: Digital Humans](/en/developers/api/digital-human): every endpoint for chatting with Digital Humans

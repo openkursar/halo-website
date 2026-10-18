@@ -1,178 +1,83 @@
-# 从 Claude Code 迁移到 Halo
-
-如果你已经是 Claude Code（CC）用户，这页文档是你最快的上手路径。
-
-**一句话定位：Halo = Claude Code + 可视化界面。** 底层是同一套 Agent 引擎，你在 CC 里积累的所有知识——CLAUDE.md、MCP 配置、自定义命令、Hooks——在 Halo 里全部有效，只是交互方式从终端变成了 GUI。
-
-::: warning 最常见的误解：Halo 不是云服务
-Halo **没有后台服务器**，是纯本地桌面应用。它把 Claude Code + Node.js + npm 打包成了一个安装包，CC 就运行在你自己的电脑上。你的代码、Skills、MCP 配置、对话记录全部在本地，不经过任何第三方服务器。
-
-企业微信机器人等"远程"功能，也是连接到你本地运行的 Halo，不是连到云端。
-:::
-
+---
+title: 从 Claude Code 迁移到 Halo：概念对照与配置沿用
+description: 已经在用 Claude Code 或 Codex？这里对照两边的概念，说明怎样用已有的订阅登录、把仓库作为工作区打开、沿用 CLAUDE.md、技能和 MCP，以及和终端里不一样的地方。
+type: how-to
+audience: [developer]
+related: [features/agent-engines, features/code-review, features/spaces, features/skills]
 ---
 
-## 核心概念对照表
+# 从 Claude Code / Codex 迁移
 
-| Claude Code 概念 | Halo 对应概念 | 说明 |
+迁移技能和 MCP 要在设置里点，Halo 不能替你改设置；进了工作区以后，像在终端里一样直接说就行。
+
+## 概念对照 {#mapping}
+
+| 在 Claude Code 里 | 在 Halo 里 | 说明 |
 |---|---|---|
-| `cd /my-project && claude` | **专属空间** | 绑定目录，AI 在该目录中读写文件 |
-| 在 home 目录下直接 `claude` | **Halo 默认空间（临时空间）** | 无绑定目录，适合临时问答 |
-| 开多个终端标签，各自运行 `claude` | **多个并行空间** | Halo 原生支持，后台同时推进 |
-| 单次 `claude` session | **一次对话** | Halo 自动保存，无需 `--resume` |
-| `.claude/skills/my-skill/` | **Skills（技能）** | 目录结构和调用方式完全相同 |
-| `CLAUDE.md` | **CLAUDE.md（不变）** | Halo 读取同一个文件 |
-| MCP 配置 JSON | **MCP 配置面板** | 格式完全相同，改成 GUI 填写 |
-| `claude` + cron job | **数字人** | CC 定时任务的产品化 + 可视化 |
-| `~/.claude/` | `~/Library/.../halo/claude-config/` | Claude 配置层，路径不同，格式相同 |
+| `cd 项目 && claude` | 用 **自定义文件夹** 新建的工作区 | AI 在这个文件夹里读写，见 [打开你的仓库](#open-repo) |
+| 随手在任意目录开 `claude` | **Halo 工作区** | 自带的默认工作区，不用选文件夹 |
+| 开几个终端各跑一个 `claude` | 同时开几个会话 | 它们各自在后台运行，见 [同时推进多件事](/features/parallel-work) |
+| `claude --resume` | 点开以前的会话接着聊 | 会话自动保存 |
+| 项目里的 `CLAUDE.md`、`.claude/settings.json`、`.claude/skills/` | 照样生效 | 默认的 Claude Code 引擎会读取，见 [沿用配置](#carry-over) |
+| `~/.claude/` 里的用户级配置 | Halo 自己的 Claude 配置目录 | 默认不读 `~/.claude`；技能和 MCP 可以迁移过来，用户级的 CLAUDE.md、settings.json、命令和子代理不会迁移 |
+| `/` 斜杠命令 | 在输入框里输入 `/` | 列出引擎提供的命令和你的技能 |
+| `git diff`、`git commit` | **变更** | 看改动、暂存、提交、推送，还能让 AI 评审，见 [变更、代码评审与 Git](/features/code-review) |
+| `cron` 加 `claude -p` | 数字人 | 按计划自己运行，见 [数字人概述](/digital-humans/overview) |
 
----
+## 用已有的订阅登录 {#sign-in}
 
-## 逐一对照
+第一次打开 Halo 时，在「欢迎使用 Halo」里选 **Claude**、**ChatGPT** 或 **GitHub Copilot**，用你已有的账号登录，见 [连接 AI 模型](/getting-started/setup-ai)。
 
-### 空间 = `cd /path && claude`
+在 macOS 上，还可以让 Halo 自带的 Claude Code CLI 自己登录：打开 **设置 › AI 模型 › OAuth登录 › Claude Code CLI**，在「使用 Claude Code CLI 登录」里点 **在 Halo 终端中运行**，按提示完成登录。Halo 不保存令牌，由 CLI 自己保存和刷新。这种方式只能用在 Claude Code 引擎上。
 
-这是最核心的类比。
+## 打开你的仓库 {#open-repo}
 
-在 CC 里，你每次工作都要先 `cd` 进项目目录，再启动 `claude`。这个"在某个目录下运行的 claude 实例"，就是 Halo 的**专属空间**。
+1. 在对话页左上角点当前工作区的名字，点 **新建工作区**。
+2. **本地目录** 选 **自定义文件夹**，点 **浏览**，选你的仓库。
+3. 点 **创建**。
 
-```bash
-# Claude Code 的工作方式
-cd ~/projects/my-app
-claude
-# → AI 的工作目录是 ~/projects/my-app
-```
+对话、设置和记忆放在 Halo 自己的数据文件夹里，不写进这个文件夹；只有装到这个工作区的技能，会写进文件夹里的 `.claude/skills/`。详见 [新建工作区](/features/spaces#create)。
 
-Halo 的对应操作：点击左侧栏 **「+」**，选择「关联项目文件夹」，选择 `~/projects/my-app`。之后在这个空间里的所有对话，AI 的工作目录就是这个文件夹。
+## 沿用配置 {#carry-over}
 
-**Halo 默认空间（临时空间）**对应的是你随手在任意目录（比如 home）运行 `claude` 做快速问答，没有明确绑定目录的场景。
+### 项目里的配置 {#project-config}
 
-**并行多个空间**对应的是你开多个终端标签，在不同目录各自运行 `claude`。Halo 里所有空间的任务在后台独立执行，你可以来回切换——这在 CC 里需要你手动管理多个终端窗口。
+默认的 Claude Code 引擎会读取工作区文件夹里的 `CLAUDE.md`、`.claude/settings.json` 和 `.claude/skills/`，不用改动。
 
----
+### 用户级的技能和 MCP {#user-config}
 
-### CLAUDE.md 和 `.claude/` 目录完全复用
+Halo 默认用自己的 Claude 配置目录，不读 `~/.claude`，这样 Halo 和终端里的 Claude Code 互不影响。想把原来的东西带过来：
 
-Halo 直接读取专属空间绑定目录下的 `CLAUDE.md` 和 `.claude/` 文件夹。你已有的项目配置无需任何修改，打开空间就生效。
+1. 打开 **设置 › 高级 › Claude CLI 集成**。
+2. 点 **从 Claude CLI 迁移技能**：扫描 `~/.claude/skills/`，每个技能可以选跳过、覆盖，或者重名时改名。
+3. 点 **从 Claude CLI 迁移 MCP 服务器**：扫描 `~/.claude.json`，每个服务器可以选跳过或覆盖。Halo 里已经有同名的服务器时，选覆盖也会跳过，不会替换。
 
-这包括：
-- `CLAUDE.md`（项目级系统提示）
-- `.claude/settings.json`（权限配置）
-- `.claude/skills/`（技能，见下文）
-- Hooks 配置
+迁过来的技能是复制进 Halo 配置目录的，在 [技能](/features/skills) 里显示为「未托管」；迁过来的 MCP 服务器在 [MCP 服务器](/features/mcp) 里管理。
 
----
-
-### Skills（技能）完全一致
-
-CC 和 Halo 都使用 `.claude/skills/` 存放技能，格式和调用方式完全相同，无需任何迁移。
-
-两种调用方式都支持：斜杠命令 `/skill-name`，或者直接用自然语言描述需求让 AI 自动匹配。Halo 更推荐后者——聊着天就把技能触发了，不用记命令名。
-
-```markdown
----
-name: code-commit
-description: 当用户要求提交代码、commit、推送代码时，自动调用该技能
----
-
-## 要求
-...
-```
-
-全局 Skills（不绑定项目）的存放路径：
-- macOS：`~/Library/Application Support/halo/claude-config/skills/`
-- Windows：`C:\Users\<用户名>\AppData\Roaming\Halo\claude-config\skills\`
-
----
-
-### MCP 配置：外层结构略有不同
-
-CC 的 MCP 配置带有 `mcpServers` 外层包裹，服务器名称作为 key：
-
-```json
-{
-  "mcpServers": {
-    "puppeteer": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
-    }
-  }
-}
-```
-
-Halo 在 GUI 里单独填写服务器名称，JSON 只需粘贴内层配置：
-
-```json
-{
-  "command": "npx",
-  "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
-}
-```
-
-从 CC 迁移时，把 `mcpServers` 下每个服务器的内层对象单独粘贴到 Halo 的 JSON 模式中，名称填到界面的名称字段里即可。
-
----
-
-### 数字人 = CC 定时任务的产品化 + 可视化
-
-数字人本质就是把 CC 里"写脚本 + cron + 手动管理"这套流程，做成了开箱即用的产品。CC 里如果你想让 AI 定期自动执行任务，通常的做法是写一个 shell 脚本配合 cron：
-
-```bash
-# 每天早上 9 点跑一次
-0 9 * * * claude --print "帮我汇总今日要处理的邮件" >> ~/daily.log
-```
-
-这很快会遇到几个问题：没有跨次运行的记忆、没有输出渠道（只能写文件）、触发方式只有 cron、排查问题要翻日志。
-
-**数字人**解决这些问题：
-
-| CC + cron | 数字人 |
-|---|---|
-| 无跨次记忆 | 持久化 `memory.md`，跨天记住上下文 |
-| 只能写文件 | 推送到企业微信、飞书、钉钉、邮件 |
-| 只有定时触发 | 还支持 Webhook、文件变化、网页监控 |
-| 无运行历史 | 每次运行有完整对话回放 |
-| 手动写 shell 脚本 | 用自然语言描述，Halo 自动创建 |
-
-数字人的"system prompt"就是 CC 里你传给 `--system-prompt` 的内容，"工作区目录"就是它绑定的 `pwd`。
-
----
-
-### 配置路径对应关系
-
-| Claude Code 路径 | Halo 对应路径 |
-|---|---|
-| `~/.claude/` | `~/Library/Application Support/halo/claude-config/`（macOS） |
-| `~/.claude/settings.json` | `~/Library/Application Support/halo/claude-config/settings.json` |
-| `~/.claude/commands/`（全局命令） | `.../halo/claude-config/skills/`（全局技能） |
-| 项目 `.claude/` | 不变，Halo 直接读取 |
-
-Halo 自身的状态（空间记录、对话历史）存在 `~/.halo/`，与 Claude 配置层分开管理。
-
----
-
-## 你不需要学的东西
-
-Halo 没有改变 CC 的 Agent 模型，以下内容**原样保留**，不需要重新学习：
-
-- Agent 的工具调用方式（Bash、Read、Write、Edit、Grep、Glob……）
-- Hooks 机制（`PreToolUse`、`PostToolUse` 等）
-- 权限模型（`allowedTools`、`deny` 等）
-- `CLAUDE.md` 的写法
-- MCP 协议本身
-
----
-
-## 迁移检查清单
-
-- [ ] 把已有项目目录关联为专属空间
-- [ ] 确认 `CLAUDE.md` 和 `.claude/` 正常加载（在对话里问 AI "你了解这个项目的哪些约定？"）
-- [ ] 把 CC 里的 MCP 配置迁移到 Halo 的 MCP 配置面板
-- [ ] 确认 `.claude/skills/` 里的技能在 Halo 中正常调用
-- [ ] 如果有长期定时任务，考虑用数字人替代 cron 脚本
-
----
-
-::: tip
-如果你在 CC 里已经有一套顺手的 `CLAUDE.md` 和工作流，**直接打开那个目录作为 Halo 专属空间，99% 的内容立即生效**，无需任何迁移工作。
+::: warning 不建议直接共用 ~/.claude
+**配置目录** 可以改成 **Claude CLI 默认**（`~/.claude`），但它标着高风险：两边会互相改动设置；你在终端版 Claude Code 里配置的 API Key 或接口地址，还会盖过在 Halo 里选的模型。
 :::
+
+## 和终端里不一样的地方 {#differences}
+
+- 不会逐个确认工具调用。Halo 始终以 **完全权限模式** 运行：AI 直接运行命令、修改和删除文件，只有它主动提问时才停下来等你。把工作区指向你放心让 AI 改动的文件夹，用 Git 和 **变更** 检查改动。
+- 引擎可以换。默认是 Claude Code SDK；**设置 › 高级 › AI Agent 引擎** 里还有几种实验性的引擎（包括 Codex），换完要重启，只对新会话生效。见 [Agent 引擎](/features/agent-engines)。
+- 多了可视化：右侧的文件栏和预览、能自己操作网页的 [AI 浏览器](/features/ai-browser)、从手机连回来的 [远程访问](/features/remote-access)。
+
+## Codex 用户 {#codex}
+
+想用 Codex，可以在 **AI Agent 引擎** 里换成 Codex 引擎（实验性）。在 Codex 引擎上，输入框的 `/` 菜单是空的，也不支持钩子和细分的工具权限；跨电脑团队里同事的请求、机器人里访客的消息，都会被拒绝。其他差异见 [Agent 引擎](/features/agent-engines#differences)。
+
+::: done
+在新工作区里问「你了解这个项目的哪些约定？」，Halo 的回答提到了 `CLAUDE.md` 里写的内容，就说明配置已经生效。
+:::
+
+## 下一步 {#next-steps}
+
+- [变更、代码评审与 Git](/features/code-review)：看改动、提交和让 AI 评审。
+- [技能](/features/skills)：管理和编写技能。
+- [开发者文档](/developers/)：用 HTTP API 让别的程序调用 Halo。
+
+<!-- public:start -->
+想了解 Halo 作为 Claude Code 桌面版的整体介绍，见 [Claude Code 桌面版](/seo/claude-code-desktop)。
+<!-- public:end -->

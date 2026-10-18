@@ -5,7 +5,7 @@
 Key facts:
 - Open source, free; runs on the user's own computer; Halo has no backend service of its own.
 - Sign in with Claude, ChatGPT or GitHub Copilot accounts, or use any Anthropic / OpenAI-compatible API.
-- Digital Human teams are decentralized: no central server; team state follows a Raft-inspired design (majority-elected leading node, term-based log replication, automatic re-election).
+- Digital Human teams — no central server holds team state: members on one network connect directly; across networks a Federation Gateway you run relays messages; team state follows a Raft-inspired design (majority-elected leading node, term-based log replication, automatic re-election).
 - Built-in AI browser, AI terminal, knowledge base, Office document skills (Word, Excel, PowerPoint, PDF), MCP and Skills.
 - Requirements: macOS 12+ (Apple silicon and Intel), Windows 10+ x64, Linux glibc 2.34+; Android app is a remote client.
 - Written almost entirely by Halo itself: over 500,000 lines of code.
@@ -14,7 +14,15 @@ Key facts:
 - [Website](https://hello-halo.cc/)
 - [Documentation (Chinese)](https://hello-halo.cc/docs/)
 - [Documentation (English)](https://hello-halo.cc/docs/en/)
-- [What is Halo](https://hello-halo.cc/docs/guide/what-is-halo)
+- [Docs index for AI tools (Chinese)](https://hello-halo.cc/docs/llms.txt)
+- [Docs index for AI tools (English)](https://hello-halo.cc/docs/en/llms.txt)
+- [Full docs text (Chinese)](https://hello-halo.cc/docs/llms-full.txt)
+- [Full docs text (English)](https://hello-halo.cc/docs/en/llms-full.txt)
+- [What is Halo](https://hello-halo.cc/docs/guide/what-is-halo.html)
+- [Get started: install, connect a model, first task](https://hello-halo.cc/docs/en/getting-started/)
+- [HTTP API reference](https://hello-halo.cc/docs/en/developers/api/)
+- [Changelog](https://hello-halo.cc/docs/en/guide/changelog.html)
+- [Docs for AI tools (llms.txt, Markdown pages, how Halo's assistant reads its guides)](https://hello-halo.cc/docs/en/developers/docs-for-ai.html)
 - [GitHub repository](https://github.com/openkursar/hello-halo)
 - [Downloads (latest release)](https://github.com/openkursar/hello-halo/releases/latest)
 - [Digital Human Protocol](https://github.com/openkursar/digital-human-protocol)

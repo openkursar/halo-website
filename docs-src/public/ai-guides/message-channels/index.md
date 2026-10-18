@@ -1,6 +1,6 @@
 # Message Channels — WeCom Bot, WeChat iLink Bot, Feishu Bot, and IM Wiring
 
-Last updated: 2026-10-06
+Last updated: 2026-10-18
 
 Read this whenever the user wants a digital human reachable from an IM app (WeCom, WeChat,
 Feishu), asks "why isn't my bot replying", or confuses the available channel types. This document
@@ -74,7 +74,7 @@ alert**. Halo has two completely separate WeCom integrations and the phrase "配
 | Purpose | A digital human you chat with over WeCom/WeChat/Feishu | A digital human tells you something happened (a scheduled run finished, an alert fired) |
 | Source | `src/shared/types/im-channel.ts`, `src/main/apps/runtime/im-channels/` | `src/main/services/notify-channels/` — `wecom.ts`, `dingtalk.ts`, `feishu.ts`, `email.ts`, `webhook.ts` (all five implemented) |
 | Configured via | Settings → Message Channels → **WeCom Intelligent Bot** / **WeChat Bot** / **Feishu Bot** (3.0 and later) cards (this document) | Settings → Message Channels → the **notification channel cards** further down the same page (WeCom/DingTalk/Feishu/Email/Webhook) |
-| App Spec field | Not in the spec at all — see §2 | `output.notify.channels` (declares which channels a run may push to) |
+| App Spec field | Not in the spec at all — see §2 | None. `output.notify` is schema-only: the runtime never reads it, so do not write it into a spec. `notify_channel` loads on its own once any notification channel is enabled in Settings, and offers only the enabled ones (`src/main/apps/runtime/notify-tool.ts:118-148`); the model decides when to call it, so ask for the push in `system_prompt`. Desktop toasts follow the digital human's own **Messages & Notifications** (消息与通知) › **System Notifications** (系统通知) level: **Important** (default — milestones, escalations, outputs), **All** or **None** (`AppConfigPanel.tsx`, `userOverrides.notificationLevel`) |
 | Agent tool | None — replying is just normal chat output | `notify_channel` (the app decides at runtime whether to push) |
 
 Concretely: DingTalk **does exist** in Halo, but only as a one-way notify-channel — never offer it
@@ -141,28 +141,30 @@ Channels page has a **Feishu Bot** (飞书机器人) card (§1).
   each have a **?** that opens a short explanation, and it opens with a tap on a phone or in the
   remote web page too. Point the user at it rather than paraphrasing a setting from memory.
 - **Answering the digital human's questions in IM** (Halo 3.0 and later). When the digital human
-  asks for a decision, the bot bound to it (or the bot serving its team) sends the question at once:
-  - **The owner's direct chat** gets the full question with a number and the options, e.g.
-    "【name】需要你决定（编号 12）…". The owner replies `/answer 12 B` — an option letter, the
-    option's text, or an answer in their own words. With only one question waiting, the number
-    may be left out; with several, Halo lists the numbers and asks which one.
-  - **Group chats** — those with **Auto-sync run result** (自动同步运行结果) on in the digital
-    human's bot sessions, and the group a team's work came from — get only "有一个问题在等主人回复
-    （编号 12）", never the question itself.
-  - **Who counts as the owner**: with permission control on, the IDs in the owner list, answering
-    from any chat; anyone else is told only the owner can answer. With permission control off there
-    is no owner list: the question goes only to direct chats with **Auto-sync run result** on, and
-    answers are accepted only in direct chats, never in groups.
-  - The first answer wins, from IM or Halo alike, and the task carries on; the bot confirms with
-    "已收到，任务继续". An answer to a question already answered, expired or closed gets a short
-    explanation instead.
-  - A bot limited to group chats (Reply Scope "group only") with permission control off cannot take
-    answers in IM at all — answer in Halo. The question also stays answerable in Halo whenever the
-    bot was offline.
-  - Halo learns which direct chat is the owner's from a message the owner sends there. A Feishu
-    owner whose direct chat gets no questions should message the bot once.
-  - Only messages that start with `/answer` (in a group, right after the @mention) count as
-    answers; they never reach the AI.
+  asks for a decision, every enabled, connected bot bound to it — or to its team — sends the
+  question at once (`src/main/apps/runtime/im-escalation.ts`). **There is no `/answer` command and
+  no question number in 3.0.4**; never tell a user to type one.
+  - **Direct chats only.** The question reads "「name」的任务需要你决定：{summary}", then the
+    details (cut at 1500 characters, with "（完整内容请在 Halo 里查看）" when more is in Halo),
+    then the choices as `A.`, `B.` … — sub-questions are numbered `1.`, `2.` only when one
+    escalation holds several — and ends with "直接回复我就行，也可以在 Halo 里回答。"
+    (`formatQuestion()`, `im-escalation.ts:120-139`).
+  - **Who receives it** (`receivesImQuestions()`, `im-sender-standing.ts:43-52`): with permission
+    control on, the direct chats of the IDs in the owner list; with it off, direct chats whose
+    **Auto-sync run result** (自动同步运行结果) is on. Halo only knows a direct chat once someone
+    has messaged the bot there — an owner who gets no questions should message the bot once.
+  - **Groups** get the question never. Only the group a team's work came from is told
+    "「name」的这项工作在等主人决定。主人可以直接回复机器人的私聊，或在 Halo 里回答。"; Auto-sync
+    groups get nothing.
+  - **The answer is an ordinary reply** in that direct chat, and it does reach the AI: the runtime
+    attaches the open question and a short-lived grant for that one answer, and the AI submits only
+    what the owner actually said (`relay-actions.ts:63-112`). If the question was already
+    answered, closed or expired, the AI says so (`relay-actions.ts:32-43`). There is no fixed
+    confirmation text, and the first answer wins, from IM or Halo alike.
+  - An owner's direct message is accepted for this even when **Reply Scope** excludes direct
+    chats, while a question is open (`dispatch-inbound.ts:747-756`) — with permission control off,
+    that means a direct chat with Auto-sync on. The question also stays answerable in Halo,
+    including whenever the bot was offline.
 
 ## 3. Configuration — shortest path
 

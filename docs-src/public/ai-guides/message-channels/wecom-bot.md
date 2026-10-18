@@ -140,9 +140,10 @@ off** by default:
 - Before 3.0, guests on a permission-controlled bot could not use skills at all.
 
 **Questions from the digital human** (Halo 3.0 and later): when the bound digital human asks for a
-decision, owners get the full question in their direct chat with the bot and answer with
-`/answer <number> <answer>`; groups only learn that a question is waiting. Who receives it and who
-may answer depends on permission control — see `message-channels/index.md` §2.
+decision, owners get the full question in their direct chat with the bot and simply reply there —
+there is no `/answer` command or question number in 3.0.4. Groups get no question; only the group
+a team's work came from hears that one is waiting. Who receives it depends on permission control —
+see `message-channels/index.md` §2.
 
 **The defaults applied to a *new* instance are build-specific, not fixed.** `defaultEnabled`,
 `defaultGuestAccess`, `defaultGuestPolicy`, `ownerIdHint`, and `ownerSetupGuideUrl`

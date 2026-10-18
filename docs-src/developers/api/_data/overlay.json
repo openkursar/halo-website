@@ -1,0 +1,1391 @@
+{
+  "en": {
+    "get-api-security-policy": {
+      "source": "ef68ebaa14a6",
+      "notes": [
+        "Reports two switches of this build's security policy. `tunnelSafe: true` means Internet Access (the tunnel) is turned off by policy. `browserAllowlistEditable: true` means the AI Browser runs on an allowlist that users may extend.",
+        "Needs no token and always answers."
+      ]
+    },
+    "get-api-spaces": {
+      "source": "ba85d1fa380c",
+      "notes": [
+        "Lists the workspaces the user created. The Halo Workspace is not in this list; read it with GET /api/spaces/halo.",
+        "Pass an entry's `id` wherever an operation takes a `spaceId`."
+      ]
+    },
+    "put-api-spaces-reorder": {
+      "source": "9f7a88f22deb",
+      "notes": [
+        "Send every workspace id, in the new order. A partial list leaves the others out of order, so read the full list with GET /api/spaces first and reorder that."
+      ]
+    },
+    "put-api-spaces-spaceid-working-dir": {
+      "source": "62ce09b31124",
+      "notes": [
+        "Points the workspace at another existing folder, given by its full path. Nothing is moved, created or deleted, and conversations keep their history.",
+        "The workspace's Digital Humans work in the new folder too, and files they send come from there, so confirm the change with the user.",
+        "The folder must exist and lie outside Halo's and the agent engine's own data folders. The Halo Workspace cannot be changed.",
+        "Refused while a reply, run or background task is in progress in the workspace, or while another change to it is under way."
+      ]
+    },
+    "post-api-spaces-spaceid-conversations": {
+      "source": "6f22fed736a9",
+      "notes": [
+        "Creates an empty conversation. To make Halo work in it, call POST /api/agent/message with its id.",
+        "Optional body field `reasoningEffort`: `off`, `minimal`, `low`, `medium`, `high`, `xhigh` or `max` — how hard the model thinks. Leave it out to follow the model's configured effort.",
+        "Optional body field `ephemeral` (boolean): for a view that shows the transcript itself. The conversation is left out of every list and search, and deleted at the next start of Halo unless deleted before. Leave it out for a conversation the user should see."
+      ]
+    },
+    "get-api-spaces-spaceid-conversations-conversationid": {
+      "source": "7e82a4bea4a2",
+      "notes": [
+        "Long conversations return a lot of text. To read only what is new, pass `?from=<messageId>`: messages start at that message (inclusive) and the response carries `messagesFrom`. An unknown id returns the whole conversation.",
+        "Each message has its own `id`; it is the `messageId` that GET /api/spaces/:spaceId/conversations/:conversationId/messages/:messageId/thoughts takes."
+      ]
+    },
+    "delete-api-spaces-spaceid-conversations-conversationid": {
+      "source": "5f68aec2e9bf",
+      "notes": [
+        "Removes the conversation file and its reasoning history from disk. There is no backup."
+      ]
+    },
+    "post-api-agent-message": {
+      "source": "2b1c56740d76",
+      "body": "{\"spaceId\":\"<spaceId>\",\"conversationId\":\"<conversationId>\",\"message\":\"Summarize the activity log\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId>",
+        "conversationId": "<conversationId>",
+        "message": "Summarize the activity log"
+      },
+      "notes": [
+        "Starts Halo working in the conversation and returns as soon as the turn is accepted: `success: true` means accepted, not answered. The reply is written afterwards.",
+        "Follow the reply over the WebSocket after subscribing to the conversation, or poll GET /api/agent/generating/:conversationId with a growing interval (2 s, then double) and read the conversation when it is done.",
+        "Optional body fields: `resumeSessionId`, `thinkingEnabled` (boolean), `reasoningEffort` (`off`, `minimal`, `low`, `medium`, `high`, `xhigh` or `max`; overrides `thinkingEnabled`, but a level the user chose for this conversation wins), `knowledgeBaseId`, `images` (base64 attachments; the whole JSON body must stay under 100 KB).",
+        "Start work in a conversation you created with POST /api/spaces/:spaceId/conversations, so your turn never interrupts one the user is having.",
+        "A turn can stop to ask the user a question. The user answers it in the Halo app, and the turn waits until then."
+      ]
+    },
+    "post-api-agent-stop": {
+      "source": "4d1718223f73",
+      "body": "{\"conversationId\":\"<conversationId>\"}",
+      "bodyExample": {
+        "conversationId": "<conversationId>"
+      },
+      "notes": [
+        "`conversationId` is optional. Leave it out (or send `{}`) to stop everything Halo is doing."
+      ]
+    },
+    "get-api-agent-engine-capabilities": {
+      "source": "85ff7dea3902",
+      "notes": [
+        "Describes the agent engine in use: which streaming and tool features it provides natively and which Halo emulates. Always answers; falls back to the active engine's defaults."
+      ]
+    },
+    "post-api-agent-toolsets-list": {
+      "source": "cfb6e70e81f2",
+      "body": "{\"spaceId\":\"<spaceId>\",\"conversationId\":\"<conversationId>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId>",
+        "conversationId": "<conversationId>"
+      },
+      "notes": [
+        "Read-only: lists the on-demand capabilities (toolsets in the API) a conversation can use and whether each is open. The user opens and closes them in the composer under **＋ › Capabilities**."
+      ]
+    },
+    "get-api-terminal-list": {
+      "source": "e715303232e2",
+      "returns": "{success:true,data:[{id,title,shell,cwd,cols,rows,owner:\"ai\"|\"user\",aiTouched,state:\"running\"|\"exited\",exitCode,lastActivityAt,createdAt,spaceId?}]}",
+      "notes": [
+        "Lists the terminal sessions on this computer, including the ones Halo's assistant opened (`owner: \"ai\"`). `aiTouched` turns true once the assistant has used a session."
+      ]
+    },
+    "post-api-terminal-create": {
+      "source": "1e08dc694483",
+      "body": "{\"spaceId\":\"<spaceId>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId>"
+      },
+      "returns": "{success:true,data:{id,title,shell,cwd,cols,rows,owner:\"user\",state:\"running\",…}} | {success:false,error}",
+      "notes": [
+        "Opens a session with the platform's default shell in the workspace's working folder. Optional body fields: `cwd` (start folder) and `title`. The shell itself cannot be chosen.",
+        "Live output arrives over the WebSocket as `terminal:data` events."
+      ]
+    },
+    "post-api-terminal-input": {
+      "source": "392f8fe34e87",
+      "body": "{\"sessionId\":\"<sessionId>\",\"data\":\"ls\\r\"}",
+      "bodyExample": {
+        "sessionId": "<sessionId>",
+        "data": "ls\r"
+      },
+      "returns": "{success:true} | {success:false,error:\"No such terminal session\",code:\"TERMINAL_NOT_FOUND\"}",
+      "notes": [
+        "Writes raw keystrokes to the session; `\\r` is Enter. Returns as soon as the input is written, before the command has produced output. Read the output from `terminal:data` events or POST /api/terminal/replay.",
+        "The WebSocket message `terminal-input` does the same without an HTTP round trip per keystroke."
+      ]
+    },
+    "post-api-terminal-resize": {
+      "source": "6ec401e0ac14",
+      "body": "{\"sessionId\":\"<sessionId>\",\"cols\":120,\"rows\":32}",
+      "bodyExample": {
+        "sessionId": "<sessionId>",
+        "cols": 120,
+        "rows": 32
+      },
+      "returns": "{success:true} | {success:false,error,code?:\"TERMINAL_NOT_FOUND\"}",
+      "notes": [
+        "`cols` and `rows` must be positive integers."
+      ]
+    },
+    "post-api-terminal-kill": {
+      "source": "87fc11b40df2",
+      "body": "{\"sessionId\":\"<sessionId>\"}",
+      "bodyExample": {
+        "sessionId": "<sessionId>"
+      },
+      "returns": "{success:true} | {success:false,error:\"No such terminal session\",code:\"TERMINAL_NOT_FOUND\"}",
+      "notes": [
+        "Ends the shell process; anything still running in it stops. `TERMINAL_NOT_FOUND` means the session is already gone."
+      ]
+    },
+    "post-api-terminal-replay": {
+      "source": "a80013fec6ed",
+      "body": "{\"sessionId\":\"<sessionId>\"}",
+      "bodyExample": {
+        "sessionId": "<sessionId>"
+      },
+      "returns": "{success:true,data:{info:{id,title,…},data:\"<buffered output>\"}} | {success:false,error,code:\"TERMINAL_NOT_FOUND\"}",
+      "notes": [
+        "Returns the session's info and its buffered output as raw terminal data, ANSI escape codes included, so a terminal view can redraw itself after connecting."
+      ]
+    },
+    "get-api-artifacts-content": {
+      "source": "33a40338a0dd",
+      "notes": [
+        "Binary types (png, jpg, pdf, zip, …) come back base64-encoded, with `encoding: \"base64\"`.",
+        "The content is returned exactly as stored: a `.env` file or a pasted key comes back in the clear.",
+        {
+          "kind": "error",
+          "text": "400 missing path, 403 outside an allowed workspace, 404 not found, 500 \"File too large\" above 10 MB for text or 50 MB for binary files."
+        }
+      ]
+    },
+    "post-api-artifacts-save": {
+      "source": "d161fafea1f0",
+      "notes": [
+        "Replaces the whole file in place. There is no version history or trash, but you can overwrite it again to correct a mistake.",
+        {
+          "kind": "error",
+          "text": "403 when the path resolves outside an allowed workspace."
+        }
+      ]
+    },
+    "post-api-notify-channels-test": {
+      "source": "fc87b0932331",
+      "notes": [
+        "`channelType` is one of `wecom`, `dingtalk`, `feishu`, `email` or `webhook`.",
+        "Delivers a real message: a fixed test text through that channel. The text cannot be changed, so this is a test, not a way to send notifications.",
+        "\"No notification channels configured\" means none is set up yet; channels are set up in **Settings › Message Channels**."
+      ]
+    },
+    "post-api-weixin-ilink-disconnect": {
+      "source": "144f72fe7872",
+      "notes": [
+        "Clears the WeChat Bot credentials of this channel and stops it. Reconnecting needs the same token again (POST /api/weixin-ilink/save-token) or a new QR pairing in **Settings › Message Channels**."
+      ]
+    },
+    "get-api-apps": {
+      "source": "b4b46ae7a7d9",
+      "returns": "{success:true,data:[{id,specId,spaceId,spec,status,userConfig,userOverrides,permissions,installedAt,lastRunAt?,lastRunOutcome?,errorMessage?}]}",
+      "notes": [
+        "Optional query parameters: `spaceId` (only that workspace) and `status`. Without `status`, uninstalled Digital Humans are left out. Without `spaceId`, the list covers every workspace, as the Halo app shows it.",
+        "`userConfig` and the `env` and `headers` of an MCP app's `spec.mcp_server` can hold credentials in plain text, and this API returns them as stored. Treat the response like a secret."
+      ]
+    },
+    "get-api-apps-appid": {
+      "source": "7217b6a0fabb",
+      "returns": "{success:true,data:InstalledApp|null}  // same shape as the entries of GET /api/apps",
+      "notes": [
+        "`userConfig` and the `env` and `headers` of an MCP app's `spec.mcp_server` can hold credentials in plain text, and this API returns them as stored. Treat the response like a secret."
+      ]
+    },
+    "post-api-apps-install": {
+      "source": "9e5b8deb6678",
+      "body": "{\"spaceId\": \"<spaceId> | null\", \"spec\": {…the parsed spec.yaml…}, \"userConfig\": {…}}",
+      "bodyExample": {
+        "spaceId": "<spaceId>",
+        "spec": {
+          "name": "Price watcher",
+          "version": "1.0.0",
+          "author": "example",
+          "description": "Checks a product page every morning",
+          "type": "automation",
+          "system_prompt": "Check the product page and report price changes."
+        }
+      },
+      "returns": "{success:true,data:{appId}} | {success:false,error,code?}",
+      "notes": [
+        "Installs a Digital Human (or a skill or MCP app) from a full spec object, the parsed form of a `spec.yaml`. `spaceId: null` installs a skill or MCP app for every workspace. `userConfig` is optional.",
+        "Unlike installing in the Halo app or through its assistant, this call does not install the skills the spec requires and does not undo a half-finished install. Check GET /api/apps/:appId afterwards.",
+        {
+          "kind": "error",
+          "text": "400 missing `spec` or a `spaceId` that is neither a string nor null, 403 `MCP_COMMAND_BLOCKED` (an MCP command this build's policy blocks), 409 `ALREADY_INSTALLED`, 503 `NOT_INITIALIZED`."
+        }
+      ]
+    },
+    "delete-api-apps-appid": {
+      "source": "e5462139f463",
+      "notes": [
+        "Uninstalls the Digital Human but keeps its data, so POST /api/apps/:appId/reinstall brings it back. The `purge=true` query parameter is accepted but currently has no effect.",
+        "To delete it for good, call DELETE /api/apps/:appId/permanent afterwards."
+      ]
+    },
+    "delete-api-apps-appid-permanent": {
+      "source": "5c7c96e8b158",
+      "impact": "irreversible",
+      "narrowerAlternative": "DELETE /api/apps/:appId",
+      "returns": "{success:true} | {success:false,error,errorName}",
+      "notes": [
+        "Deletes the Digital Human and all its data. It must be uninstalled first with DELETE /api/apps/:appId; otherwise the call fails.",
+        "Built-in Digital Humans cannot be deleted. Failures carry `errorName` so a client can tell the cases apart."
+      ]
+    },
+    "post-api-apps-appid-trigger": {
+      "source": "8442f3b43435",
+      "returns": "{success:true,data:{appId,runId,sessionKey,outcome:\"useful\"|\"noop\"|\"error\"|\"skipped\",startedAt,finishedAt,durationMs,tokensUsed?,errorMessage?,finalText?}} | {success:false,error}",
+      "notes": [
+        "Runs the Digital Human now and answers only after the run has finished, which can take minutes. Use a long client timeout, or follow the run with GET /api/apps/:appId/state and the WebSocket instead of waiting on this call.",
+        "If a run is already in progress or queued, the call fails with that message."
+      ]
+    },
+    "post-api-apps-appid-runs-runid-inject": {
+      "source": "c325cbe836bb",
+      "body": "{\"text\":\"Also check the March invoices\"}",
+      "bodyExample": {
+        "text": "Also check the March invoices"
+      },
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 when `text` is missing or the run is not active."
+        },
+        "The message reaches the running Digital Human, which keeps its full tool permissions and can act on it in ways Halo cannot undo."
+      ]
+    },
+    "patch-api-apps-appid-overrides": {
+      "source": "6c923cd55cb6",
+      "notes": [
+        "JSON Merge Patch: send only the fields to change; `null` clears one (for example `{\"modelSourceId\":null}` falls back to the global model).",
+        "Fields: `notificationLevel`, `modelSourceId`, `modelId`, `spaceMemoryAccess` (true lets the Digital Human read its workspace's memory topics), `chatReasoningEffort` (`off` to `max`, for its chats, IM replies and runs), `memory` (`{enabled, autoConsolidate, cadence}`, always the whole object; `cadence` is `diligent`, `balanced` or `economical`) and `disabledTools` (MCP apps only: tool names to leave out, the whole list each time; `[]` or `null` turns them all back on).",
+        "A `modelSourceId` for an account that no longer exists is accepted; the Digital Human then runs on the current global account until the override changes.",
+        "The run schedule is not set here; use POST /api/apps/:appId/frequency."
+      ]
+    },
+    "patch-api-apps-appid-spec": {
+      "source": "e38199cfbeef",
+      "body": "{\"description\":\"Checks the product page every weekday at 9:00\"}",
+      "bodyExample": {
+        "description": "Checks the product page every weekday at 9:00"
+      },
+      "returns": "{success:true} | {success:false,error}",
+      "impact": "reversible",
+      "notes": [
+        "JSON Merge Patch on the top-level spec fields: each field you send replaces the stored one, `null` removes it, and the merged spec is validated again.",
+        "A changed `subscriptions` takes effect without interrupting a run in progress. To change only how often it runs, POST /api/apps/:appId/frequency is simpler.",
+        "A build can refuse remote changes that touch MCP apps (403)."
+      ]
+    },
+    "post-api-apps-import-spec": {
+      "source": "d5b22b5d43f7",
+      "body": "{\"spaceId\":\"<spaceId>\",\"yamlContent\":\"<contents of spec.yaml>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId>",
+        "yamlContent": "<contents of spec.yaml>"
+      },
+      "returns": "{success:true,data:{appId}} | {success:false,error,code}",
+      "notes": [
+        "Installs a Digital Human (or another app type) from the text of a `spec.yaml`, validated the same way as in the app. Optional `userConfig` fills its configuration fields.",
+        "Unlike installing in the Halo app or through its assistant, this call does not install the skills the spec requires and does not undo a half-finished install.",
+        "A build can refuse remote installs of MCP apps (403).",
+        {
+          "kind": "error",
+          "text": "400 when `spaceId` or `yamlContent` is missing or invalid; other failures carry a `code`."
+        }
+      ]
+    },
+    "post-api-apps-appid-chat-send": {
+      "source": "0f8cf1ceb25c",
+      "body": "{\"spaceId\":\"<spaceId>\",\"message\":\"What did you find today?\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId>",
+        "message": "What did you find today?"
+      },
+      "notes": [
+        "`spaceId` is the Digital Human's own workspace: the `spaceId` of its entry in GET /api/apps.",
+        "`conversationId` picks the thread. Leave it out for the main thread. For a new thread, use the `conversationId` that POST /api/apps/:appId/sessions/create returns. To continue a thread the user started in Halo, build it from GET /api/im-sessions as `app-chat:<appId>:<channel>:<chatType>:<chatId>`.",
+        "Only threads on the `local` and `http` channels are accepted. A thread that belongs to an IM chat is refused, so this API never speaks into a real conversation with a person. A malformed id returns 400 with the expected form; `chatId` may contain only letters, digits, `_` and `-`.",
+        "Returns before the Digital Human has read the message. Follow the reply over the WebSocket, or poll GET /api/apps/:appId/chat/status until `isGenerating` is false and then read GET /api/apps/:appId/chat/messages, passing the same `conversationId` to both.",
+        "A message sent while the same thread is still answering doesn't start a second session: it joins the running turn after its current step, or is merged into the next one. Send one message at a time and wait for the reply, so each reply answers one message.",
+        "Optional body fields: `thinkingEnabled`, `reasoningEffort` (`off` to `max`; overrides `thinkingEnabled`, but the Digital Human's own setting wins), `images`."
+      ]
+    },
+    "post-api-apps-appid-chat-stop": {
+      "source": "c43f730d2fba",
+      "body": "{\"conversationId\":\"<conversationId>\"}",
+      "bodyExample": {
+        "conversationId": "<conversationId>"
+      },
+      "notes": [
+        "Name the thread to stop with `conversationId`. To stop every thread of this Digital Human, send `{\"all\": true}` instead. Sending neither returns 400."
+      ]
+    },
+    "get-api-apps-appid-chat-messages": {
+      "source": "fda00b7f1171",
+      "notes": [
+        "Reads the main thread by default. For another thread pass `?conversationId=`, the same key POST /api/apps/:appId/chat/send takes.",
+        "An empty list means the thread has no history yet, or the id is wrong — the two look the same. List the threads with GET /api/im-sessions rather than guessing.",
+        "`thoughts` holds the raw tool calls and results behind each reply and is large."
+      ]
+    },
+    "post-api-apps-appid-sessions-create": {
+      "source": "5f262107bcbe",
+      "notes": [
+        "Returns a new thread's `conversationId`, ready to pass to POST /api/apps/:appId/chat/send and GET /api/apps/:appId/chat/messages. Give each end user a thread of their own to keep their contexts apart."
+      ]
+    },
+    "get-api-teams": {
+      "source": "4040796c3c01",
+      "notes": [
+        "Optional query parameter `spaceId` narrows the list to teams owned by one workspace; without it the list covers every workspace, as the Halo app shows it.",
+        "`ephemeral: true` marks a temporary collaboration started from a conversation. It stays off the Teams page until it is kept with POST /api/teams/:teamId/save-collab.",
+        "`hostNodeId` set means the team is hosted on someone else's computer and was joined from here: you can read it and message its members, but not edit or run it."
+      ]
+    },
+    "post-api-teams-teamid-save-collab": {
+      "source": "d1a1e0a7040b",
+      "body": "{\"name\":\"Market research team\"}",
+      "bodyExample": {
+        "name": "Market research team"
+      },
+      "notes": [
+        "Keeps a temporary collaboration as a team, optionally under a new `name`. Keep one when the user asked for it."
+      ]
+    },
+    "get-api-teams-teamid-artifacts": {
+      "source": "c218ab7fc6c1",
+      "notes": [
+        "Covers the current or latest run. For an earlier run use GET /api/teams/:teamId/epochs/:epochId/artifacts. Read a file's content with GET /api/artifacts/content and its `path`."
+      ]
+    },
+    "delete-api-teams-teamid": {
+      "source": "e47e575b0353",
+      "notes": [
+        "Also deletes the Digital Humans Halo created for this team (its lead and the members Halo added) and their workspaces. Digital Humans the user added stay. The run history goes with the team."
+      ]
+    },
+    "put-api-teams-teamid-edges": {
+      "source": "4f02e803c007",
+      "body": "{\"edges\":[{\"fromAppId\":\"<appId>\",\"toAppId\":\"<appId>\",\"sync\":false}]}",
+      "bodyExample": {
+        "edges": [
+          {
+            "fromAppId": "<appId>",
+            "toAppId": "<appId>",
+            "sync": false
+          }
+        ]
+      },
+      "notes": [
+        "Replaces the whole list. Read the current edges from GET /api/teams/:teamId/detail, change them and send the full list back. Only meaningful when the team's `collabMode` is `structured`; member ids come from the same response."
+      ]
+    },
+    "post-api-teams-teamid-run": {
+      "source": "2e08ccf88f9b",
+      "notes": [
+        "Starts a run on the team's goal and returns once it has started; the run continues in the background. The lead works from the team goal, as this call carries no brief.",
+        "Fails for a temporary collaboration (keep it first) and for a team hosted on another computer. Follow progress with GET /api/teams/:teamId/detail or over the WebSocket."
+      ]
+    },
+    "post-api-teams-teamid-triggers": {
+      "source": "e7da03f08dc2",
+      "notes": [
+        "`config` by `sourceType`: `schedule` takes `{\"every\": \"30m\"}` or `{\"cron\": \"0 9 * * 1\"}`; `file` takes `{\"pattern\": \"*.csv\", \"path\": \"<part of the folder path>\"}`; `wecom` takes `{\"chatId\": \"<optional>\"}`.",
+        "To change an existing trigger, send `triggerId` next to `trigger`; its `sourceType` must stay the same."
+      ]
+    },
+    "get-api-teams-teamid-triggers": {
+      "source": "53465452a248",
+      "returns": "{success:true,data:[{id,teamId,sourceType:\"schedule\"|\"webhook\"|\"file\"|\"wecom\",config,enabled,createdAt}]}",
+      "notes": [
+        "`config` is returned as stored, including any secret it holds. Treat the response like a secret."
+      ]
+    },
+    "post-api-teams-teamid-leave": {
+      "source": "3cf24adca24a",
+      "notes": [
+        "Only for a team joined from another computer (`hostNodeId` set in GET /api/teams). The members this computer brought leave with it; joining again needs a new invite from the host."
+      ]
+    },
+    "post-api-store-install": {
+      "source": "5d52c7c76272",
+      "body": "{\"slug\":\"author/app-id\",\"spaceId\":\"<spaceId>\"}",
+      "bodyExample": {
+        "slug": "author/app-id",
+        "spaceId": "<spaceId>"
+      },
+      "notes": [
+        "Always send `spaceId`. It is used exactly as sent: leave it out and the item installs for every workspace; name another workspace and it installs there. Both answer `success: true`, and the response does not say where it went.",
+        "Send `\"spaceId\": null` only for a deliberate global install of a skill or MCP app. Optional field: `userConfig` (object).",
+        {
+          "kind": "error",
+          "text": "400 = missing slug."
+        },
+        {
+          "kind": "error",
+          "text": "403 with `code: \"MCP_COMMAND_BLOCKED\"` when the item is an MCP server this build's policy blocks."
+        },
+        "Same operation as POST /api/store/apps/:slug/install, with the slug in the body."
+      ]
+    },
+    "post-api-store-apps-slug-install": {
+      "source": "a4fd86f9ce1c",
+      "body": "{\"spaceId\":\"<spaceId>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId>"
+      },
+      "notes": [
+        "Always send `spaceId`. It is used exactly as sent: leave it out and the item installs for every workspace; name another workspace and it installs there. Both answer `success: true`, and the response does not say where it went.",
+        "Send `\"spaceId\": null` only for a deliberate global install of a skill or MCP app. Optional field: `userConfig` (object).",
+        "Same as POST /api/store/install with the slug in the path, including the 403 `MCP_COMMAND_BLOCKED` case."
+      ]
+    },
+    "get-api-store-capabilities": {
+      "source": "b915912e3fce",
+      "notes": [
+        "Reports which Store features this build supports. Publishing happens in the Halo app, not through this API."
+      ]
+    },
+    "get-api-store-registries": {
+      "source": "b6898fca2639",
+      "returns": "{success:true,data:[{id,name,url,enabled,isDefault?,sourceType?,adapterConfig?}]}",
+      "notes": [
+        "`adapterConfig` is returned as stored and can hold an API key in plain text. Treat the response like a secret."
+      ]
+    },
+    "post-api-store-registries": {
+      "source": "7478ecf516c0",
+      "returns": "{success:true,data:{id,name,url,enabled,isDefault:false,sourceType?,adapterConfig?}} | {success:false,error}",
+      "notes": [
+        "Optional fields: `sourceType` (string) and `adapterConfig` (object, adapter-specific, for example an API key). The response returns `adapterConfig` as stored.",
+        "`url` must be http(s) and must not point to a loopback, private or link-local host. Fails if a source with the same URL already exists."
+      ]
+    },
+    "post-api-store-import-dhpkg": {
+      "source": "cdc750a1668e",
+      "body": "{\"filePath\":\"/absolute/path/to/app.dhpkg\",\"spaceId\":\"<spaceId>\"}",
+      "bodyExample": {
+        "filePath": "/absolute/path/to/app.dhpkg",
+        "spaceId": "<spaceId>"
+      },
+      "notes": [
+        "Installs and activates the package's Digital Human; it then runs on its own schedule. Undo with DELETE /api/apps/:appId.",
+        "Unlike installing in the Halo app or through its assistant, this does not fetch the package's required skills or undo a half-finished install. Check GET /api/apps/:appId afterwards; an activation that fails after the install still answers `success: true`.",
+        "`filePath` is a path on the computer running Halo. `spaceId` is used exactly as sent: left out means an install for every workspace, another workspace installs there, and neither is reported back.",
+        {
+          "kind": "error",
+          "text": "400 when `filePath` is missing."
+        }
+      ]
+    },
+    "post-api-tlon-kbid-resolve-sources": {
+      "source": "6a1986129737",
+      "notes": [
+        "Maps paths read from a knowledge base back to the original documents, deduplicated and absolute. Paths that no longer exist are dropped, so a shorter list than the one sent is normal.",
+        {
+          "kind": "error",
+          "text": "400 when `readPaths` is not an array; an empty array returns nothing."
+        }
+      ]
+    },
+    "post-api-spaces": {
+      "source": "d8d934a2ba5f",
+      "notes": [
+        "Optional body fields: `customPath` (put the workspace's folder somewhere other than the default directory) and `color`. `icon` is an emoji."
+      ]
+    },
+    "get-api-artifacts-detect-type": {
+      "source": "b105cfffe853",
+      "query": "?path=/absolute/path/inside/the/workspace",
+      "notes": [
+        "`path` is the file's absolute path inside a workspace.",
+        {
+          "kind": "error",
+          "text": "403 when the path is outside an allowed workspace, 404 when the file does not exist."
+        }
+      ]
+    },
+    "get-api-apps-appid-activity": {
+      "source": "d4f6828e1918",
+      "notes": [
+        "Optional query parameters: `limit` (most entries), `before` (only entries older than this time, epoch ms), `beforeId`, `offset`, `type` (`run_complete`, `run_skipped`, `run_error`, `milestone`, `escalation` or `output`), and `teamId` with `epochId` (entries of one team run)."
+      ]
+    },
+    "post-api-apps-appid-escalation-entryid-respond": {
+      "source": "4a6905235321",
+      "returns": "{success:true,data:{…the answered activity entry}} | {success:false,error}",
+      "notes": [
+        "Answers a question a Digital Human asked during a run (an activity entry of type `escalation`; the Digital Human's status is `waiting_user` while it waits). Send `choice`, `text`, or both, as the question asked for; for a question with several parts, send `answers`, one `{choice?, text?}` per part, in order.",
+        "This is the human decision the run was waiting for. Send the user's actual answer: it cannot be withdrawn afterwards."
+      ]
+    },
+    "get-api-apps-appid-chat-status": {
+      "source": "d737a9ab8a11",
+      "notes": [
+        "Checks the main thread by default; pass `?conversationId=` for another thread, the same key POST /api/apps/:appId/chat/send takes.",
+        "Poll with a growing interval (2 s, then double) instead of a fixed wait."
+      ]
+    },
+    "put-api-ai-sources-sources-sourceid": {
+      "source": "c866c65e56ab",
+      "notes": [
+        "Merges field by field, so send only what changes. Leave `apiKey` out and the stored key is untouched: renaming a source or pointing it at a different model never needs it.",
+        "Don't send `apiKey` here. Keys are managed in **Settings › AI Model**."
+      ]
+    }
+  },
+  "zh": {
+    "get-api-security-policy": {
+      "source": "ef68ebaa14a6",
+      "summary": "读取本版本的安全策略"
+    },
+    "get-api-config": {
+      "source": "098d7778b291",
+      "summary": "读取全局配置"
+    },
+    "get-api-config-credential-failures": {
+      "source": "b11eccea427a",
+      "summary": "列出解密失败的凭据字段"
+    },
+    "post-api-config-refresh-ai-sources": {
+      "source": "124a6b5a4f00",
+      "summary": "重新读取所有模型来源并返回刷新后的配置"
+    },
+    "post-api-ai-sources-switch-source": {
+      "source": "5d1f8fa40e26",
+      "summary": "切换到另一个已配置的模型来源"
+    },
+    "post-api-ai-sources-set-model": {
+      "source": "8c74eb0fd67d",
+      "summary": "在当前模型来源内切换模型"
+    },
+    "put-api-ai-sources-sources-sourceid": {
+      "source": "c866c65e56ab",
+      "summary": "修改一个已配置的模型来源",
+      "notes": [
+        "逐个字段合并，只发送要改的字段。不带 `apiKey` 时已保存的密钥保持不变：改名或换模型都不需要它。",
+        "不要通过这里发送 `apiKey`。密钥在 **设置 › AI 模型** 中管理。"
+      ]
+    },
+    "delete-api-ai-sources-sources-sourceid": {
+      "source": "3a37678c8a01",
+      "summary": "删除一个已配置的模型来源"
+    },
+    "post-api-model-capabilities-resolve": {
+      "source": "7ebba3f4f67e",
+      "summary": "解析某个模型实际生效的能力"
+    },
+    "get-api-model-capabilities-preset-modelid": {
+      "source": "cb0d660beb4a",
+      "summary": "读取某个模型内置的能力预设"
+    },
+    "get-api-model-capabilities-all": {
+      "source": "441a2e6efbe4",
+      "summary": "列出所有已知模型支持的能力（视觉、工具、上下文）"
+    },
+    "get-api-spaces-halo": {
+      "source": "43be0092b8f3",
+      "summary": "读取 Halo 工作区"
+    },
+    "get-api-spaces-default-path": {
+      "source": "9ebc9fddeecf",
+      "summary": "读取新工作区的默认创建目录"
+    },
+    "get-api-spaces": {
+      "source": "ba85d1fa380c",
+      "summary": "列出所有工作区"
+    },
+    "post-api-spaces": {
+      "source": "d8d934a2ba5f",
+      "summary": "创建工作区"
+    },
+    "put-api-spaces-reorder": {
+      "source": "9f7a88f22deb",
+      "summary": "设置工作区的显示顺序"
+    },
+    "get-api-spaces-spaceid": {
+      "source": "a386bbae6dd7",
+      "summary": "读取一个工作区"
+    },
+    "put-api-spaces-spaceid": {
+      "source": "6d19e471f06e",
+      "summary": "重命名工作区或更换图标"
+    },
+    "put-api-spaces-spaceid-working-dir": {
+      "source": "62ce09b31124",
+      "summary": "把工作区指向另一个工作目录"
+    },
+    "get-api-spaces-spaceid-preferences": {
+      "source": "abd21e8c2cb3",
+      "summary": "读取工作区偏好设置（布局、记忆设置）"
+    },
+    "put-api-spaces-spaceid-preferences": {
+      "source": "1a27b100d2dc",
+      "summary": "修改工作区偏好设置，例如开关共享记忆"
+    },
+    "get-api-spaces-spaceid-memory": {
+      "source": "f59aa99a15e0",
+      "summary": "读取工作区记忆的状态"
+    },
+    "post-api-spaces-spaceid-memory-consolidate": {
+      "source": "999e72a74b71",
+      "summary": "立即整合工作区记忆"
+    },
+    "delete-api-spaces-spaceid": {
+      "source": "ff0cf307e6f7",
+      "summary": "删除工作区及其中的全部内容"
+    },
+    "post-api-spaces-spaceid-open": {
+      "source": "cb5f9cd49424",
+      "summary": "获取工作区的工作目录路径"
+    },
+    "get-api-spaces-spaceid-conversations": {
+      "source": "e4f0134efa1f",
+      "summary": "列出工作区中的会话"
+    },
+    "post-api-spaces-spaceid-conversations": {
+      "source": "6f22fed736a9",
+      "summary": "新建空会话"
+    },
+    "get-api-spaces-spaceid-conversations-conversationid": {
+      "source": "7e82a4bea4a2",
+      "summary": "读取会话及其消息"
+    },
+    "put-api-spaces-spaceid-conversations-conversationid": {
+      "source": "fdb831b85902",
+      "summary": "修改会话标题或元数据"
+    },
+    "delete-api-spaces-spaceid-conversations-conversationid": {
+      "source": "5f68aec2e9bf",
+      "summary": "删除会话"
+    },
+    "get-api-spaces-spaceid-conversations-conversationid-messages-messageid-thoughts": {
+      "source": "be67b475e7af",
+      "summary": "读取一条消息背后的思考过程和工具调用"
+    },
+    "post-api-spaces-spaceid-conversations-conversationid-star": {
+      "source": "049621b08f3d",
+      "summary": "星标或取消星标会话"
+    },
+    "post-api-agent-message": {
+      "source": "2b1c56740d76",
+      "summary": "在会话中发起一轮新任务"
+    },
+    "post-api-agent-stop": {
+      "source": "4d1718223f73",
+      "summary": "停止 Halo 在会话中正在做的事"
+    },
+    "get-api-agent-sessions": {
+      "source": "aae5a799e391",
+      "summary": "列出 Halo 正在处理的会话"
+    },
+    "get-api-agent-generating-conversationid": {
+      "source": "79d5a6dc7ab8",
+      "summary": "查询 Halo 是否仍在某个会话中生成回复"
+    },
+    "post-api-agent-test-mcp": {
+      "source": "16ebc41d4fc4",
+      "summary": "测试所有已配置 MCP 服务器的连接"
+    },
+    "post-api-agent-probe-mcp": {
+      "source": "dc3c9046e83a",
+      "summary": "探测一个已安装 MCP 服务器的连通性和工具"
+    },
+    "get-api-agent-engine-capabilities": {
+      "source": "85ff7dea3902",
+      "summary": "读取当前 Agent 引擎的能力"
+    },
+    "get-api-agent-engine-availability": {
+      "source": "5b5091f9976c",
+      "summary": "列出已安装的 Agent 引擎及当前使用的引擎"
+    },
+    "post-api-agent-toolsets-list": {
+      "source": "cfb6e70e81f2",
+      "summary": "列出会话可用的按需能力"
+    },
+    "get-api-terminal-list": {
+      "source": "e715303232e2",
+      "summary": "列出打开的终端会话"
+    },
+    "post-api-terminal-create": {
+      "source": "1e08dc694483",
+      "summary": "打开终端会话"
+    },
+    "post-api-terminal-input": {
+      "source": "392f8fe34e87",
+      "summary": "向终端会话发送按键"
+    },
+    "post-api-terminal-resize": {
+      "source": "6ec401e0ac14",
+      "summary": "调整终端会话大小"
+    },
+    "post-api-terminal-kill": {
+      "source": "87fc11b40df2",
+      "summary": "关闭终端会话"
+    },
+    "post-api-terminal-replay": {
+      "source": "a80013fec6ed",
+      "summary": "回读终端会话的缓冲输出"
+    },
+    "get-api-spaces-spaceid-artifacts": {
+      "source": "8ecd6ccaea0e",
+      "summary": "列出工作区中的文件和文件夹"
+    },
+    "get-api-spaces-spaceid-artifacts-query": {
+      "source": "04658184ad1d",
+      "summary": "按名称搜索工作区中的文件和文件夹路径"
+    },
+    "get-api-spaces-spaceid-artifacts-tree": {
+      "source": "066599e4718d",
+      "summary": "获取工作区可懒加载的完整文件树"
+    },
+    "post-api-spaces-spaceid-artifacts-children": {
+      "source": "248bff2e2555",
+      "summary": "加载文件树中一个文件夹的子项"
+    },
+    "get-api-artifacts-content": {
+      "source": "33a40338a0dd",
+      "summary": "读取工作区中的一个文件"
+    },
+    "post-api-artifacts-save": {
+      "source": "d161fafea1f0",
+      "summary": "覆盖文件内容"
+    },
+    "get-api-artifacts-detect-type": {
+      "source": "b105cfffe853",
+      "summary": "判断文件是文本还是二进制，以及如何预览"
+    },
+    "post-api-spaces-spaceid-artifacts-file": {
+      "source": "a2956af3f7df",
+      "summary": "在工作区中新建文件"
+    },
+    "post-api-spaces-spaceid-artifacts-folder": {
+      "source": "f57a8fd32ad6",
+      "summary": "在工作区中新建文件夹"
+    },
+    "post-api-spaces-spaceid-artifacts-reconcile": {
+      "source": "139446a06e63",
+      "summary": "按磁盘实际内容重新同步文件列表"
+    },
+    "delete-api-spaces-spaceid-artifacts": {
+      "source": "199cead74384",
+      "summary": "把文件或文件夹移到回收站"
+    },
+    "post-api-spaces-spaceid-artifacts-rename": {
+      "source": "b442ed337754",
+      "summary": "重命名文件或文件夹"
+    },
+    "post-api-spaces-spaceid-artifacts-move": {
+      "source": "211947541259",
+      "summary": "把文件或文件夹移到另一个目录"
+    },
+    "post-api-notify-channels-test": {
+      "source": "fc87b0932331",
+      "summary": "通过一个已配置的通知渠道发送测试通知"
+    },
+    "post-api-notify-channels-clear-cache": {
+      "source": "fe75a60636e3",
+      "summary": "清除缓存的通知渠道访问令牌"
+    },
+    "get-api-notify-channels-product-config": {
+      "source": "b57415dd297c",
+      "summary": "读取产品级的通知渠道定制"
+    },
+    "get-api-wecom-bot-status": {
+      "source": "150f3c1c0982",
+      "summary": "查询企业微信机器人通道是否已配置并连接"
+    },
+    "post-api-wecom-bot-reconnect": {
+      "source": "0a0d6baee5e3",
+      "summary": "重新连接所有已配置的企业微信机器人"
+    },
+    "post-api-feishu-bot-reachability": {
+      "source": "7c38478d07ab",
+      "summary": "检查飞书机器人是否真正可达，而不只是已连接"
+    },
+    "get-api-im-channels-status": {
+      "source": "3b25d42c21c7",
+      "summary": "获取所有即时通讯通道的连接状态，或用 ?instanceId= 查询一个"
+    },
+    "post-api-im-channels-reconnect": {
+      "source": "43dfcb99a08c",
+      "summary": "重新连接一个即时通讯通道"
+    },
+    "post-api-im-channels-reload": {
+      "source": "36f7bd63bdd0",
+      "summary": "按已保存的配置重新加载所有即时通讯通道"
+    },
+    "get-api-im-channels-providers": {
+      "source": "bcad5a2df078",
+      "summary": "列出可用的即时通讯通道类型及其配置字段"
+    },
+    "get-api-im-channels-permission-defaults": {
+      "source": "1bd73e5f8a22",
+      "summary": "获取本版本为新通道设定的默认访客权限"
+    },
+    "post-api-weixin-ilink-save-token": {
+      "source": "26df9f009bdb",
+      "summary": "为已配置的微信机器人设置令牌"
+    },
+    "post-api-weixin-ilink-disconnect": {
+      "source": "144f72fe7872",
+      "summary": "清除微信机器人的凭据并停止它"
+    },
+    "get-api-im-sessions": {
+      "source": "99f0351df336",
+      "summary": "列出数字人的全部聊天线程，包括它自己的和即时通讯中的"
+    },
+    "post-api-im-sessions-set-proactive": {
+      "source": "23996061a1e3",
+      "summary": "设置运行结束后是否自动把结果推送到这个聊天"
+    },
+    "post-api-im-sessions-remove": {
+      "source": "a99af95052a4",
+      "summary": "从会话登记中移除一个聊天绑定"
+    },
+    "post-api-im-sessions-set-custom-name": {
+      "source": "e96691856881",
+      "summary": "为聊天绑定设置自定义显示名称"
+    },
+    "get-api-im-sessions-linked": {
+      "source": "36fe3c998d4d",
+      "summary": "列出数字人借另一位数字人的机器人推送到的聊天"
+    },
+    "post-api-im-sessions-set-push-link": {
+      "source": "199bc0dce4e4",
+      "summary": "允许或停止数字人借另一位数字人的机器人推送到某个聊天"
+    },
+    "get-api-auth-providers": {
+      "source": "b6b1221f5b06",
+      "summary": "列出本版本提供的登录方式和模型提供商"
+    },
+    "get-api-system-version": {
+      "source": "ee574a11c5ed",
+      "summary": "读取正在运行的 Halo 版本"
+    },
+    "get-api-apps": {
+      "source": "b4b46ae7a7d9",
+      "summary": "列出工作区中的数字人（及其他已安装应用）"
+    },
+    "post-api-apps-install": {
+      "source": "9e5b8deb6678",
+      "summary": "用完整的 spec 对象安装数字人（或其他类型的应用）"
+    },
+    "get-api-apps-appid": {
+      "source": "7217b6a0fabb",
+      "summary": "按 ID 获取一个已安装的数字人（或其他应用）"
+    },
+    "get-api-apps-appid-available-skills": {
+      "source": "609eae61d168",
+      "summary": "列出数字人可加载的技能（全局和工作区内）"
+    },
+    "get-api-skills-command-name": {
+      "source": "00a230e68a6c",
+      "summary": "预览技能标题会安装成的斜杠命令名"
+    },
+    "delete-api-apps-appid": {
+      "source": "e5462139f463",
+      "summary": "卸载数字人（可通过重新安装恢复）"
+    },
+    "post-api-apps-appid-reinstall": {
+      "source": "df6605636b62",
+      "summary": "重新安装已卸载的数字人"
+    },
+    "post-api-apps-appid-move-space": {
+      "source": "89e2b5f365c7",
+      "summary": "设置数字人在哪个工作区开始新的工作"
+    },
+    "post-api-apps-appid-clear-memory": {
+      "source": "09be32c87ff7",
+      "summary": "删除数字人的全部记忆文件"
+    },
+    "get-api-apps-appid-memory": {
+      "source": "388c98b0c02a",
+      "summary": "读取数字人记忆的状态"
+    },
+    "post-api-apps-appid-memory-consolidate": {
+      "source": "fa3c4aaf6e0a",
+      "summary": "立即整合数字人的记忆"
+    },
+    "get-api-apps-appid-reminders": {
+      "source": "fb30cafa4cdd",
+      "summary": "列出数字人在会话中设置的提醒"
+    },
+    "delete-api-apps-appid-reminders-reminderid": {
+      "source": "cb7b728fa192",
+      "summary": "取消数字人在会话中设置的一个提醒"
+    },
+    "delete-api-apps-appid-permanent": {
+      "source": "5c7c96e8b158",
+      "summary": "永久删除数字人及其全部数据"
+    },
+    "post-api-apps-appid-pause": {
+      "source": "470fde024fb8",
+      "summary": "暂停数字人（停止计划任务）"
+    },
+    "post-api-apps-appid-resume": {
+      "source": "4000b5909c76",
+      "summary": "恢复已暂停的数字人"
+    },
+    "post-api-apps-appid-trigger": {
+      "source": "8442f3b43435",
+      "summary": "手动让数字人立即运行"
+    },
+    "get-api-apps-appid-activity": {
+      "source": "d4f6828e1918",
+      "summary": "获取数字人的活动和运行记录"
+    },
+    "post-api-apps-appid-escalation-entryid-respond": {
+      "source": "4a6905235321",
+      "summary": "回答数字人运行中提出的问题"
+    },
+    "post-api-apps-appid-runs-runid-continue": {
+      "source": "c17d350e58e8",
+      "summary": "继续一次因出错而提前停止的运行"
+    },
+    "post-api-apps-appid-runs-runid-inject": {
+      "source": "c325cbe836bb",
+      "summary": "向正在进行的运行插入一条消息"
+    },
+    "get-api-apps-appid-runs-runid-session": {
+      "source": "90a9953cae32",
+      "summary": "逐步查看一次运行实际做了什么"
+    },
+    "post-api-apps-appid-config": {
+      "source": "b699b847ccb4",
+      "summary": "替换数字人的用户配置值"
+    },
+    "patch-api-apps-appid-overrides": {
+      "source": "6c923cd55cb6",
+      "summary": "按合并补丁修改单个数字人的覆盖设置（通知级别、模型）"
+    },
+    "post-api-apps-appid-frequency": {
+      "source": "6a49eb9df417",
+      "summary": "修改数字人的运行频率，不改动 spec 的其他部分"
+    },
+    "post-api-apps-appid-permissions-grant": {
+      "source": "c5fdfc6d5276",
+      "summary": "给数字人授予一项权限"
+    },
+    "post-api-apps-appid-upgrade-strategy": {
+      "source": "f2aa4c4f484a",
+      "summary": "设置从商店安装的数字人如何处理版本升级"
+    },
+    "post-api-apps-appid-permissions-revoke": {
+      "source": "b7d8b9555edb",
+      "summary": "撤销数字人的一项权限"
+    },
+    "patch-api-apps-appid-spec": {
+      "source": "e38199cfbeef",
+      "summary": "修改数字人 spec 的部分字段，不整体替换"
+    },
+    "get-api-apps-appid-state": {
+      "source": "329ebe8a09f1",
+      "summary": "获取数字人的实时运行状态（运行中、排队、空闲等）"
+    },
+    "post-api-apps-import-spec": {
+      "source": "d5b22b5d43f7",
+      "summary": "用 YAML 格式的 spec 文本安装数字人（或其他类型的应用）"
+    },
+    "post-api-apps-appid-chat-send": {
+      "source": "0f8cf1ceb25c",
+      "summary": "给数字人发消息并让它回复",
+      "notes": [
+        "`spaceId` 是数字人自己的工作区：GET /api/apps 中它那一项的 `spaceId`。",
+        "`conversationId` 决定消息进入哪个线程。不传时进入主线程。新建线程时，使用 POST /api/apps/:appId/sessions/create 返回的 `conversationId`。要接着用户在 Halo 里开始的线程，用 GET /api/im-sessions 的数据拼成 `app-chat:<appId>:<channel>:<chatType>:<chatId>`。",
+        "只接受 `local` 和 `http` 通道上的线程。属于 IM 聊天的线程会被拒绝，所以这个 API 永远不会替你在与真人的对话里发言。格式错误的标识返回 400 并给出正确格式；`chatId` 只能包含字母、数字、`_` 和 `-`。",
+        "在数字人读到消息之前就会返回。通过 WebSocket 跟进回复，或轮询 GET /api/apps/:appId/chat/status 直到 `isGenerating` 为 false，再读取 GET /api/apps/:appId/chat/messages，两者都传同一个 `conversationId`。",
+        "同一线程还在回复时发来的消息不会另起一个处理过程：它会在当前步骤之后并入正在进行的回复，或等这一轮结束后合并处理。请一次发一条，等回复完成再发下一条，这样每条回复对应一条消息。",
+        "可选的请求体字段：`thinkingEnabled`、`reasoningEffort`（`off` 到 `max`；会覆盖 `thinkingEnabled`，但数字人自己的设置优先）、`images`。"
+      ]
+    },
+    "post-api-apps-appid-chat-stop": {
+      "source": "c43f730d2fba",
+      "summary": "停止数字人正在生成的聊天回复"
+    },
+    "get-api-apps-appid-chat-status": {
+      "source": "d737a9ab8a11",
+      "summary": "查询数字人聊天是否正在生成回复"
+    },
+    "get-api-apps-appid-chat-messages": {
+      "source": "fda00b7f1171",
+      "summary": "读取与数字人的聊天记录"
+    },
+    "get-api-apps-appid-im-chat-messages": {
+      "source": "1741ff9b37cb",
+      "summary": "读取数字人在已绑定即时通讯聊天中的记录"
+    },
+    "post-api-apps-appid-chat-clear": {
+      "source": "8b08b1966f40",
+      "summary": "清空与数字人的聊天记录"
+    },
+    "post-api-apps-appid-chat-restart": {
+      "source": "f03ca5b1b83b",
+      "summary": "重启数字人的聊天进程（重新加载系统提示词和配置）"
+    },
+    "get-api-apps-appid-chats-clearable": {
+      "source": "feee2575c7b7",
+      "summary": "统计清空数字人全部聊天会涉及的会话数"
+    },
+    "post-api-apps-appid-chats-clear-all": {
+      "source": "d4ca7e5f384b",
+      "summary": "一次清空数字人全部聊天的记录"
+    },
+    "post-api-apps-appid-im-chat-clear": {
+      "source": "8d476902beba",
+      "summary": "清空数字人在已绑定即时通讯聊天中的记录"
+    },
+    "post-api-apps-appid-im-chat-stop": {
+      "source": "7930446ec94c",
+      "summary": "停止数字人在已绑定即时通讯聊天中正在生成的回复（保留记录）"
+    },
+    "post-api-apps-appid-sessions-create": {
+      "source": "5f262107bcbe",
+      "summary": "与数字人开始一个新的聊天线程"
+    },
+    "post-api-apps-appid-sessions-fork": {
+      "source": "1e315729bb67",
+      "summary": "把现有聊天线程连同记录复制成一个新线程"
+    },
+    "post-api-apps-appid-sessions-delete": {
+      "source": "94dcca1a9f5c",
+      "summary": "删除与数字人的一个聊天线程"
+    },
+    "get-api-teams": {
+      "source": "4040796c3c01",
+      "summary": "列出团队，可只看某个工作区的团队"
+    },
+    "post-api-teams": {
+      "source": "1acc67aceb5c",
+      "summary": "创建团队，并为它配好负责人"
+    },
+    "post-api-teams-propose-members": {
+      "source": "933138bc04e6",
+      "summary": "按团队目标起草成员角色（不创建任何东西）"
+    },
+    "get-api-teams-collab-for-conversation-conversationid": {
+      "source": "b382b5d9a7ae",
+      "summary": "获取从某个会话发起的临时协作"
+    },
+    "post-api-teams-teamid-save-collab": {
+      "source": "d1a1e0a7040b",
+      "summary": "把临时协作保留为团队"
+    },
+    "get-api-teams-teamid": {
+      "source": "7160ca9ac56d",
+      "summary": "获取团队本身的记录"
+    },
+    "get-api-teams-teamid-detail": {
+      "source": "b0ec5f283528",
+      "summary": "获取团队详情：成员、协作关系、在线情况、看板和决定"
+    },
+    "get-api-teams-teamid-chat-messages": {
+      "source": "ccdbec62a856",
+      "summary": "读取团队中某位成员的聊天记录"
+    },
+    "post-api-teams-teamid-members-appid-send": {
+      "source": "32863f307f4e",
+      "summary": "给一位团队成员发消息并等待回复"
+    },
+    "post-api-teams-teamid-members-appid-stop": {
+      "source": "8750b72de8a4",
+      "summary": "停止一位团队成员正在进行的工作"
+    },
+    "get-api-teams-teamid-artifacts": {
+      "source": "c218ab7fc6c1",
+      "summary": "列出当前或最近一次运行中各成员产出的文件"
+    },
+    "get-api-teams-teamid-conversations": {
+      "source": "ee9224586d0a",
+      "summary": "列出团队进行中的会话，最新的在前"
+    },
+    "post-api-teams-teamid-conversations": {
+      "source": "9df06a56838d",
+      "summary": "新建团队会话"
+    },
+    "patch-api-teams-teamid-conversations-epochid": {
+      "source": "4444851eb25a",
+      "summary": "重命名团队会话"
+    },
+    "delete-api-teams-teamid-conversations-epochid": {
+      "source": "880e41273161",
+      "summary": "归档（关闭）团队会话"
+    },
+    "get-api-teams-teamid-epochs": {
+      "source": "054d65b85bf5",
+      "summary": "列出团队的运行和会话历史，最新的在前"
+    },
+    "get-api-teams-teamid-epochs-epochid-board": {
+      "source": "f0fd191d75f1",
+      "summary": "获取一次运行的任务、发现和成员"
+    },
+    "get-api-teams-teamid-epochs-epochid-artifacts": {
+      "source": "44667cb69672",
+      "summary": "列出一次运行中产出的文件"
+    },
+    "patch-api-teams-teamid": {
+      "source": "282e52447909",
+      "summary": "修改团队的名称、目标、模式、升级路由或负责人"
+    },
+    "delete-api-teams-teamid": {
+      "source": "e47e575b0353",
+      "summary": "解散团队"
+    },
+    "post-api-teams-teamid-members": {
+      "source": "fb9d3f96f351",
+      "summary": "把已有的数字人加入团队"
+    },
+    "patch-api-teams-teamid-members-appid": {
+      "source": "c08e079c75e9",
+      "summary": "改写成员在团队中的职责"
+    },
+    "delete-api-teams-teamid-checks-checkid": {
+      "source": "a3573f95b4f3",
+      "summary": "停止成员在团队中设置的一项定期检查"
+    },
+    "delete-api-teams-teamid-members-appid": {
+      "source": "4501fa38dbda",
+      "summary": "把成员移出团队"
+    },
+    "put-api-teams-teamid-edges": {
+      "source": "4f02e803c007",
+      "summary": "整体替换结构化团队中的交接关系"
+    },
+    "post-api-teams-teamid-run": {
+      "source": "2e08ccf88f9b",
+      "summary": "让团队围绕目标开始一次运行"
+    },
+    "post-api-teams-teamid-pause": {
+      "source": "08193267796d",
+      "summary": "停止团队当前的运行"
+    },
+    "get-api-teams-teamid-triggers": {
+      "source": "53465452a248",
+      "summary": "列出团队的计划任务和其他触发器"
+    },
+    "post-api-teams-teamid-triggers": {
+      "source": "e7da03f08dc2",
+      "summary": "为团队添加或修改计划任务、文件或企业微信触发器"
+    },
+    "post-api-teams-teamid-leave": {
+      "source": "3cf24adca24a",
+      "summary": "退出由别人电脑托管的团队"
+    },
+    "get-api-teams-teamid-federation-presence": {
+      "source": "1272a2cd97be",
+      "summary": "查看跨电脑团队中哪些电脑在线"
+    },
+    "delete-api-teams-teamid-triggers-triggerid": {
+      "source": "e9ba510185f8",
+      "summary": "移除团队的计划任务或其他触发器"
+    },
+    "post-api-store-query": {
+      "source": "9547c2e052c5",
+      "summary": "分页搜索商店条目（主要的浏览接口）"
+    },
+    "get-api-store-apps": {
+      "source": "1fd9e43d9d1f",
+      "summary": "列出商店条目（旧接口，不分页；建议用 POST /api/store/query）"
+    },
+    "get-api-store-apps-slug": {
+      "source": "dfc1ff6014ff",
+      "summary": "按 slug 获取一个商店条目的完整详情"
+    },
+    "get-api-store-app-document": {
+      "source": "cdf7309e5a52",
+      "summary": "获取条目的 SKILL.md 或 README 文档"
+    },
+    "post-api-store-install": {
+      "source": "5d52c7c76272",
+      "summary": "按 slug 从商店安装"
+    },
+    "post-api-store-apps-slug-install": {
+      "source": "a4fd86f9ce1c",
+      "summary": "按 slug 从商店安装（slug 写在路径中）"
+    },
+    "post-api-store-refresh": {
+      "source": "b10e51e390d8",
+      "summary": "强制重新下载完整的商店索引"
+    },
+    "get-api-store-updates": {
+      "source": "89defa4c0162",
+      "summary": "列出已安装应用的可用更新"
+    },
+    "get-api-store-registries": {
+      "source": "b6898fca2639",
+      "summary": "列出已配置的商店来源"
+    },
+    "get-api-store-capabilities": {
+      "source": "b915912e3fce",
+      "summary": "查询本版本支持哪些商店功能（发布、评审、安装数）"
+    },
+    "get-api-store-category-taxonomy": {
+      "source": "6b753347b105",
+      "summary": "获取浏览和发布用的商店分类"
+    },
+    "post-api-store-revalidate": {
+      "source": "e0dad54da14e",
+      "summary": "按条件快速检查商店索引是否有更新"
+    },
+    "get-api-store-discover-page": {
+      "source": "af4f2c7bce01",
+      "summary": "获取商店首页的精选内容"
+    },
+    "get-api-store-my-publications": {
+      "source": "f4a51fab5eeb",
+      "summary": "列出已登录作者自己发布的应用"
+    },
+    "post-api-store-unpublish": {
+      "source": "3a8df0747b1e",
+      "summary": "下架作者自己发布的一个应用"
+    },
+    "post-api-store-ignore-version": {
+      "source": "bc283ed75d17",
+      "summary": "忽略一个可用更新，不再提示"
+    },
+    "post-api-store-registries": {
+      "source": "7478ecf516c0",
+      "summary": "添加商店来源"
+    },
+    "delete-api-store-registries-registryid": {
+      "source": "2ff91c93dd11",
+      "summary": "移除一个商店来源"
+    },
+    "post-api-store-registries-registryid-toggle": {
+      "source": "031369e76e78",
+      "summary": "启用或停用一个商店来源"
+    },
+    "patch-api-store-registries-registryid-adapter-config": {
+      "source": "4fb36215e4f0",
+      "summary": "修改商店来源的适配器配置（例如 API Key）"
+    },
+    "post-api-store-updates-check-now": {
+      "source": "0073e16c5806",
+      "summary": "立即重新检查所有已安装应用的更新"
+    },
+    "post-api-store-updates-appid-apply": {
+      "source": "f9b239885b7a",
+      "summary": "为已安装的应用应用可用更新"
+    },
+    "post-api-store-publish-preview": {
+      "source": "1331be0ef839",
+      "summary": "预览发布应用时会得到的 slug 和版本"
+    },
+    "post-api-store-publish-find-app": {
+      "source": "75f2fea5ee8d",
+      "summary": "查找某个商店 slug 对应的已安装应用"
+    },
+    "post-api-store-import-dhpkg": {
+      "source": "cdc750a1668e",
+      "summary": "从本地 .dhpkg 文件安装数字人"
+    },
+    "post-api-tlon": {
+      "source": "a0426232fa77",
+      "summary": "创建知识库"
+    },
+    "get-api-tlon": {
+      "source": "06726cd26a2f",
+      "summary": "列出所有知识库"
+    },
+    "get-api-tlon-for-space-spaceid": {
+      "source": "450a1dc48826",
+      "summary": "列出绑定到某个工作区的知识库（或默认知识库）"
+    },
+    "post-api-tlon-set-default": {
+      "source": "4915a7dcfbd0",
+      "summary": "设置（或清除）新会话自动加载的知识库"
+    },
+    "get-api-tlon-kbid": {
+      "source": "4958a0a934ab",
+      "summary": "按 ID 获取一个知识库"
+    },
+    "put-api-tlon-kbid": {
+      "source": "929084133c8c",
+      "summary": "重命名知识库或修改它的描述和状态"
+    },
+    "delete-api-tlon-kbid": {
+      "source": "4510cfd40ff6",
+      "summary": "删除知识库及其全部数据"
+    },
+    "post-api-tlon-kbid-bind-space": {
+      "source": "9154606f9485",
+      "summary": "把知识库绑定到工作区"
+    },
+    "post-api-tlon-kbid-unbind-space": {
+      "source": "78bd129f3b80",
+      "summary": "解除知识库与工作区的绑定"
+    },
+    "post-api-tlon-kbid-bind-app": {
+      "source": "55dbdbfd8fe9",
+      "summary": "绑定知识库，让数字人可以读取"
+    },
+    "post-api-tlon-kbid-unbind-app": {
+      "source": "722240c03168",
+      "summary": "解除知识库与数字人的绑定"
+    },
+    "post-api-tlon-kbid-linked-dirs": {
+      "source": "f97d9f1e1be4",
+      "summary": "把运行 Halo 的电脑上的文件夹关联为实时文档来源"
+    },
+    "delete-api-tlon-kbid-linked-dirs-linkid": {
+      "source": "98cc3efe7cbb",
+      "summary": "停止关注一个关联文件夹"
+    },
+    "post-api-tlon-kbid-linked-dirs-linkid-retry": {
+      "source": "9f3111ae975e",
+      "summary": "重新查找不可用的关联文件夹，找到后恢复关注"
+    },
+    "post-api-tlon-kbid-files": {
+      "source": "d865dcca490a",
+      "summary": "按绝对路径把运行 Halo 的电脑上的文件加入知识库"
+    },
+    "get-api-tlon-kbid-raw": {
+      "source": "10c5f2521ccb",
+      "summary": "列出加入知识库的原始文件"
+    },
+    "post-api-tlon-kbid-remove-raw": {
+      "source": "bef88fbdd6a1",
+      "summary": "从知识库中移除一个文档（原始文件）"
+    },
+    "get-api-tlon-kbid-index": {
+      "source": "713987e3cdc7",
+      "summary": "读取知识库的文档地图（index.md）"
+    },
+    "post-api-tlon-kbid-resolve-sources": {
+      "source": "6a1986129737",
+      "summary": "把从知识库读到的路径映射回原始文档"
+    },
+    "post-api-tlon-kbid-ingest": {
+      "source": "8cd5adaa2d08",
+      "summary": "开始为知识库的文档建立索引（立即返回）"
+    },
+    "post-api-tlon-kbid-clear-relearn": {
+      "source": "72a532ccc001",
+      "summary": "清除已提取的文本，从头重建知识库索引"
+    },
+    "get-api-tlon-kbid-ingest-status": {
+      "source": "e8ee5c15f070",
+      "summary": "获取知识库当前的索引进度"
+    }
+  }
+}

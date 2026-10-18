@@ -1,0 +1,5133 @@
+{
+  "schemaVersion": 1,
+  "appVersion": "3.0.4",
+  "counts": {
+    "totalRoutes": 303,
+    "expose": {
+      "ai": 194,
+      "wrapped": 11,
+      "internal": 98
+    }
+  },
+  "groups": [
+    {
+      "id": "conversation",
+      "title": "conversation — chat threads between the user and the Halo assistant, held by a space",
+      "covers": "start a new turn of work, stop or cancel whatever is currently running, see what is still running, list and read conversations and the reasoning behind a message, rename, star and delete them, see which toolsets a conversation has open. Chats with a digital human are not here — see digital-human.",
+      "notHere": {
+        "chatting with a digital human": "digital-human",
+        "files produced during a conversation": "workspace",
+        "which model this conversation uses": "settings",
+        "inbound messages from IM platforms": "channels",
+        "sending a notification out to the user": "tool:notify_channel"
+      },
+      "withheld": [
+        "Answer a pending question on the user's behalf — Halo stopped to ask precisely because it needed a person, so the user answers it in the conversation.",
+        "Open or close a toolset. Reading which are open is fine; flipping one is the user's, and the request_toolset tool is how you ask them to."
+      ],
+      "noEndpoint": {
+        "exporting a conversation to a file": "There is no export endpoint. Read it with GET /api/spaces/:spaceId/conversations/:conversationId and write the file yourself."
+      }
+    },
+    {
+      "id": "workspace",
+      "title": "workspace — spaces and the files they hold",
+      "covers": "create, rename, reorder and delete spaces, space settings and working directory, browse and read produced files and artifacts",
+      "notHere": {
+        "documents indexed for retrieval": "knowledge-base",
+        "digital humans living in a space": "digital-human",
+        "stopping a running task": "conversation",
+        "running shell commands in the working directory": "terminal"
+      },
+      "withheld": [
+        "Download a file, or a whole space, as bytes — those routes answer outside this API's JSON envelope, so they are closed to you. Read the file instead, or use your own file tools."
+      ]
+    },
+    {
+      "id": "digital-human",
+      "title": "digital-human — digital humans: scheduled or event-triggered automations, and the chat threads users hold with them",
+      "covers": "install and uninstall, pause and resume, manual trigger, schedule and user config, run history and activity, list its chat threads, chat with it in any of them and read the transcript",
+      "notHere": {
+        "binding a digital human to an IM chat": "channels",
+        "files a digital human produced": "workspace",
+        "installing from the app store": "store",
+        "knowledge a digital human reads": "knowledge-base",
+        "several digital humans working together": "team"
+      }
+    },
+    {
+      "id": "team",
+      "title": "team — teams of digital humans that work toward one goal together",
+      "covers": "list, create and dissolve teams, edit name and goal, add, remove and re-brief members, collaboration topology, start and stop a run, schedules and other triggers, message or stop one member, run history, boards, conversations and produced files, save a temporary collaboration as a team",
+      "notHere": {
+        "one digital human on its own schedule": "digital-human",
+        "installing a digital human to use as a member": "digital-human",
+        "binding an IM chat to a team member": "channels",
+        "assembling a temporary team inside this conversation": "tool:collab_start"
+      },
+      "withheld": [
+        "Invite people from other computers into a team, revoke an invite, or join a team hosted on someone else's computer — each one decides who can reach this machine, so the user does it from the team's settings in the Halo app.",
+        "Set what teammates on other computers may make a member do (its delegated permissions) — that is the owner's consent for their own machine, set from the member's settings in the Halo app. Member and team writes refuse the delegatedPolicy field for that reason.",
+        "Add, change, pause or resume a webhook trigger — it lets anyone who can reach this computer start the team with the owner's permissions, so the trigger write refuses sourceType webhook. Tell the user this is something you cannot set up for them, and offer a schedule or file trigger if one fits."
+      ]
+    },
+    {
+      "id": "knowledge-base",
+      "title": "knowledge-base — document collections agents can search",
+      "covers": "create and delete collections, bind them to a space, import and remove documents, resolve read paths back to their source documents, indexing progress and status",
+      "notHere": {
+        "ordinary files in a space": "workspace",
+        "digital humans that read a collection": "digital-human"
+      }
+    },
+    {
+      "id": "channels",
+      "title": "channels — inbound IM channels and outbound notifications",
+      "covers": "connect and disconnect IM channels, bind a chat to a digital human, list every thread a digital human has (IM and its own), read a bound chat transcript, configure and test outbound notification channels, drop cached channel tokens",
+      "notHere": {
+        "the digital human on the other end of a channel": "digital-human",
+        "model providers and API keys": "settings"
+      },
+      "withheld": [
+        "Pair a brand-new WeCom bot or WeChat personal account (QR-code pairing) — none of that flow is open to you. The user does the whole thing in Settings > Message Channels on the desktop app.",
+        "Create a channel instance, or set up a notification channel (SMTP for email, a webhook URL, a bot key) — the user does this in Settings > Message Channels. The only write path behind it replaces the whole configuration in one call, so a partial write would drop their other channels."
+      ]
+    },
+    {
+      "id": "settings",
+      "title": "settings — how this build is configured and what it can do",
+      "covers": "application version, sign-in and model providers this build offers, model capability presets, switching model source and model, deleting a model source, the security policy in force, agent engine capabilities and availability, MCP server diagnostics",
+      "notHere": {
+        "per-space settings": "workspace",
+        "per-digital-human config": "digital-human",
+        "notification channel setup, IM accounts, bot binding": "channels",
+        "sending a notification": "tool:notify_channel",
+        "stopping something Halo is doing": "conversation",
+        "installing or updating store items": "store",
+        "knowledge collection settings": "knowledge-base",
+        "where a space keeps its files": "workspace"
+      },
+      "withheld": [
+        "Add a model source, change an API key, or test one — all need the key in plaintext, so the user does it in Settings > AI Model rather than sending a secret into this conversation.",
+        "Change any other setting — appearance, permissions, system behaviour. They share one write endpoint that replaces whole branches of the configuration at once, so it stays closed rather than risk dropping settings nobody asked you to touch. Settings, in the Halo app.",
+        "Change remote-access settings (port, token, tunnel) — the user does this in Settings > Remote Access, on the desktop app only; it is not in the remote web UI."
+      ],
+      "noEndpoint": {
+        "updating Halo itself": "Halo updates itself; there is no upgrade endpoint. /api/store/updates covers installed store items, not the app. Tell the user Halo updates on its own."
+      }
+    },
+    {
+      "id": "store",
+      "title": "store — browse and install from the app store",
+      "covers": "browse and search store listings, read a listing, install and uninstall store items, install from a local .dhpkg file, skills",
+      "notHere": {
+        "configuring an installed digital human": "digital-human",
+        "knowledge collections": "knowledge-base",
+        "installing or removing a skill": "tool:skill_manage"
+      },
+      "withheld": [
+        "Publish something to the store, or export a digital human definition to a file — the user does both in the Halo app. Publishing is public and cannot be taken back, and an exported definition carries whatever credentials the app holds."
+      ]
+    },
+    {
+      "id": "terminal",
+      "title": "terminal — the terminal session the user can see and type into",
+      "covers": "create a session, write input, read output, close a session. Commands you run for yourself go through your own Bash tool, not here.",
+      "notHere": {
+        "reading files without a shell": "workspace"
+      },
+      "noEndpoint": {
+        "running a command for yourself": "Use your own Bash tool. This API drives the terminal the user watches and types into; it is for handing a session to them, not for getting work done."
+      }
+    }
+  ],
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/security/policy",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Read the security policy this build runs under",
+      "returns": "{\"success\":true,\"data\":{\"tunnelSafe\":boolean,\"browserAllowlistEditable\":boolean}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Tells you which of two guarded behaviours this build permits before you attempt one. Cannot fail."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/config",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Read the global configuration",
+      "returns": "{\"success\":true,\"data\":{...},\"configEpoch\":0,\"productDefaults\":{\"federation\":{\"gatewayUrl\":null}}}  // secret fields come back as \"***\"",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Read-only here. The write side is not opened to the assistant. configEpoch -1 means the config file could not be read and data holds the built-in defaults, not what the user configured. productDefaults is read-only build metadata, not user settings: a non-empty user federation.gatewayUrl overrides its gatewayUrl; an empty user value inherits it. A null build gateway with no user override means LAN-only teams."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/config/credential-failures",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "List credential fields that failed to decrypt at rest",
+      "returns": "{\"success\":true,\"data\":[{\"path\":\"...\",\"label\":\"...\"}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Path and label only, never ciphertext. Non-empty means the user must re-enter that credential in the Halo app."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/config/refresh-ai-sources",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Re-read every model source and return the refreshed config",
+      "returns": "{\"success\":true,\"data\":{...}}  // same masked shape as GET /api/config",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Use it when GET /api/config looks stale after the user changed a source in the app. It re-reads what is stored; it cannot add or fix a credential."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-sources/switch-source",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "sourceId"
+        ]
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Switch to a different configured model source",
+      "body": "{\"sourceId\":\"<sourceId — a uuid from GET /api/config>\"}",
+      "bodyExample": {
+        "sourceId": "<sourceId — a uuid from GET /api/config>"
+      },
+      "returns": "{\"success\":true,\"data\":{\"currentId\":\"<uuid>\",\"currentModel\":\"...\"}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Picks among sources the user already configured. It cannot create one or change a key."
+        },
+        {
+          "kind": "note",
+          "text": "Applies to what Halo runs next, including this assistant. Switch back the same way."
+        },
+        {
+          "kind": "note",
+          "text": "\"Source not found\" = wrong sourceId; read the configured list from GET /api/config first."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-sources/set-model",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "modelId"
+        ]
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Switch the model within the current source",
+      "body": "{\"modelId\":\"deepseek-chat\"}",
+      "bodyExample": {
+        "modelId": "deepseek-chat"
+      },
+      "returns": "{\"success\":true,\"data\":{\"currentId\":\"<uuid>\",\"currentModel\":\"deepseek-chat\"}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Applies to what Halo runs next, including this assistant. Switch back the same way."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/ai-sources/sources/:sourceId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Edit a configured model source",
+      "body": "{\"name\":\"Work account\"}",
+      "bodyExample": {
+        "name": "Work account"
+      },
+      "returns": "{\"success\":true,\"data\":{...the full sources config, secret fields redacted}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Merges field by field, so send only what changes. Leave apiKey out and the stored one is untouched — renaming a source or pointing it at a different model never needs the key."
+        },
+        {
+          "kind": "note",
+          "text": "Do not send apiKey through here. The route would take it, but a key typed into a conversation is a key the user cannot take back; changing one is Settings > AI Model."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/ai-sources/sources/:sourceId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Delete a configured model source",
+      "returns": "{\"success\":true,\"data\":{...the remaining sources config, secret fields redacted}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "The stored API key goes with it, and no endpoint here can put one back — only the user can, in Settings > AI Model. Confirm before deleting."
+        }
+      ],
+      "impact": "irreversible",
+      "narrowerAlternative": "POST /api/ai-sources/switch-source"
+    },
+    {
+      "method": "POST",
+      "path": "/api/model-capabilities/resolve",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Resolve a model id to its effective capabilities",
+      "body": "{\"modelId\":\"deepseek-chat\",\"overrides\":{\"deepseek-chat\":{\"contextWindow\":128000}},\"catalogCapability\":{\"contextWindow\":128000,\"maxOutputTokens\":8192},\"catalogSupportsVision\":true}",
+      "bodyExample": {
+        "modelId": "deepseek-chat",
+        "overrides": {
+          "deepseek-chat": {
+            "contextWindow": 128000
+          }
+        },
+        "catalogCapability": {
+          "contextWindow": 128000,
+          "maxOutputTokens": 8192
+        },
+        "catalogSupportsVision": true
+      },
+      "returns": "{\"success\":true,\"data\":{\"displayName\":\"...\",\"provider\":\"...\",\"contextWindow\":128000,\"maxOutputTokens\":8192,\"vision\":false,\"thinking\":false}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "All optional inputs are validated. Catalog data accepts only positive integer contextWindow and maxOutputTokens values within Halo runtime limits; catalogSupportsVision must be a boolean."
+        },
+        {
+          "kind": "note",
+          "text": "Priority, highest first: user override, then a [1m] model-id suffix (contextWindow only), then an exact preset entry, then catalog data, then a model-family pattern entry, then built-in defaults. A pattern entry is only a family guess and ranks below the provider catalog; an exact entry is curated and ranks above it."
+        },
+        {
+          "kind": "note",
+          "text": "A context window above 200K is what opts the SDK into extended context — there is no separate switch. A model id ending in [1m] does the same."
+        },
+        {
+          "kind": "note",
+          "text": "Returns 400 for a missing modelId or malformed capability data."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/model-capabilities/preset/:modelId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Read the shipped capability preset for one model",
+      "returns": "{\"success\":true,\"data\":{\"displayName\":\"...\",\"provider\":\"...\",\"contextWindow\":128000,\"maxOutputTokens\":8192,\"vision\":false,\"thinking\":false}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "An unknown model returns data:null with success:true — not a 404."
+        },
+        {
+          "kind": "note",
+          "text": "Percent-encode a modelId that contains slashes."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/model-capabilities/all",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "List what every known model supports (vision, tools, context)",
+      "returns": "{\"success\":true,\"data\":{\"<modelId>\":{...capability flags}}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Read-only presets. It does not say which model is currently in use."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/halo",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Read the built-in temporary space",
+      "returns": "{\"success\":true,\"data\":{\"id\":\"halo-temp\",\"name\":\"Halo\",\"path\":\"/…\",\"isTemp\":true}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "The scratch space behind Halo's temporary sessions. Its id is the fixed string \"halo-temp\", not a uuid, and it always exists — but GET /api/spaces leaves it out, so it is reachable only through this route."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/default-path",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Read the directory new spaces are created under",
+      "returns": "{\"success\":true,\"data\":\"/Users/me/HaloSpaces\"}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "List all spaces",
+      "returns": "{\"success\":true,\"data\":[{\"id\":\"<uuid>\",\"name\":\"Work\",\"path\":\"/…\"}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Start here when you need a spaceId. $HALO_SPACE_ID is the space this conversation is in, and the one to assume when the user does not name another."
+        },
+        {
+          "kind": "note",
+          "text": "Any space here can be addressed, not just your own — pass its id where a route takes one. Say which space you acted on whenever it was not $HALO_SPACE_ID."
+        },
+        {
+          "kind": "note",
+          "text": "The built-in temporary space is not in this list; GET /api/spaces/halo is the only way to it. Do not answer \"how many spaces do I have\" from a raw count without saying so."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "color",
+          "customPath",
+          "icon",
+          "name"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Create a space",
+      "body": "{\"name\":\"Product research\",\"icon\":\"📚\"}",
+      "bodyExample": {
+        "name": "Product research",
+        "icon": "📚"
+      },
+      "returns": "{\"success\":true,\"data\":{\"id\":\"<uuid>\",\"name\":\"Product research\",\"path\":\"/…\"}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "customPath is optional; omit it to create under the default directory."
+        }
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/spaces/reorder",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "spaceIds"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Set the display order of spaces",
+      "body": "{\"spaceIds\":[\"<uuid>\",\"<uuid>\",\"<uuid>\"]}",
+      "bodyExample": {
+        "spaceIds": [
+          "<uuid>",
+          "<uuid>",
+          "<uuid>"
+        ]
+      },
+      "returns": "{\"success\":true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Send every space id in the order you want. A partial list scrambles the rest — call GET /api/spaces first and reorder that full list."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Read one space",
+      "returns": "{\"success\":true,\"data\":{\"id\":\"<uuid>\",\"name\":\"Work\",\"path\":\"/…\"}}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/spaces/:spaceId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Rename a space or change its icon",
+      "body": "{\"name\":\"Renamed space\"}",
+      "bodyExample": {
+        "name": "Renamed space"
+      },
+      "returns": "{\"success\":true,\"data\":{...updated space}}",
+      "impact": "reversible"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/spaces/:spaceId/working-dir",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "workingDir"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Point a space at another working directory",
+      "body": "{\"workingDir\":\"/absolute/path/to/existing/folder\"}",
+      "bodyExample": {
+        "workingDir": "/absolute/path/to/existing/folder"
+      },
+      "returns": "{\"success\":true,\"data\":{...updated space}} | {\"success\":false,\"error\":\"That folder does not exist.\"}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Confirm with the user first, saying which space’s folder you are changing: its digital humans work in the new folder too, and the files they may send come from there. The folder must already exist, given by its full path, outside Halo’s and the engine’s own data folders; nothing is moved, created or deleted. Conversations keep their history. Refused while a reply, run or background task is going in the space, or while another change of it is under way. The default space cannot be changed."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId/preferences",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Read a space's preferences (layout, memory settings)",
+      "returns": "{\"success\":true,\"data\":{\"memory\":{\"enabled\":true,\"autoConsolidate\":true,\"cadence\":\"diligent\"}}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Absent memory fields mean the defaults: memory on, auto-consolidation on, cadence \"diligent\"."
+        }
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/spaces/:spaceId/preferences",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Change a space's preferences, e.g. turn its shared memory on or off",
+      "body": "{\"memory\":{\"enabled\":false}}",
+      "bodyExample": {
+        "memory": {
+          "enabled": false
+        }
+      },
+      "returns": "{\"success\":true,\"data\":{...updated space}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Merged into what is stored. memory.enabled turns the memory shared by the space's conversations on/off (files are kept); memory.autoConsolidate turns automatic consolidation on/off; memory.cadence is \"diligent\", \"balanced\" or \"economical\". Applies to new conversations."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId/memory",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Read the state of a space's memory",
+      "returns": "{\"success\":true,\"data\":{\"exists\":true,\"totalBytes\":48213,\"topicCount\":7,\"lastConsolidatedAt\":\"2026-09-26T08:00:00.000Z\",\"lastAttempt\":{\"at\":\"…\",\"outcome\":\"committed\"},\"consolidating\":false}}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/memory/consolidate",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Consolidate a space's memory now",
+      "returns": "{\"success\":true,\"data\":{\"started\":true}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Returns once started; the work runs in the background and uses the model. started:false with reason \"already-running\" or \"empty\". Every consolidation keeps a restorable snapshot."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/spaces/:spaceId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Delete a space and everything inside it",
+      "returns": "{\"success\":true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Deletes the space folder recursively, every conversation in it, and every digital human installed in it."
+        },
+        {
+          "kind": "note",
+          "text": "Nothing is moved to a trash folder and there is no undo."
+        },
+        {
+          "kind": "note",
+          "text": "Name what will be lost and get the user to agree before running this."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/open",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Get a space working directory path",
+      "returns": "{\"success\":true,\"data\":{\"path\":\"/Users/me/HaloSpaces/work\"}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Returns the path only. It opens nothing — use this to find where a space keeps its files."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId/conversations",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "List conversations in a space",
+      "returns": "{\"success\":true,\"data\":[{\"id\":\"<uuid>\",\"title\":\"…\",\"starred\":false}]}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/conversations",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "ephemeral",
+          "reasoningEffort",
+          "title"
+        ]
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Create an empty conversation",
+      "body": "{\"title\":\"Weekly report\"}",
+      "bodyExample": {
+        "title": "Weekly report"
+      },
+      "returns": "{\"success\":true,\"data\":{\"id\":\"<uuid>\",\"title\":\"Weekly report\"}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional body field: reasoningEffort (off|minimal|low|medium|high|xhigh|max) — how hard it thinks; omit to follow the model's configured effort. Creates it empty. Make Halo reply in it with POST /api/agent/message — a conversation you made yourself is the safe target for that, since a turn you start there cannot interrupt one the user is having."
+        },
+        {
+          "kind": "note",
+          "text": "Optional body field: ephemeral (boolean) — for a view that shows the transcript itself (the knowledge base chat): it is left out of every conversation list and search, and deleted at the next start of Halo unless deleted before. Leave it out for a conversation the user should see."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId/conversations/:conversationId",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "from"
+        ],
+        "body": []
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Read a conversation with its messages",
+      "returns": "{\"success\":true,\"data\":{\"id\":\"<uuid>\",\"messages\":[{\"id\":\"<uuid>\",\"role\":\"user\",\"content\":\"…\"}]}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Long conversations return a lot of text. Read one only when you need its content."
+        },
+        {
+          "kind": "note",
+          "text": "Each message carries its own id — that is the messageId the /thoughts route takes, and the only place to get one."
+        }
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/spaces/:spaceId/conversations/:conversationId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Update a conversation title or metadata",
+      "body": "{\"title\":\"Renamed conversation\"}",
+      "bodyExample": {
+        "title": "Renamed conversation"
+      },
+      "returns": "{\"success\":true,\"data\":{...updated conversation}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "modelSourceId + modelId (always both; sourceId is a uuid from GET /api/config) pin the account and model the conversation runs on. A pin naming an account that no longer exists is not rejected: the conversation runs on the current global account until it is pinned again."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/spaces/:spaceId/conversations/:conversationId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Delete a conversation",
+      "returns": "{\"success\":true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Removes the conversation file and its reasoning history from disk with no backup."
+        },
+        {
+          "kind": "note",
+          "text": "Confirm with the user first — there is no undo."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId/conversations/:conversationId/messages/:messageId/thoughts",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Read the reasoning and tool calls behind one message",
+      "returns": "{\"success\":true,\"data\":[{\"id\":\"…\",\"type\":\"…\",\"content\":\"…\",\"timestamp\":\"…\",\"toolName\":\"…\",\"toolInput\":{},\"toolOutput\":\"…\"}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Wrong ids return an empty array, not a 404 — an empty result does not prove the message had no thoughts."
+        },
+        {
+          "kind": "note",
+          "text": "toolInput and toolOutput are the raw arguments and results of that turn, so this gets long fast. Read it to diagnose what Halo actually did, not as a way to read a conversation."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/conversations/:conversationId/star",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "starred"
+        ]
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Star or unstar a conversation",
+      "body": "{\"starred\":true}",
+      "bodyExample": {
+        "starred": true
+      },
+      "returns": "{\"success\":true}",
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/message",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Start a new Halo turn in a conversation",
+      "body": "{\"spaceId\": \"<spaceId — a uuid from GET /api/spaces>\", \"conversationId\": \"<conversationId — a uuid from GET /api/spaces/$HALO_SPACE_ID/conversations>\", \"message\": \"Summarise the activity log\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — a uuid from GET /api/spaces>",
+        "conversationId": "<conversationId — a uuid from GET /api/spaces/$HALO_SPACE_ID/conversations>",
+        "message": "Summarise the activity log"
+      },
+      "returns": "{success:true}  // no data — the turn runs after the call returns",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "This really starts Halo working, and the reply is produced after the response comes back. success:true means accepted, not answered."
+        },
+        {
+          "kind": "note",
+          "text": "Poll GET /api/agent/generating/<conversationId> for progress — back off (2s, then double), do not tight-loop."
+        },
+        {
+          "kind": "note",
+          "text": "Optional body fields: resumeSessionId, thinkingEnabled (boolean), reasoningEffort (off|minimal|low|medium|high|xhigh|max; overrides thinkingEnabled, but a level the user picked for this conversation wins over it), knowledgeBaseId, images (base64 attachments)."
+        },
+        {
+          "kind": "note",
+          "text": "Create the conversation you target with POST /api/spaces/$HALO_SPACE_ID/conversations. Nothing tells you which id in GET /api/agent/sessions is your own, so picking one from there risks talking to yourself, and nothing stops the turn you start from messaging you back."
+        },
+        {
+          "kind": "note",
+          "text": "A turn you start can stop to ask a question, and answering it is not open to you — the user answers it in the Halo app. Do not start one you are unwilling to leave pending."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/stop",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "conversationId"
+        ]
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Stop whatever Halo is currently doing in a conversation",
+      "body": "{\"conversationId\": \"<conversationId — a uuid from GET /api/spaces/$HALO_SPACE_ID/conversations>\"}",
+      "bodyExample": {
+        "conversationId": "<conversationId — a uuid from GET /api/spaces/$HALO_SPACE_ID/conversations>"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "conversationId is optional — omit the field (or send {}) to stop everything Halo is doing"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/sessions",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "List conversations Halo is currently working on",
+      "returns": "{success:true,data:string[]}  // array of conversationId, each one currently generating a reply"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/generating/:conversationId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "Check whether Halo is still working on a reply in one conversation",
+      "returns": "{success:true,data:boolean}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Pairs with POST /api/agent/stop — check this before deciding whether there is anything to stop"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/test-mcp",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Test every configured MCP server connection",
+      "returns": "{success:true,servers:[{name,status:\"connected\"|\"failed\"|\"needs-auth\"|\"pending\",tools?:string[],serverInfo?:{name,version},error?}]}  // servers, not data",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Starts a real query against every configured server, so it is slow and it costs tokens. Say so before running it."
+        },
+        {
+          "kind": "note",
+          "text": "\"Test already in progress\" = another test is running; wait and retry."
+        },
+        {
+          "kind": "note",
+          "text": "\"No MCP servers configured\" comes back with success:true and nothing to report."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/probe-mcp",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "appId"
+        ]
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Probe one installed MCP server for connectivity and tools",
+      "body": "{\"appId\": \"<appId — a uuid from GET /api/apps>\"}",
+      "bodyExample": {
+        "appId": "<appId — a uuid from GET /api/apps>"
+      },
+      "returns": "{success:true,result:{status:\"connected\"|\"failed\"|\"needs-auth\",tools?:string[],serverInfo?:{name,version},latencyMs:number}}  // result, not data",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if appId is missing."
+        },
+        {
+          "kind": "note",
+          "text": "\"App is not an MCP server\" = that app exists but is not an MCP-type app; probe only applies to those."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/engine-capabilities",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Read what the running agent engine can do",
+      "returns": "{success:true,data:{engineId,displayName,streaming:{text,reasoning,toolInput,toolOutput},tools:{native,synthetic,shellHeuristics},todo:{states,hasActiveForm},subAgent:{...}}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Describes the conditions you run under — which streaming and tool features are native versus emulated. Always answers; falls back to the active engine defaults."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/agent/engine-availability",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "List which agent engines are installed and which one is active",
+      "returns": "{success:true,data:{engines:[{engineId:\"anthropic\"|\"halo\"|\"codex\",available:boolean,version:string,fingerprint:string}],activeEngine,degradedFrom}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "degradedFrom is non-null when Halo fell back off the engine the user picked — that is the thing worth telling them about."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/toolsets/list",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "conversationId",
+          "spaceId"
+        ]
+      },
+      "groups": [
+        "conversation"
+      ],
+      "summary": "List the on-demand toolsets available to a conversation",
+      "body": "{\"spaceId\": \"<spaceId — a uuid from GET /api/spaces>\", \"conversationId\": \"<conversationId — a uuid from GET /api/spaces/$HALO_SPACE_ID/conversations>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — a uuid from GET /api/spaces>",
+        "conversationId": "<conversationId — a uuid from GET /api/spaces/$HALO_SPACE_ID/conversations>"
+      },
+      "returns": "{success:true,data:[{id:string,displayName:string,summary:string,open:boolean}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Read-only. Opening and closing are the user's to do — ask with the request_toolset tool, which highlights the switch for them."
+        },
+        {
+          "kind": "note",
+          "text": "For your own session you need its conversationId; GET /api/agent/sessions lists the ones generating right now, which includes yours."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/terminal/list",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "terminal"
+      ],
+      "summary": "List open terminal sessions",
+      "useInstead": "the ai-terminal toolset",
+      "bypassCost": "command-completion detection, reading the live screen separately from history, and history search — raw input returns before the command has produced anything",
+      "unavailable": "If the ai-terminal tools are not in your toolset, you cannot drive this terminal at all — calling request_toolset only highlights the switch in the user's \"+\" menu and takes effect from their next message, so tell them to turn ai-terminal on there. Meanwhile use your own Bash tool for work that does not need the shared terminal."
+    },
+    {
+      "method": "POST",
+      "path": "/api/terminal/create",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": [
+          "cwd",
+          "spaceId",
+          "title"
+        ]
+      },
+      "groups": [
+        "terminal"
+      ],
+      "summary": "Open a terminal session",
+      "useInstead": "the ai-terminal toolset",
+      "bypassCost": "command-completion detection, reading the live screen separately from history, and history search — raw input returns before the command has produced anything",
+      "unavailable": "If the ai-terminal tools are not in your toolset, you cannot drive this terminal at all — calling request_toolset only highlights the switch in the user's \"+\" menu and takes effect from their next message, so tell them to turn ai-terminal on there. Meanwhile use your own Bash tool for work that does not need the shared terminal."
+    },
+    {
+      "method": "POST",
+      "path": "/api/terminal/input",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": [
+          "data",
+          "sessionId"
+        ]
+      },
+      "groups": [
+        "terminal"
+      ],
+      "summary": "Send keystrokes to a terminal session",
+      "useInstead": "the ai-terminal toolset",
+      "bypassCost": "command-completion detection, reading the live screen separately from history, and history search — raw input returns before the command has produced anything",
+      "unavailable": "If the ai-terminal tools are not in your toolset, you cannot drive this terminal at all — calling request_toolset only highlights the switch in the user's \"+\" menu and takes effect from their next message, so tell them to turn ai-terminal on there. Meanwhile use your own Bash tool for work that does not need the shared terminal."
+    },
+    {
+      "method": "POST",
+      "path": "/api/terminal/resize",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": [
+          "cols",
+          "rows",
+          "sessionId"
+        ]
+      },
+      "groups": [
+        "terminal"
+      ],
+      "summary": "Resize a terminal session",
+      "useInstead": "the ai-terminal toolset",
+      "bypassCost": "command-completion detection, reading the live screen separately from history, and history search — raw input returns before the command has produced anything",
+      "unavailable": "If the ai-terminal tools are not in your toolset, you cannot drive this terminal at all — calling request_toolset only highlights the switch in the user's \"+\" menu and takes effect from their next message, so tell them to turn ai-terminal on there. Meanwhile use your own Bash tool for work that does not need the shared terminal."
+    },
+    {
+      "method": "POST",
+      "path": "/api/terminal/kill",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": [
+          "sessionId"
+        ]
+      },
+      "groups": [
+        "terminal"
+      ],
+      "summary": "Close a terminal session",
+      "useInstead": "the ai-terminal toolset",
+      "bypassCost": "command-completion detection, reading the live screen separately from history, and history search — raw input returns before the command has produced anything",
+      "unavailable": "If the ai-terminal tools are not in your toolset, you cannot drive this terminal at all — calling request_toolset only highlights the switch in the user's \"+\" menu and takes effect from their next message, so tell them to turn ai-terminal on there. Meanwhile use your own Bash tool for work that does not need the shared terminal."
+    },
+    {
+      "method": "POST",
+      "path": "/api/terminal/replay",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": [
+          "sessionId"
+        ]
+      },
+      "groups": [
+        "terminal"
+      ],
+      "summary": "Read back a terminal session buffer",
+      "useInstead": "the ai-terminal toolset",
+      "bypassCost": "command-completion detection, reading the live screen separately from history, and history search — raw input returns before the command has produced anything",
+      "unavailable": "If the ai-terminal tools are not in your toolset, you cannot drive this terminal at all — calling request_toolset only highlights the switch in the user's \"+\" menu and takes effect from their next message, so tell them to turn ai-terminal on there. Meanwhile use your own Bash tool for work that does not need the shared terminal."
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId/artifacts",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "maxDepth"
+        ],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "List files and folders in a space",
+      "returns": "{\"success\":true,\"data\":[{\"id\":\"…\",\"name\":\"report.md\",\"type\":\"file\",\"path\":\"/…\",\"relativePath\":\"report.md\",\"extension\":\"md\",\"size\":1024}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional query param maxDepth (default 2) controls how many directory levels deep to list."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId/artifacts/query",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "limit",
+          "q"
+        ],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Search file and folder paths in a space by name",
+      "query": "?q=report&limit=50",
+      "returns": "{\"success\":true,\"data\":{\"items\":[{\"name\":\"report.md\",\"type\":\"file\",\"path\":\"/…\",\"relativePath\":\"docs/report.md\"}],\"truncated\":false,\"indexing\":false}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Returns only the best matches (limit defaults to 50). indexing:true means the space is still being indexed and a repeated query may find more; truncated:true means the space has more paths than the index holds."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/spaces/:spaceId/artifacts/tree",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Get the full lazy-loadable file tree for a space",
+      "returns": "{\"success\":true,\"data\":{\"workspaceRoot\":\"/…\",\"nodes\":[{\"id\":\"…\",\"name\":\"src\",\"type\":\"folder\",\"childrenLoaded\":false}]}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Folder nodes may have childrenLoaded:false — call POST /api/spaces/:spaceId/artifacts/children to load their contents."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/artifacts/children",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "dirPath"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Load one folder's children in the file tree",
+      "body": "{\"dirPath\":\"/absolute/path/inside/the/space\"}",
+      "bodyExample": {
+        "dirPath": "/absolute/path/inside/the/space"
+      },
+      "returns": "{\"success\":true,\"data\":[{\"id\":\"…\",\"name\":\"index.ts\",\"type\":\"file\"}]}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if dirPath is missing. 403 if dirPath resolves outside this space's working directory."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/artifacts/content",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "path"
+        ],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Read one file from a space",
+      "query": "?path=/absolute/path/inside/the/space",
+      "returns": "{\"success\":true,\"data\":{\"content\":\"…\",\"mimeType\":\"text/plain\",\"encoding\":\"utf-8\",\"size\":1234}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Binary types (png, jpg, pdf, zip, …) come back base64 with encoding:\"base64\"."
+        },
+        {
+          "kind": "note",
+          "text": "Your own Read tool is usually the better door — this one exists for reading a file in a space that is not your working directory."
+        },
+        {
+          "kind": "note",
+          "text": "The content is verbatim and unredacted, so a .env or a pasted key comes back in the clear. Do not echo it into the conversation."
+        },
+        {
+          "kind": "error",
+          "text": "400 missing path, 403 outside an allowed space, 404 not found, 500 \"File too large\" above 10MB text / 50MB binary."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/artifacts/save",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "content",
+          "path"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Overwrite a file's content",
+      "body": "{\"path\":\"/absolute/path/inside/the/space\",\"content\":\"new file contents\"}",
+      "bodyExample": {
+        "path": "/absolute/path/inside/the/space",
+        "content": "new file contents"
+      },
+      "returns": "{\"success\":true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Fully replaces the file in place — no version history or trash, but you can always overwrite it again to correct a mistake. 403 if path resolves outside an allowed space."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/artifacts/detect-type",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "path"
+        ],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Detect whether a file is text or binary and how it would be viewed",
+      "returns": "{\"success\":true,\"data\":{\"isText\":true,\"canViewInCanvas\":true,\"contentType\":\"markdown\",\"mimeType\":\"text/markdown\"}}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/artifacts/file",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "content",
+          "name",
+          "parentPath"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Create a new file in a space",
+      "body": "{\"parentPath\":\"\",\"name\":\"notes.md\",\"content\":\"# Notes\"}",
+      "bodyExample": {
+        "parentPath": "",
+        "name": "notes.md",
+        "content": "# Notes"
+      },
+      "returns": "{\"success\":true,\"data\":{\"path\":\"/…/notes.md\"}}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if name is missing. parentPath and content are optional — an empty parentPath creates the file at the space root, content defaults to empty. If a file already exists at that path, it is silently overwritten."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/artifacts/folder",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "name",
+          "parentPath"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Create a new folder in a space",
+      "body": "{\"parentPath\":\"\",\"name\":\"assets\"}",
+      "bodyExample": {
+        "parentPath": "",
+        "name": "assets"
+      },
+      "returns": "{\"success\":true,\"data\":{\"path\":\"/…/assets\"}}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if name is missing. parentPath is optional — omit it to create at the space root."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/artifacts/reconcile",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Resync the file list with what is actually on disk",
+      "returns": "{\"success\":true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Use after files changed on disk outside of Halo (e.g. via a terminal command) and the file list looks stale."
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/spaces/:spaceId/artifacts",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "path"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Move a file or folder to the trash",
+      "body": "{\"path\":\"/absolute/path/inside/the/space\"}",
+      "bodyExample": {
+        "path": "/absolute/path/inside/the/space"
+      },
+      "returns": "{\"success\":true}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if path is missing. Goes to the OS trash (recoverable there), not deleted outright."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/artifacts/rename",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "newName",
+          "oldPath"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Rename a file or folder",
+      "body": "{\"oldPath\":\"/absolute/path/old-name.md\",\"newName\":\"new-name.md\"}",
+      "bodyExample": {
+        "oldPath": "/absolute/path/old-name.md",
+        "newName": "new-name.md"
+      },
+      "returns": "{\"success\":true}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if oldPath or newName is missing. Fails if a file already exists at the new name."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/spaces/:spaceId/artifacts/move",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "newParentPath",
+          "oldPath"
+        ]
+      },
+      "groups": [
+        "workspace"
+      ],
+      "summary": "Move a file or folder to a different directory",
+      "body": "{\"oldPath\":\"/absolute/path/inside/the/space/file.md\"}",
+      "bodyExample": {
+        "oldPath": "/absolute/path/inside/the/space/file.md"
+      },
+      "returns": "{\"success\":true,\"data\":{\"path\":\"/…/new-location/file.md\"}}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if oldPath is missing. newParentPath is optional — omit it to move to the space root."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/notify-channels/test",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "channelType"
+        ]
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Send a test notification through one configured channel",
+      "body": "{\"channelType\":\"wecom\"}",
+      "bodyExample": {
+        "channelType": "wecom"
+      },
+      "returns": "{\"success\":true,\"data\":{...delivery result}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "channelType is one of: wecom, dingtalk, feishu, email, webhook."
+        },
+        {
+          "kind": "note",
+          "text": "This really delivers a message, so say so before using it."
+        },
+        {
+          "kind": "note",
+          "text": "It is not a way to send something the user dictated: the payload is a fixed test string and nothing you write can go into it. Use the notify_channel tool to send real content."
+        },
+        {
+          "kind": "note",
+          "text": "\"No notification channels configured\" = the user has not set one up yet."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/notify-channels/clear-cache",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Drop cached notification-channel access tokens",
+      "returns": "{\"success\":true}  // no data",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Worth trying when a channel that used to work starts failing to authenticate — the next send fetches a fresh token. It changes no configuration."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notify-channels/product-config",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Read the product-level notification channel customisation",
+      "returns": "{\"success\":true,\"data\":{\"wecom\":{\"docs\":{...}},\"email\":{\"docs\":{...}}}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Presentation only — help links this build shows per channel. data is null when the build customises nothing. It does not say which channels the user configured."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/wecom-bot/status",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Check whether a WeCom bot channel is configured and connected",
+      "returns": "{success:true,data:{configured:boolean,enabled:boolean,connected:boolean}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Legacy single-bot view (booleans only, no token). For per-instance detail use GET /api/im-channels/status."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/wecom-bot/reconnect",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Reconnect all configured WeCom bot instances",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "A brief connection interruption while it reconnects — no data lost."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/feishu-bot/reachability",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Check whether a Feishu bot is actually reachable, not just connected",
+      "body": "{\"instanceId\":\"<instanceId — from GET /api/im-channels/status>\"}",
+      "bodyExample": {
+        "instanceId": "<instanceId — from GET /api/im-channels/status>"
+      },
+      "returns": "{success:true,data:{state,connectedSinceMs,lastInboundAgoMs,inboundCount,lastError?}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "A Feishu app awaiting administrator release connects normally and receives nothing, so \"connected\" alone does not mean the bot works. inboundCount 0 with a long connectedSinceMs is the signature of that case. No credentials in this response."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/im-channels/status",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "instanceId"
+        ],
+        "body": []
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Get connection status for all IM channel instances, or one via ?instanceId=",
+      "returns": "{success:true,data:{id,type,enabled,connected,state?,appId,appName?,reason?,identityResolution?}[] | <single instance object>}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "No credentials in this response. instanceId not found → {success:false,error}."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/im-channels/reconnect",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "instanceId"
+        ]
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Reconnect one IM channel instance",
+      "body": "{\"instanceId\":\"<instanceId — from GET /api/im-channels/status>\"}",
+      "bodyExample": {
+        "instanceId": "<instanceId — from GET /api/im-channels/status>"
+      },
+      "returns": "{success:boolean,error?}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if instanceId is missing. success:false with an error message if the instanceId is unknown."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/im-channels/reload",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Reload all IM channel instances from saved config",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Use after a config change made through another route to apply it without restarting Halo. Stops and rebuilds any instance whose config changed — brief interruption, no data lost."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/im-channels/providers",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "List available IM channel provider types and their config fields",
+      "returns": "{success:true,data:[{type,displayName,description,direction,configFields:[{key,label,type,placeholder?,required?}],defaultConfig}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Schema only. No endpoint here creates an instance from it — the user creates instances in Settings > Message Channels. Schema only (field definitions and empty defaults) — no configured instance data or secrets."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/im-channels/permission-defaults",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Get this build's default guest-access permission settings for new IM instances",
+      "returns": "{success:true,data:{defaultEnabled?,defaultGuestAccess?,defaultGuestPolicy?:{allowedTools?},ownerIdHint?,ownerSetupGuideUrl?} | null}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/weixin-ilink/save-token",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "accountId",
+          "baseUrl",
+          "botToken",
+          "instanceId"
+        ]
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Set the bot token for an already-configured WeChat iLink instance",
+      "body": "{\"instanceId\":\"<instanceId — from GET /api/im-channels/status>\",\"botToken\":\"...\"}",
+      "bodyExample": {
+        "instanceId": "<instanceId — from GET /api/im-channels/status>",
+        "botToken": "..."
+      },
+      "returns": "{success:true} or {success:false,error}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional fields: baseUrl, accountId."
+        },
+        {
+          "kind": "note",
+          "text": "instanceId must already exist (created earlier in the Settings UI) — this route cannot create a new instance, only fill in its token."
+        },
+        {
+          "kind": "note",
+          "text": "Never echoes the token back in the response."
+        },
+        {
+          "kind": "note",
+          "text": "{success:false,error:\"...\"} when instanceId is not found in config."
+        },
+        {
+          "kind": "note",
+          "text": "Takes over that channel identity immediately — a wrong token silently hijacks it until corrected."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/weixin-ilink/disconnect",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "instanceId"
+        ]
+      },
+      "groups": [
+        "channels"
+      ],
+      "summary": "Clear WeChat iLink credentials for an instance and stop it",
+      "body": "{\"instanceId\":\"<instanceId — from GET /api/im-channels/status>\"}",
+      "bodyExample": {
+        "instanceId": "<instanceId — from GET /api/im-channels/status>"
+      },
+      "returns": "{success:true} or {success:false,error}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Reversible only if the token is still to hand: call save-token with the same one. Otherwise the user has to re-pair by QR in Settings > Message Channels, which is not something you can start."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/im-sessions",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "appId"
+        ],
+        "body": []
+      },
+      "groups": [
+        "channels",
+        "digital-human"
+      ],
+      "summary": "List every chat thread a digital human has, its own and IM ones",
+      "returns": "{success:true,data:[{appId,channel,source:\"local\"|\"im\"|\"http\",chatType:\"direct\"|\"group\",chatId,displayName,customName?,proactive,instanceId,pushLinks?:[{appId,autoSync}]}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional ?appId= narrows it to one digital human. This is the only listing of its threads — there is no sessions/list beside sessions/create."
+        },
+        {
+          "kind": "note",
+          "text": "source says what a thread is: \"local\" = a named thread the user created in Halo, \"im\" = a real chat with a person on an IM platform, \"http\" = created through this API."
+        },
+        {
+          "kind": "note",
+          "text": "Reading or writing one thread needs a conversationId, which is not a field here — build it from four fields of the record: app-chat:<appId>:<channel>:<chatType>:<chatId>."
+        },
+        {
+          "kind": "note",
+          "text": "Only \"local\" and \"http\" threads accept a message from this API. An \"im\" thread is refused on send — this API must not put words into a real conversation with a person."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/im-sessions/set-proactive",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "appId",
+          "channel",
+          "chatId",
+          "proactive"
+        ]
+      },
+      "groups": [
+        "channels",
+        "digital-human"
+      ],
+      "summary": "Toggle whether a run's result is auto-pushed to this chat when it finishes",
+      "body": "{\"appId\":\"<appId — a uuid from GET /api/apps>\",\"channel\":\"wecom-bot\",\"chatId\":\"<chatId — from GET /api/im-sessions>\",\"proactive\":true}",
+      "bodyExample": {
+        "appId": "<appId — a uuid from GET /api/apps>",
+        "channel": "wecom-bot",
+        "chatId": "<chatId — from GET /api/im-sessions>",
+        "proactive": true
+      },
+      "returns": "{success:true} or {success:false,error}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "404 if no matching session exists yet — the chat must have messaged the digital human at least once."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/im-sessions/remove",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "appId",
+          "channel",
+          "chatId"
+        ]
+      },
+      "groups": [
+        "channels",
+        "digital-human"
+      ],
+      "summary": "Remove a chat binding from the IM session registry",
+      "body": "{\"appId\":\"<appId — a uuid from GET /api/apps>\",\"channel\":\"wecom-bot\",\"chatId\":\"<chatId — from GET /api/im-sessions>\"}",
+      "bodyExample": {
+        "appId": "<appId — a uuid from GET /api/apps>",
+        "channel": "wecom-bot",
+        "chatId": "<chatId — from GET /api/im-sessions>"
+      },
+      "returns": "{success:true,data:{removed:boolean}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "removed:false means no matching session was found — not an error. Only removes display metadata (custom name, proactive flag, other digital humans' push links to it); the chat re-registers itself on its next inbound message, message history is not stored here."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/im-sessions/set-custom-name",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "appId",
+          "channel",
+          "chatId",
+          "name"
+        ]
+      },
+      "groups": [
+        "channels",
+        "digital-human"
+      ],
+      "summary": "Set a custom display name for a chat binding",
+      "body": "{\"appId\":\"<appId — a uuid from GET /api/apps>\",\"channel\":\"wecom-bot\",\"chatId\":\"<chatId — from GET /api/im-sessions>\",\"name\":\"Sales Team Chat\"}",
+      "bodyExample": {
+        "appId": "<appId — a uuid from GET /api/apps>",
+        "channel": "wecom-bot",
+        "chatId": "<chatId — from GET /api/im-sessions>",
+        "name": "Sales Team Chat"
+      },
+      "returns": "{success:true} or {success:false,error}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "404 if no matching session exists yet."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/im-sessions/linked",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "appId"
+        ],
+        "body": []
+      },
+      "groups": [
+        "channels",
+        "digital-human"
+      ],
+      "summary": "List the IM chats a digital human pushes to through another digital human's bot",
+      "query": "?appId=<appId — a uuid from GET /api/apps>",
+      "returns": "{success:true,data:[{appId,channel,chatType,chatId,displayName,instanceId,pushLinks:[{appId,autoSync}]}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Each record is the session as the bot's own digital human holds it (its appId is that one). The asking digital human's entry in pushLinks says whether its run results are auto-pushed there."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/im-sessions/set-push-link",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "channels",
+        "digital-human"
+      ],
+      "summary": "Let a digital human push to an IM chat another digital human's bot knows, or stop it",
+      "body": "{\"appId\":\"<appId of the digital human that pushes>\",\"session\":{\"appId\":\"<the session's own appId>\",\"channel\":\"wecom-bot\",\"chatId\":\"<chatId — from GET /api/im-sessions>\"},\"link\":{\"autoSync\":false}}",
+      "bodyExample": {
+        "appId": "<appId of the digital human that pushes>",
+        "session": {
+          "appId": "<the session's own appId>",
+          "channel": "wecom-bot",
+          "chatId": "<chatId — from GET /api/im-sessions>"
+        },
+        "link": {
+          "autoSync": false
+        }
+      },
+      "returns": "{success:true} or {success:false,error}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "link:{autoSync} adds the chat to the digital human's push targets or updates it; autoSync:true also pushes its run results there. link:null removes it."
+        },
+        {
+          "kind": "note",
+          "text": "Replies in that chat still go to the digital human the bot answers for. 404 when the session does not exist, is not an IM chat, or is the digital human's own."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/providers",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "List the sign-in and model providers this build offers",
+      "returns": "{\"success\":true,\"data\":[{\"type\":\"…\",\"displayName\":\"…\",\"enabled\":true,\"recommended\":false,\"platforms\":[\"darwin\"]}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "What this build could be configured with, not what the user has configured — read GET /api/config for that. On an enterprise build the preset field carries deployment-internal endpoints; do not repeat them back."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/system/version",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "settings"
+      ],
+      "summary": "Read the running Halo version",
+      "returns": "{\"success\":true,\"data\":\"2.1.15\"}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "spaceId",
+          "status"
+        ],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "List digital humans (and other installed apps) in a space",
+      "returns": "{success:true,data:[{id,specId,spaceId,spec,status,userConfig,userOverrides,permissions,installedAt,lastRunAt?,lastRunOutcome?,errorMessage?}]}  — userConfig/spec.mcp_server.env/headers values are redacted to \"[redacted]\", keys are preserved",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional query: ?spaceId=, ?status=. Without ?status, uninstalled apps are excluded by default."
+        },
+        {
+          "kind": "note",
+          "text": "Omitting ?spaceId= lists every space, which is what the Halo app itself shows — pass $HALO_SPACE_ID to narrow it to the one you are working in. Say which of the two you did, since \"how many digital humans do I have\" has a different answer for each."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/install",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": [
+          "spaceId",
+          "spec",
+          "userConfig"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Install a digital human (or other app type) from its full definition (spec) object",
+      "useInstead": "create_automation_app",
+      "bypassCost": "the authoring-guide gate, forcing type to \"automation\", and automatic required-skill install with rollback on failure"
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Get one installed digital human (or other app) by id",
+      "returns": "{success:true,data:InstalledApp|null}  — same shape as GET /api/apps entries, redacted the same way"
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/available-skills",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "List skills this digital human can load (global + space-local)",
+      "returns": "{success:true,data:[{name,description,scope:\"global\"|\"space\",dirName,path}]}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "404-equivalent = {success:false,error:\"App not found or has no space\"} — the app must have a spaceId"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/skills/command-name",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "name"
+        ],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Preview the slash-command name a skill title would install under",
+      "returns": "{success:true,data:string}  // e.g. \"My Skill\" -> \"my-skill\"",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Query: ?name=. A missing name returns an empty string, not a 400. Pure string transform — it does not check whether that name is already taken."
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/apps/:appId",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "purge"
+        ],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Soft-delete (uninstall) a digital human; recoverable via reinstall",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "No body. There is a ?purge=true query param but it is currently a no-op (ignored by the handler) — it does not delete on-disk data. This is reversible (see POST /:appId/reinstall). For permanent, unrecoverable deletion use delete_automation_app instead."
+        }
+      ],
+      "impact": "reversible",
+      "narrowerAlternative": "POST /api/apps/:appId/pause"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/reinstall",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Reinstall a previously soft-deleted (uninstalled) digital human",
+      "returns": "{success:true,data:{activationWarning?:string}} — activationWarning is set (non-fatal) if restarting it failed",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "404-equivalent: manager.reinstall throws if appId was never installed or is not currently uninstalled"
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/move-space",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "newSpaceId"
+        ]
+      },
+      "groups": [
+        "digital-human",
+        "workspace"
+      ],
+      "summary": "Set which space a digital human starts new work in",
+      "body": "{\"newSpaceId\": \"<spaceId — a uuid from GET /api/spaces>\"}",
+      "bodyExample": {
+        "newSpaceId": "<spaceId — a uuid from GET /api/spaces>"
+      },
+      "returns": "{success:true,data:{}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Changes the default only: work already running, existing chat sessions and team work keep the environment they started in. A digital human must belong to a space, so newSpaceId is required — null is rejected. Nothing is stopped or restarted. 404 if appId does not exist; 400 if newSpaceId is an empty string."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/clear-memory",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Delete all of a digital human's memory files",
+      "returns": "{success:true,data:{filesRemoved:number}}",
+      "impact": "irreversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/memory",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Read the state of a digital human's memory",
+      "returns": "{success:true,data:{exists,totalBytes,topicCount,lastConsolidatedAt,lastAttempt,consolidating}}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/memory/consolidate",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Consolidate a digital human's memory now",
+      "returns": "{success:true,data:{started:boolean,reason?:\"already-running\"|\"empty\"|\"not-found\"}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Returns once started; runs in the background with the digital human's model. Keeps a restorable snapshot."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/reminders",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "List the reminders a digital human set in its conversations",
+      "returns": "{success:true,data:[{id,conversationId,conversation:{kind,name?},message,schedule,nextAt,createdAt,setBy?}]}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/apps/:appId/reminders/:reminderId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Cancel a reminder a digital human set in one of its conversations",
+      "returns": "{success:true} | {success:false,error:\"Reminder not found\"}",
+      "impact": "irreversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/apps/:appId/permanent",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Permanently delete a digital human and all its data",
+      "useInstead": "delete_automation_app",
+      "bypassCost": "the deactivate -> soft-uninstall -> hard-delete sequencing; calling this alone on an app that is not already uninstalled fails. If you only want it gone from view but recoverable, DELETE /api/apps/:appId (soft, no wrapper needed) is the narrower operation"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/pause",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Pause a digital human (stops scheduling)",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "404-equivalent: manager.pause throws for an unknown appId"
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/resume",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Resume a paused digital human",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "404-equivalent: manager.resume throws for an unknown appId"
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/trigger",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Manually trigger a digital human to run immediately",
+      "useInstead": "trigger_automation_app",
+      "bypassCost": "this route blocks until the entire run finishes (minutes) — the tool returns as soon as the run starts; a raw call also surfaces \"already running or queued\" as a plain error instead of a friendly message"
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/activity",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "before",
+          "beforeId",
+          "epochId",
+          "limit",
+          "offset",
+          "teamId",
+          "type"
+        ],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Get the activity/run-history entries for a digital human",
+      "returns": "{success:true,data:[{id,appId,runId,type:\"run_complete\"|\"run_skipped\"|\"run_error\"|\"milestone\"|\"escalation\"|\"output\",ts,content,userResponse?}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Query params: limit (max entries), before (only entries with ts older than this epoch ms)"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/escalation/:entryId/respond",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "answers",
+          "choice",
+          "text"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Answer a digital human's pending question (it stopped to ask a human before continuing)",
+      "body": "{\"choice\": \"approve\", \"text\": \"optional free-text explanation\"}",
+      "bodyExample": {
+        "choice": "approve",
+        "text": "optional free-text explanation"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "choice and text are both optional (send whichever the pending question asked for). Find the pending entryId via GET /:appId/activity (type:\"escalation\") or by app.status===\"waiting_user\". This is the human decision it was waiting for — answer with the user's actual input, never a guessed one, and there is no way to un-answer it afterward."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/runs/:runId/continue",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Resume a run that stopped prematurely on an error",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Only valid for a run that ended in a premature-stop error, not any run. This re-opens the run with full tool permissions (bypassPermissions) and can take real-world action that Halo cannot undo."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/runs/:runId/inject",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Inject a text message into a currently active run",
+      "body": "{\"text\": \"your message here\"}",
+      "bodyExample": {
+        "text": "your message here"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if text is missing or the run is not currently active. This can resume/redirect a run with full tool permissions (bypassPermissions) and take real-world action that Halo cannot undo."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/runs/:runId/session",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Read what a run actually did, step by step",
+      "returns": "{success:true,data:[{id,role:\"user\"|\"assistant\",content,timestamp,thoughts?,thoughtsSummary?,images?}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "The transcript behind the \"View process\" panel — same shape as chat/messages, but for one automation run. It is the only way to see why a run did what it did rather than what it reported."
+        },
+        {
+          "kind": "note",
+          "text": "Get the runId from GET /api/apps/<appId>/activity. Read this when a run went wrong; for what it concluded, its activity entry is shorter and enough."
+        },
+        {
+          "kind": "error",
+          "text": "404 when the app or its space is gone. An empty array means that run left no transcript, not that the ids were wrong."
+        },
+        {
+          "kind": "note",
+          "text": "Only a person's newest 200 runs keep their transcript. An older run answers {success:false,code:\"RUN_PROCESS_CLEARED\"}; its activity entry still says what it did, and it can no longer be continued."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/config",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Replace a digital human's user configuration values",
+      "body": "{\"someField\": \"value\"}",
+      "bodyExample": {
+        "someField": "value"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Body is the full config object, keyed by config_schema field id. This replaces userConfig wholesale; read current values first with GET /:appId to avoid dropping fields."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/apps/:appId/overrides",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Merge-patch per-installation overrides (notification level, model)",
+      "body": "{\"notificationLevel\": \"important\"}",
+      "bodyExample": {
+        "notificationLevel": "important"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Other fields you can set the same way: modelSourceId, modelId, spaceMemoryAccess (true lets the digital human read its space's memory topics), chatReasoningEffort (off|minimal|low|medium|high|xhigh|max — how hard it thinks everywhere: its chats, IM replies and scheduled or manual runs; unset, the model's configured effort applies), memory ({enabled, autoConsolidate, cadence: \"diligent\"|\"balanced\"|\"economical\"} — sent as a whole object), disabledTools (MCP servers only: tool names, as the server lists them, to leave out of every session — the whole list each time; [] or null turns them all back on). JSON Merge Patch semantics: send null to clear a field (e.g. {\"modelSourceId\":null} to fall back to the global model). A modelSourceId naming an account that no longer exists is not rejected either: the digital human runs on the current global account until the override is changed. The run schedule is NOT set here — use POST /:appId/frequency."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/frequency",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "frequency",
+          "subscriptionId"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Change how often a digital human runs, without editing the rest of its definition (spec)",
+      "body": "{\"subscriptionId\": \"<subscriptionId — read app.spec.subscriptions via GET /api/apps/<appId>>\", \"frequency\": \"30m\"}",
+      "bodyExample": {
+        "subscriptionId": "<subscriptionId — read app.spec.subscriptions via GET /api/apps/<appId>>",
+        "frequency": "30m"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "frequency can also be a cron expression (e.g. \"0 8 * * *\"); either one replaces the other. subscriptionId must name an existing schedule subscription — read app.spec.subscriptions via GET /:appId first. This rewrites that subscription's schedule in the spec, which is the only interval the scheduler reads and the one the settings panel shows; the rest of the spec is untouched."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/permissions/grant",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "permission"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Grant a named permission to a digital human",
+      "body": "{\"permission\": \"ai-browser\"}",
+      "bodyExample": {
+        "permission": "ai-browser"
+      },
+      "returns": "{success:true}",
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/upgrade-strategy",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "strategy"
+        ]
+      },
+      "groups": [
+        "digital-human",
+        "store"
+      ],
+      "summary": "Set how a store-installed digital human handles version upgrades",
+      "body": "{\"strategy\": \"auto\"}",
+      "bodyExample": {
+        "strategy": "auto"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "strategy is one of \"auto\" (silent patch/minor, notify on major), \"notify\" (always notify), or \"manual\" (no automatic checks)"
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/permissions/revoke",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "permission"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Revoke a named permission from a digital human",
+      "body": "{\"permission\": \"ai-browser\"}",
+      "bodyExample": {
+        "permission": "ai-browser"
+      },
+      "returns": "{success:true}",
+      "impact": "reversible"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/apps/:appId/spec",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Edit part of a digital human's definition (spec) without replacing all of it",
+      "useInstead": "update_automation_app",
+      "bypassCost": "the guard against changing spec.type, and the \"frequency\" shorthand that rewrites the schedule subscription for you"
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/state",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Get real-time run state of a digital human (running/queued/idle/etc.)",
+      "returns": "{success:true,data:{status:\"running\"|\"queued\"|\"idle\"|\"paused\"|\"waiting_user\"|\"error\",nextRunAtMs?,runningRunId?,lastRunAtMs?,lastStatus?,lastError?,consecutiveErrors?,pendingEscalationId?}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "More detail than the \"status\" field on GET /:appId alone (adds nextRunAtMs, queued/idle distinction)"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/import-spec",
+      "expose": "wrapped",
+      "reads": {
+        "query": [],
+        "body": [
+          "spaceId",
+          "userConfig",
+          "yamlContent"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Install a digital human (or other app type) from a YAML definition (spec) string",
+      "useInstead": "create_automation_app",
+      "bypassCost": "the authoring-guide gate and automatic required-skill install with rollback on failure"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/chat/send",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Send a message to a digital human and let it reply",
+      "body": "{\"spaceId\": \"<spaceId — the app's own spaceId from GET /api/apps>\", \"message\": \"What did you find today?\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — the app's own spaceId from GET /api/apps>",
+        "message": "What did you find today?"
+      },
+      "returns": "{success:true,data:{conversationId}}  // accepted, not answered",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "conversationId decides which thread it lands in. Omit it for the main thread. For a fresh thread, take the one POST /api/apps/<appId>/sessions/create hands back — it is already in the right form. To continue a thread the user created in Halo, build it from GET /api/im-sessions?appId=: join appId, channel, chatType and chatId as app-chat:<appId>:<channel>:<chatType>:<chatId>."
+        },
+        {
+          "kind": "note",
+          "text": "Only the \"local\" and \"http\" channels are accepted; a thread whose source is \"im\" is refused, because this API must not put words into a real conversation with a person. 400 with the expected form when the id is malformed, and chatId must match [A-Za-z0-9_-]."
+        },
+        {
+          "kind": "note",
+          "text": "Returns before the digital human has read anything. Poll GET /api/apps/<appId>/chat/status until isGenerating is false, then read the reply with GET /api/apps/<appId>/chat/messages, passing the same conversationId."
+        },
+        {
+          "kind": "note",
+          "text": "Nothing here paces you: each send starts another full agent process immediately. Send one at a time and wait for the reply — never loop over this route."
+        },
+        {
+          "kind": "note",
+          "text": "Optional body fields: thinkingEnabled, reasoningEffort (off|minimal|low|medium|high|xhigh|max; overrides thinkingEnabled, but the digital human's own chatReasoningEffort wins over it), images."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/chat/stop",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Stop a digital human's in-progress chat reply",
+      "body": "{\"conversationId\": \"<conversationId — a uuid from GET /api/spaces/$HALO_SPACE_ID/conversations>\"}",
+      "bodyExample": {
+        "conversationId": "<conversationId — a uuid from GET /api/spaces/$HALO_SPACE_ID/conversations>"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Name the session to stop. Stopping every session at once is a much bigger act, so it must be asked for explicitly: send {\"all\": true}. Sending neither returns 400 rather than guessing."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/chat/status",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "conversationId"
+        ],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Check whether a digital human chat is currently generating a reply",
+      "returns": "{success:true,data:{isGenerating:boolean,conversationId}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Use this to poll a chat that is already running instead of guessing a wait time; back off (2s, then double), never poll tightly"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/chat/messages",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "conversationId"
+        ],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Read a digital human chat transcript",
+      "returns": "{success:true,data:[{id,role:\"user\"|\"assistant\",content,timestamp,thoughts?,thoughtsSummary?,images?}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Reads the main thread by default. For any other thread pass ?conversationId=, the same key chat/send takes: app-chat:<appId>:<channel>:<chatType>:<chatId>, built from GET /api/im-sessions?appId=."
+        },
+        {
+          "kind": "note",
+          "text": "Empty array when the thread has no history yet — a wrong conversationId looks identical, so list the threads first rather than guessing one."
+        },
+        {
+          "kind": "note",
+          "text": "thoughts carries the raw tool calls and results of the run; skip it unless you are diagnosing what the digital human actually did."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/im-chat/messages",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "channel",
+          "chatId",
+          "chatType",
+          "spaceId"
+        ],
+        "body": []
+      },
+      "groups": [
+        "digital-human",
+        "channels"
+      ],
+      "summary": "Read a digital human's transcript in a bound IM chat",
+      "query": "?channel=wecom-bot&chatId=<chatId — from GET /api/im-sessions>&spaceId=<spaceId — the app's own spaceId from GET /api/apps>",
+      "returns": "{success:true,data:[{id,role:\"user\"|\"assistant\",content,timestamp,thoughts?,thoughtsSummary?,images?}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "All three query params are required, 400 otherwise. spaceId must be the app's own — a different but valid one is accepted and reads the wrong space. Optional ?chatType=group, defaults to direct."
+        },
+        {
+          "kind": "note",
+          "text": "channel is the session's IM channel (wecom-bot, feishu-bot, dingtalk-bot, weixin-ilink-bot); chatId is taken as GET /api/im-sessions gives it. Any other channel, chatType or a chatId with whitespace, \":\", \"/\", \"\\\" or \"..\" is a 400. Read \"http\" and \"local\" sessions with GET /api/apps/:appId/chat/messages?conversationId=."
+        },
+        {
+          "kind": "note",
+          "text": "This is real correspondence with a person on the other end — read it only when the task needs it."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/chat/clear",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "conversationId",
+          "spaceId"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Clear a digital human's chat history",
+      "body": "{\"spaceId\": \"<spaceId — the app's own spaceId from GET /api/apps>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — the app's own spaceId from GET /api/apps>"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "spaceId is required even though the app is already scoped to one. Optional conversationId clears one specific session instead of the default one."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/chat/restart",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Restart a digital human's chat agent process (reloads system prompt and config)",
+      "returns": "{success:true,data:{sessionsClosed:number}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Interrupts any in-flight turn. Conversation history is preserved."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/apps/:appId/chats/clearable",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Count the conversations clearing all of a digital human's chats would clear",
+      "returns": "{success:true,data:{total:number,im:number,teamIm:number}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "total: its default and local chats and its IM chats that have history (im of them in IM); API sessions and team chats are not counted. teamIm: IM chats with history that a team answers — a clear-all leaves them alone; /clear in each clears it."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/chats/clear-all",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Clear the history of all of a digital human's chats at once",
+      "returns": "{success:true,data:{cleared:number,failed:number}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Each chat is cleared as /clear clears it and starts afresh with its next message; replies in progress stop. API sessions, team chats, memory and reminders are left alone. Nothing is posted into the chats."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/im-chat/clear",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "channel",
+          "chatId",
+          "chatType",
+          "spaceId"
+        ]
+      },
+      "groups": [
+        "digital-human",
+        "channels"
+      ],
+      "summary": "Clear a digital human's chat history in a bound IM chat",
+      "body": "{\"spaceId\": \"<spaceId — the app's own spaceId from GET /api/apps>\", \"channel\": \"wecom-bot\", \"chatType\": \"direct\", \"chatId\": \"<chatId — from GET /api/im-sessions>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — the app's own spaceId from GET /api/apps>",
+        "channel": "wecom-bot",
+        "chatType": "direct",
+        "chatId": "<chatId — from GET /api/im-sessions>"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "All four body fields are required, 400 otherwise. channel, chatType and chatId are checked as for GET im-chat/messages; chatType is \"direct\" or \"group\"."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/im-chat/stop",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "channel",
+          "chatId",
+          "chatType"
+        ]
+      },
+      "groups": [
+        "digital-human",
+        "channels"
+      ],
+      "summary": "Stop a digital human's in-progress reply in a bound IM chat (keeps history)",
+      "body": "{\"channel\": \"wecom-bot\", \"chatType\": \"direct\", \"chatId\": \"<chatId — from GET /api/im-sessions>\"}",
+      "bodyExample": {
+        "channel": "wecom-bot",
+        "chatType": "direct",
+        "chatId": "<chatId — from GET /api/im-sessions>"
+      },
+      "returns": "{success:true,data:{stopped:boolean}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "channel, chatType and chatId are checked as for GET im-chat/messages; chatType is \"direct\" or \"group\". Unlike im-chat/clear, this only aborts the current turn — the session and its history continue on the next inbound message."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/sessions/create",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Start a new chat thread with a digital human",
+      "returns": "{success:true,data:{conversationId}}  // already in the form chat/send takes",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "The shortest path to a thread of your own: the conversationId comes back ready to pass to chat/send and chat/messages, with nothing to assemble. Continuing a thread the user already made is the case that needs GET /api/im-sessions."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/sessions/fork",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "sourceConversationId",
+          "spaceId"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Branch an existing chat thread into a new one, copying its history",
+      "body": "{\"spaceId\": \"<spaceId — the app's own spaceId from GET /api/apps>\", \"sourceConversationId\": \"<conversationId — a thread of THIS app, from POST /api/apps/<appId>/sessions/create or assembled from GET /api/im-sessions?appId=>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — the app's own spaceId from GET /api/apps>",
+        "sourceConversationId": "<conversationId — a thread of THIS app, from POST /api/apps/<appId>/sessions/create or assembled from GET /api/im-sessions?appId=>"
+      },
+      "returns": "{success:true,data:{conversationId}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "A digital human's threads are not the conversations in a space — do not take an id from GET /api/spaces/<spaceId>/conversations, it belongs to the user's chats with the Halo assistant and this route will not find it."
+        },
+        {
+          "kind": "error",
+          "text": "400 if spaceId or sourceConversationId is missing."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/apps/:appId/sessions/delete",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "conversationId",
+          "spaceId"
+        ]
+      },
+      "groups": [
+        "digital-human"
+      ],
+      "summary": "Delete a chat thread with a digital human",
+      "body": "{\"spaceId\": \"<spaceId — the app's own spaceId from GET /api/apps>\", \"conversationId\": \"<conversationId — a thread of THIS app, from GET /api/im-sessions?appId=>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — the app's own spaceId from GET /api/apps>",
+        "conversationId": "<conversationId — a thread of THIS app, from GET /api/im-sessions?appId=>"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "The id names one of this digital human's own threads, never a conversation from GET /api/spaces/<spaceId>/conversations."
+        },
+        {
+          "kind": "error",
+          "text": "400 if spaceId or conversationId is missing."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "spaceId"
+        ],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "List teams, optionally only those owned by one space",
+      "returns": "{success:true,data:[{id,name,status:\"idle\"|\"running\"|\"waiting_user\"|\"error\",memberCount,hasWaitingUser,waitingCount?,leadAppId,localMembers:[{appId,memberName,isLead}],hostNodeId?,ephemeral?,updatedAt}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional query: ?spaceId=. Omitting it lists every space, which is what the Halo app shows; pass $HALO_SPACE_ID to narrow it, and say which of the two you did."
+        },
+        {
+          "kind": "note",
+          "text": "ephemeral:true is a temporary collaboration started from a conversation; it is hidden from the Teams page until saved (POST /api/teams/:teamId/save-collab)."
+        },
+        {
+          "kind": "note",
+          "text": "hostNodeId set means the team is hosted on someone else's computer and was joined from here — it can be read and its members messaged, but not edited or run."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "confirmedProposal",
+          "input"
+        ]
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Create a persistent team, with a lead provisioned for it",
+      "body": "{\"input\": {\"name\": \"Weekly market brief\", \"goal\": \"Every Monday, summarise competitor moves into brief.md\", \"owningSpaceId\": \"<spaceId — a uuid from GET /api/spaces>\", \"memberSourcing\": \"manual\", \"collabMode\": \"free\", \"escalationRouting\": \"user\", \"members\": [{\"appId\": \"<appId — a digital human from GET /api/apps>\", \"memberName\": \"Researcher\", \"role\": \"Research\", \"duty\": \"Collects competitor news\"}]}}",
+      "bodyExample": {
+        "input": {
+          "name": "Weekly market brief",
+          "goal": "Every Monday, summarise competitor moves into brief.md",
+          "owningSpaceId": "<spaceId — a uuid from GET /api/spaces>",
+          "memberSourcing": "manual",
+          "collabMode": "free",
+          "escalationRouting": "user",
+          "members": [
+            {
+              "appId": "<appId — a digital human from GET /api/apps>",
+              "memberName": "Researcher",
+              "role": "Research",
+              "duty": "Collects competitor news"
+            }
+          ]
+        }
+      },
+      "returns": "{success:true,data:{id,name,owningSpaceId,goal,leadAppId,memberSourcing,collabMode,escalationRouting,status,currentEpochId,createdAt,updatedAt}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "memberSourcing \"manual\": members are existing digital humans (appId from GET /api/apps). memberSourcing \"ai\": omit members and send \"confirmedProposal\": [{memberName, role, responsibility}] (up to 5) beside \"input\" — POST /api/teams/propose-members drafts one; Halo creates a new digital human for each."
+        },
+        {
+          "kind": "note",
+          "text": "collabMode: \"free\" (members contact anyone) or \"structured\" (edges are generated from the lead; edit them with PUT /api/teams/:teamId/edges). escalationRouting: \"user\" (questions go to the user) or \"lead\"."
+        },
+        {
+          "kind": "note",
+          "text": "Creates digital humans (the lead, and AI-sourced members) as a side effect; on any failure the whole team is rolled back."
+        },
+        {
+          "kind": "note",
+          "text": "Create a persistent team only when the user asked for one. Members' delegated permissions are set in the Halo app — see this page's withheld list."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/propose-members",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "goal",
+          "owningSpaceId"
+        ]
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Draft AI member roles for a team goal (creates nothing)",
+      "body": "{\"goal\": \"Every Monday, summarise competitor moves into brief.md\", \"owningSpaceId\": \"<spaceId — a uuid from GET /api/spaces>\"}",
+      "bodyExample": {
+        "goal": "Every Monday, summarise competitor moves into brief.md",
+        "owningSpaceId": "<spaceId — a uuid from GET /api/spaces>"
+      },
+      "returns": "{success:true,data:[{memberName,role,responsibility}]}  — at most 5",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Runs a model call, so it takes a few seconds. Show the draft to the user, then pass it as confirmedProposal to POST /api/teams with memberSourcing \"ai\"."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/collab-for-conversation/:conversationId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Get the temporary collaboration started from one conversation",
+      "returns": "{success:true,data:{teamId,name,goal,epochId,active,saved,members:[...]} | null}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "conversationId is a space conversation id (GET /api/spaces/:spaceId/conversations). null means that conversation never started a collaboration."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/save-collab",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "name"
+        ]
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Keep a temporary collaboration as a persistent team",
+      "body": "{\"name\": \"optional new team name\"}",
+      "bodyExample": {
+        "name": "optional new team name"
+      },
+      "returns": "{success:true,data:{id,name,owningSpaceId,goal,leadAppId,status,...}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Only when the user asked to keep it. If you hold the collab_save tool and the collaboration is the one in this conversation, use the tool."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Get one team's own record",
+      "returns": "{success:true,data:{id,name,owningSpaceId,goal,leadAppId,memberSourcing,collabMode,escalationRouting,status,currentEpochId,hostNodeId,ephemeral?,createdAt,updatedAt} | null}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "For members, edges, live board and waiting decisions use GET /api/teams/:teamId/detail."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/detail",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Get a team with members, edges, roster status, board and decisions",
+      "returns": "{success:true,data:{team,members:[{appId,memberName,role,duty,isLead,origin,ownerDisplayName,...}],edges:[{fromAppId,toAppId,sync}],roster:[{appId,memberName,role,status:\"working\"|\"idle\"|\"error\"|\"waiting_user\",currentTaskTitle?}],tasks:[{id,title,assigneeAppId,status,resultRef,note}],findings:[...],activities?,pendingEscalations?:[{appId,memberName,entryId,question}],checks?:[{id,targetMemberName,instruction,schedule,runCount}],boardEpochId,crossesMachines?} | null}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "The richest single read of a team; start here when the user asks how a team is doing. A pending escalation is answered by the user in Halo, not over this API."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/chat-messages",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "appId",
+          "epochId",
+          "sinceSeq"
+        ],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Read one member's transcript within a team",
+      "query": "?appId=<appId — a member appId from GET /api/teams/:teamId/detail>",
+      "returns": "{success:true,data:[messages],stale?:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional query: &epochId= (a run or conversation id from GET /api/teams/:teamId/epochs; default: the open run, else the member's own chat, else the latest), &sinceSeq= for incremental reads."
+        },
+        {
+          "kind": "note",
+          "text": "A member on another computer is fetched from its owner; stale:true means a cached copy because the owner is offline, and a 502 means it is unavailable right now."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/members/:appId/send",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Send a message to one team member and wait for its reply",
+      "body": "{\"message\": \"Please re-check the pricing section\"}",
+      "bodyExample": {
+        "message": "Please re-check the pricing section"
+      },
+      "returns": "{success:true,data:{ok,finalMessage,reason?,delivery?:\"queued\"|\"mid_turn\"}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Blocks until the member finishes its turn (can take minutes) and returns its final message. delivery \"queued\"/\"mid_turn\" means the member was busy: the message was accepted but no reply exists yet — read it later with GET /api/teams/:teamId/chat-messages."
+        },
+        {
+          "kind": "note",
+          "text": "Optional body: \"epochId\" to address a specific run or conversation. Works for members on other computers too."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/members/:appId/stop",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "epochId"
+        ]
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Stop the turn one team member is running",
+      "body": "{}",
+      "bodyExample": {},
+      "returns": "{success:true,data:{ok,stopped,reason?}}  — stopped:false means nothing was running",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional body: \"epochId\". To stop the whole team run instead, POST /api/teams/:teamId/pause."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/artifacts",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "List files each member produced in the current or latest run",
+      "returns": "{success:true,data:[{appId,memberName,spaceId,epochId,artifacts:[{name,type:\"file\"|\"folder\",path,relativePath,size?,createdAt}]}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "For a specific past run use GET /api/teams/:teamId/epochs/:epochId/artifacts. Read a file with your own file tools at its path."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/conversations",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "List a team's open conversations, newest first",
+      "returns": "{success:true,data:[{epochId,teamId,kind:\"native\"|\"im\"|\"member\"|\"run\"|\"collab\",label,readonly,memberAppId?,channel?,startedAt,lastActivityAt,active?,waitingUser?}]}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/conversations",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "memberAppId",
+          "title"
+        ]
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Open a new team conversation",
+      "body": "{\"title\": \"optional title\"}",
+      "bodyExample": {
+        "title": "optional title"
+      },
+      "returns": "{success:true,data:{epochId}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional body: \"memberAppId\" to open it as a one-to-one thread with that member."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/teams/:teamId/conversations/:epochId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "title"
+        ]
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Rename a team conversation",
+      "body": "{\"title\": \"New title\"}",
+      "bodyExample": {
+        "title": "New title"
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Send \"title\": null to go back to the derived label."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/teams/:teamId/conversations/:epochId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Archive (close) a team conversation",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "The conversation stays in run history (GET /api/teams/:teamId/epochs) but can no longer take messages."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/epochs",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "List a team's runs and conversations (history), newest first",
+      "returns": "{success:true,data:[{id,startedAt,lastActivityAt,endedAt,endReason,summary,taskCount,doneCount,lifecycle:\"run\"|\"conversation\",label?,outcome?:\"output\"|\"no_action\"|\"escalation\"|\"failed\",triggerType?,artifactCount?}]}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/epochs/:epochId/board",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Get the tasks, findings and members of one run",
+      "returns": "{success:true,data:{epoch,tasks:[...],findings:[...],members:[...],activities?} | null}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/epochs/:epochId/artifacts",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "List files produced during one run",
+      "returns": "{success:true,data:[{appId,memberName,spaceId,epochId,artifacts:[...]}]}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/teams/:teamId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Edit a team's name, goal, mode, escalation routing or lead",
+      "body": "{\"name\": \"New name\", \"goal\": \"New goal\"}",
+      "bodyExample": {
+        "name": "New name",
+        "goal": "New goal"
+      },
+      "returns": "{success:true,data:{id,name,goal,collabMode,escalationRouting,leadAppId,...}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Only the fields sent change. Also accepts \"collabMode\": \"free\"|\"structured\", \"escalationRouting\": \"user\"|\"lead\", \"leadAppId\"."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/teams/:teamId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Dissolve a team",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Also deletes the digital humans Halo created for this team (its lead and AI-sourced members) and their spaces; digital humans the user added stay. Run history goes with the team. Confirm with the user first."
+        }
+      ],
+      "impact": "irreversible",
+      "narrowerAlternative": "DELETE /api/teams/:teamId/members/:appId"
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/members",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Add an existing digital human to a team",
+      "body": "{\"appId\": \"<appId — a digital human from GET /api/apps>\", \"memberName\": \"Reviewer\", \"role\": \"Review\", \"duty\": \"Checks every draft before it is filed\"}",
+      "bodyExample": {
+        "appId": "<appId — a digital human from GET /api/apps>",
+        "memberName": "Reviewer",
+        "role": "Review",
+        "duty": "Checks every draft before it is filed"
+      },
+      "returns": "{success:true,data:{teamId,appId,memberName,role,duty,isLead,addedAt,...}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "To have Halo create a new digital human for a role, create one first (digital-human group) and add it here. Delegated permissions are set in the Halo app — see this page's withheld list."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/teams/:teamId/members/:appId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Rewrite what a member is responsible for in this team",
+      "body": "{\"duty\": \"Owns the pricing section\"}",
+      "bodyExample": {
+        "duty": "Owns the pricing section"
+      },
+      "returns": "{success:true,data:{teamId,appId,memberName,role,duty,...}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Only members that run on this computer can be changed; a member someone else brought is refused. Delegated permissions are set in the Halo app — see this page's withheld list."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/teams/:teamId/checks/:checkId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Stop one periodic check a member set inside a team",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "checkId comes from checks[] in GET /api/teams/:teamId/detail."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/teams/:teamId/members/:appId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Remove a member from a team",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "The digital human itself stays installed unless Halo created it only for this team."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/teams/:teamId/edges",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "edges"
+        ]
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Replace who hands work to whom in a structured team",
+      "body": "{\"edges\": [{\"fromAppId\": \"<appId — a member appId from GET /api/teams/:teamId/detail>\", \"toAppId\": \"<appId — a member appId from GET /api/teams/:teamId/detail>\", \"sync\": false}]}",
+      "bodyExample": {
+        "edges": [
+          {
+            "fromAppId": "<appId — a member appId from GET /api/teams/:teamId/detail>",
+            "toAppId": "<appId — a member appId from GET /api/teams/:teamId/detail>",
+            "sync": false
+          }
+        ]
+      },
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Replaces the whole list — read the current edges from GET /api/teams/:teamId/detail and send them back with your change. Only meaningful when collabMode is \"structured\"."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/run",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Start a team run on its goal",
+      "body": "{}",
+      "bodyExample": {},
+      "returns": "{success:true}  — returns once the run has started; it continues in the background",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "This route carries no brief: the lead works from the team goal. If you hold the team_run tool, use it to hand over a concrete brief."
+        },
+        {
+          "kind": "note",
+          "text": "Fails for a temporary collaboration (save it first) and for a team hosted on another computer. Follow progress with GET /api/teams/:teamId/detail."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/pause",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Stop the team's current run",
+      "body": "{}",
+      "bodyExample": {},
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Seals the run as stopped; members mid-turn are stopped with it. Start again with POST /api/teams/:teamId/run."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/triggers",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "List a team's schedules and other triggers",
+      "returns": "{success:true,data:[{id,teamId,sourceType:\"schedule\"|\"webhook\"|\"file\"|\"wecom\",config,enabled,createdAt}]}  — a webhook secret is redacted"
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/triggers",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "trigger",
+          "triggerId"
+        ]
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Add a schedule, file or WeCom trigger to a team, or change one",
+      "body": "{\"trigger\": {\"sourceType\": \"schedule\", \"config\": {\"cron\": \"0 9 * * 1\"}, \"enabled\": true}}",
+      "bodyExample": {
+        "trigger": {
+          "sourceType": "schedule",
+          "config": {
+            "cron": "0 9 * * 1"
+          },
+          "enabled": true
+        }
+      },
+      "returns": "{success:true,data:{id,teamId,sourceType,config,enabled,createdAt}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "config by sourceType — schedule: {\"every\": \"30m\"} or {\"cron\": \"0 9 * * 1\"}; file: {\"pattern\": \"*.csv\", \"path\": \"<directory substring>\"}; wecom: {\"chatId\": \"<optional>\"}."
+        },
+        {
+          "kind": "note",
+          "text": "Ask the user for the schedule; never assume one. Send \"triggerId\" beside \"trigger\" to change an existing trigger instead of adding one; \"sourceType\" must stay the type it already has."
+        },
+        {
+          "kind": "note",
+          "text": "Webhook triggers are refused here — see this page's withheld list."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/:teamId/leave",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Leave a team hosted on someone else's computer",
+      "body": "{}",
+      "bodyExample": {},
+      "returns": "{success:true} | {success:false,error}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Only for a joined team (hostNodeId set in GET /api/teams). The members this computer brought leave with it; coming back needs a new invite from the host. Confirm with the user first."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/:teamId/federation/presence",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "See which computers of a shared team are online",
+      "returns": "{success:true,data:{officeId,role:\"host\"|\"joined\",nodes:[{nodeId,displayName,status,lastSeen}],authority} | null}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "null means the team is not shared with other computers."
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/teams/:teamId/triggers/:triggerId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "team"
+      ],
+      "summary": "Remove a schedule or other trigger from a team",
+      "returns": "{success:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "To pause one without losing it, POST /api/teams/:teamId/triggers with its triggerId and \"enabled\": false (not a webhook trigger — see this page's withheld list)."
+        }
+      ],
+      "impact": "irreversible",
+      "narrowerAlternative": "POST /api/teams/:teamId/triggers"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/query",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "category",
+          "locale",
+          "page",
+          "pageSize",
+          "search",
+          "type"
+        ]
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Paginated search over store listings (primary browse endpoint)",
+      "body": "{\"search\":\"weather\",\"page\":1,\"pageSize\":20}",
+      "bodyExample": {
+        "search": "weather",
+        "page": 1,
+        "pageSize": 20
+      },
+      "returns": "{success:true,data:{items:[{slug,name,version,author,description,type,category,tags,...}],total?,hasMore,groups?:[{type,count,hasMore}],sources:[{registryId,status,error?}]}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "All fields optional: search, type, category, page, pageSize, locale."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/apps",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "category",
+          "locale",
+          "search",
+          "tags",
+          "type"
+        ],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "List store listings (legacy, non-paginated; prefer POST /api/store/query)",
+      "returns": "{success:true,data:[{slug,name,version,author,description,type,category,tags,...}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Query params: search, locale, category, type, tags (comma-separated)."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/apps/:slug",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Get full detail for one store listing by slug",
+      "returns": "{success:true,data:{entry:{slug,name,version,...},spec:<AppSpec>,registryId}} or {success:false,error}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/app-document",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "slug"
+        ],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Get a listing's SKILL.md/README document",
+      "returns": "{success:true,data:{content:string|null}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "slug is a query param (?slug=...), not a path segment — scoped slugs like \"owner/repo\" contain \"/\". content is null when the source has no document."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/install",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "slug",
+          "spaceId",
+          "userConfig"
+        ]
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Install an app from the store by slug",
+      "body": "{\"slug\":\"author/app-id\",\"spaceId\":\"$HALO_SPACE_ID\"}",
+      "bodyExample": {
+        "slug": "author/app-id",
+        "spaceId": "$HALO_SPACE_ID"
+      },
+      "returns": "{success:true,data:{appId}} or {success:false,error,code?}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Always send spaceId, and send the right one. It is used exactly as sent: nothing fills it in and nothing checks it against the space you are working in. Omit it and the install goes GLOBAL; name another space and it installs there. Both answer success:true, and the response never says which space was written."
+        },
+        {
+          "kind": "note",
+          "text": "Pass \"spaceId\":null only when the user explicitly asked for a global install (mcp/skill types only)."
+        },
+        {
+          "kind": "note",
+          "text": "Optional field: userConfig (object)."
+        },
+        {
+          "kind": "error",
+          "text": "400 = missing slug."
+        },
+        {
+          "kind": "error",
+          "text": "403 with code=MCP_COMMAND_BLOCKED when the slug resolves to an MCP server blocked by build policy — do not retry, tell the user it is blocked."
+        },
+        {
+          "kind": "note",
+          "text": "Same operation as POST /api/store/apps/:slug/install (slug in body vs in path); use either."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/apps/:slug/install",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "spaceId",
+          "userConfig"
+        ]
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Install an app from the store by slug (REST-style path variant)",
+      "body": "{\"spaceId\":\"$HALO_SPACE_ID\"}",
+      "bodyExample": {
+        "spaceId": "$HALO_SPACE_ID"
+      },
+      "returns": "{success:true,data:{appId}} or {success:false,error,code?}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Always send spaceId, and send the right one. It is used exactly as sent: nothing fills it in and nothing checks it against the space you are working in. Omit it and the install goes GLOBAL; name another space and it installs there. Both answer success:true, and the response never says which space was written."
+        },
+        {
+          "kind": "note",
+          "text": "Pass \"spaceId\":null only when the user explicitly asked for a global install (mcp/skill types only)."
+        },
+        {
+          "kind": "note",
+          "text": "Optional field: userConfig (object)."
+        },
+        {
+          "kind": "note",
+          "text": "Identical behavior to POST /api/store/install (slug in path instead of body), including the 403 MCP_COMMAND_BLOCKED case."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/refresh",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Force a full re-download of the store registry index",
+      "returns": "{success:true,data:undefined}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Heavier than POST /api/store/revalidate — use revalidate for a cheap freshness check."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/updates",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "List available updates for installed apps",
+      "returns": "{success:true,data:[{appId,currentVersion,latestVersion,entry,strategy,severity}]}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/registries",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "List configured store registry sources",
+      "returns": "{success:true,data:[{id,name,url,enabled,isDefault?,sourceType?,adapterConfig?:{...,\"apiKey\":\"[redacted]\"}}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "adapterConfig values (e.g. API keys) come back redacted."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/capabilities",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Get which store features this build supports (publish, reviews, install counts)",
+      "returns": "{success:true,data:{catalog:true,installs:boolean,publish:boolean,reviewWorkflow:boolean,identity:\"none\"|string}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Reports what this build supports. Publishing itself is not open to you — if the user wants to publish, tell them to do it in the Halo app."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/category-taxonomy",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Get the store category enum used for browsing and publishing",
+      "returns": "{success:true,data:{default:[{id,label|labelKey,icon?}],<appType>?:[...]}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Categories are keyed per app type (skill/automation/mcp/extension) with \"default\" as the fallback list for types without their own entry."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/revalidate",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Cheap conditional freshness check for the store index",
+      "returns": "{success:true,data:{changed:boolean}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "changed:false means the index did not move (a 304-equivalent); the browse list does not need refetching."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/discover-page",
+      "expose": "ai",
+      "reads": {
+        "query": [
+          "locale",
+          "pageSize"
+        ],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Get the curated store home page (featured/trending sections)",
+      "returns": "{success:true,data:{version,nodes:[{type,title?,subtitle?,entries?:[RegistryEntry],collections?,hasMore?}]}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Query params: locale?, pageSize?. Falls back to a single paginated catalog node when no curated layout is configured."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/store/my-publications",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "List the signed-in creator's own published apps",
+      "returns": "{success:true,data:[{slug,name?,displayName?,type?,version,status:\"listed\"|\"hidden\"|\"rejected\",takedownBy?,rejectReason?,submittedAt?,channel?,installs?}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Fails when no creator identity is signed in — this build may not support publishing at all (check GET /api/store/capabilities first)."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/unpublish",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Take down one of the creator's own published apps",
+      "body": "{\"slug\":\"author/app-id\"}",
+      "bodyExample": {
+        "slug": "author/app-id"
+      },
+      "returns": "{success:true,data:null}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Can be republished later; already-installed/downloaded copies elsewhere are not affected either way."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/ignore-version",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Dismiss an available update so it stops appearing as pending",
+      "body": "{\"appId\":\"<appId — a uuid from GET /api/apps>\",\"version\":\"1.2.0\"}",
+      "bodyExample": {
+        "appId": "<appId — a uuid from GET /api/apps>",
+        "version": "1.2.0"
+      },
+      "returns": "{success:true,data:null}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Only hides that one version; a newer update still surfaces normally."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/registries",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Add a new registry source",
+      "body": "{\"name\":\"My Registry\",\"url\":\"https://example.com/registry\"}",
+      "bodyExample": {
+        "name": "My Registry",
+        "url": "https://example.com/registry"
+      },
+      "returns": "{success:true,data:{id,name,url,enabled,isDefault:false,sourceType?,adapterConfig?:{...,\"apiKey\":\"[redacted]\"}}} or {success:false,error}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional fields: sourceType (string), adapterConfig (object, adapter-specific — e.g. an API key)."
+        },
+        {
+          "kind": "note",
+          "text": "url must be http(s) and not point to a loopback/private/link-local host. Fails if a registry with the same URL already exists."
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/store/registries/:registryId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Remove a configured registry source",
+      "returns": "{success:true,data:undefined} or {success:false,error}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Fails with an error (not thrown) when the target is the built-in/default registry — those cannot be removed. Can be added back with POST /api/store/registries."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/registries/:registryId/toggle",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "enabled"
+        ]
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Enable or disable a configured registry source",
+      "body": "{\"enabled\":true}",
+      "bodyExample": {
+        "enabled": true
+      },
+      "returns": "{success:true,data:undefined}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if enabled is missing or not a boolean."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/store/registries/:registryId/adapter-config",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Update a registry source's adapter config (e.g. its API key)",
+      "body": "{\"apiKey\":\"sk-...\"}",
+      "bodyExample": {
+        "apiKey": "sk-..."
+      },
+      "returns": "{success:true,data:undefined}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Body is a flat JSON object of adapter-specific fields — exact keys depend on the registry's sourceType."
+        },
+        {
+          "kind": "note",
+          "text": "Write-only: the response never echoes the config back, so this is safe for setting credentials. 400 if the body is missing or not a plain object."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/updates/check-now",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Re-check all installed apps for available updates right now",
+      "returns": "{success:true,data:[{appId,currentVersion,latestVersion,entry,strategy,severity}]}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Apps set to auto-update silently apply any patch/minor update found — this is not just a read."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/updates/:appId/apply",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "mode"
+        ]
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Apply an available update to an installed app",
+      "body": "{\"mode\":\"force\"}",
+      "bodyExample": {
+        "mode": "force"
+      },
+      "returns": "{success:true,data:{appId,from,to,severity,kept,editsKnown}} or {success:false,error}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "mode is optional: \"patch_minor\"|\"major\"|\"force\", defaults to \"force\". No built-in downgrade path — reinstalling the old version is the way back."
+        },
+        {
+          "kind": "note",
+          "text": "A digital human keeps the user's version of every field that differs from the author's new version (prompt, run schedule, name, ...); kept lists those fields, empty when the update applied in full. editsKnown false means there was no earlier author version to compare with, so every difference was kept. The user can switch kept fields to the author's version in the app."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/publish/preview",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "appId",
+          "author",
+          "name"
+        ]
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Preview the slug and version a publish of an app would produce",
+      "body": "{\"appId\":\"<appId — a uuid from GET /api/apps>\"}",
+      "bodyExample": {
+        "appId": "<appId — a uuid from GET /api/apps>"
+      },
+      "returns": "{success:true,data:{slug,localVersion,storeVersion:string|null}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional fields: author, name (override the store name before deriving the slug). storeVersion is null when the slug has never been published."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/publish/find-app",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "author",
+          "slug",
+          "type"
+        ]
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Find the installed app that a store slug would resolve to",
+      "body": "{\"slug\":\"author/app-id\"}",
+      "bodyExample": {
+        "slug": "author/app-id"
+      },
+      "returns": "{success:true,data:{appId: string|null}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional fields: type, author. appId is null when no locally installed app uniquely matches."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/store/import-dhpkg",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "filePath",
+          "spaceId"
+        ]
+      },
+      "groups": [
+        "store"
+      ],
+      "summary": "Install a digital human from a local .dhpkg file",
+      "body": "{\"filePath\":\"/absolute/path/to/app.dhpkg\",\"spaceId\":\"$HALO_SPACE_ID\"}",
+      "bodyExample": {
+        "filePath": "/absolute/path/to/app.dhpkg",
+        "spaceId": "$HALO_SPACE_ID"
+      },
+      "returns": "{success:true,data:{appId}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Installs and activates whatever the package contains — it starts running on its own schedule. Only import a file the user pointed you at. Undo with DELETE /api/apps/<appId>."
+        },
+        {
+          "kind": "note",
+          "text": "A raw install: unlike the create_automation_app tool it does not fetch the package's required skills or roll back a half-finished install, so check GET /api/apps/<appId> afterwards rather than assuming."
+        },
+        {
+          "kind": "note",
+          "text": "filePath is read with no sandbox check, so any path this machine can see resolves. That is not a licence to browse — pass through what the user gave you."
+        },
+        {
+          "kind": "note",
+          "text": "spaceId is used exactly as sent — omitted means a global install, another space means it installs there, and neither is reported back. 400 when filePath is missing."
+        },
+        {
+          "kind": "note",
+          "text": "Activation failing after install still returns success:true; check GET /api/apps/<appId> to confirm it is running."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Create a knowledge collection",
+      "body": "{\"name\":\"Product Docs\"}",
+      "bodyExample": {
+        "name": "Product Docs"
+      },
+      "returns": "{success:true,data:{id,name,icon,description,status:\"active\",createdAt,updatedAt,path,linkedDirs:[],spaceIds:[],appIds:[],stats:{...}}}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional fields: icon, description, linkedDirs (array of {path,label})."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/tlon",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "List all knowledge collections",
+      "returns": "{success:true,data:[{id,name,icon,description,status,spaceIds,appIds,stats,isDefault?,...}]}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tlon/for-space/:spaceId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "List knowledge collections bound to a space (or the default one)",
+      "returns": "{success:true,data:[{id,name,icon,description,status,...}]}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/set-default",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "kbId"
+        ]
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Set (or clear) the collection new conversations auto-load",
+      "body": "{\"kbId\":\"<kbId — a uuid from GET /api/tlon>\"}",
+      "bodyExample": {
+        "kbId": "<kbId — a uuid from GET /api/tlon>"
+      },
+      "returns": "{success:true,data:<updated entry or null>}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "kbId can be null to clear the default."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tlon/:kbId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Get one knowledge collection by id",
+      "returns": "{success:true,data:{id,name,icon,description,status,linkedDirs,spaceIds,appIds,stats,...}} or {success:false,error:\"Knowledge base not found\"}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/tlon/:kbId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": null
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Rename or edit a collection's description/status",
+      "body": "{\"name\":\"New name\"}",
+      "bodyExample": {
+        "name": "New name"
+      },
+      "returns": "{success:true,data:<updated entry>} or {success:false,error:\"Knowledge base not found\"}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "All fields optional: name, icon, description, status (\"active\"|\"paused\"|\"error\")."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/tlon/:kbId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Delete a knowledge collection and all its data",
+      "returns": "{success:true,data:<deletion result>}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Permanently deletes the collection's entire folder — original source files, extracted text, and the index. Not just the registry entry. If the user only meant to remove one document, use remove-raw instead."
+        }
+      ],
+      "impact": "irreversible",
+      "narrowerAlternative": "POST /api/tlon/:kbId/remove-raw"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/bind-space",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "spaceId"
+        ]
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Bind a knowledge collection to a space",
+      "body": "{\"spaceId\":\"<spaceId — a uuid from GET /api/spaces>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — a uuid from GET /api/spaces>"
+      },
+      "returns": "{success:true,data:<updated entry>}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if spaceId is missing."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/unbind-space",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "spaceId"
+        ]
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Unbind a knowledge collection from a space",
+      "body": "{\"spaceId\":\"<spaceId — a uuid from GET /api/spaces>\"}",
+      "bodyExample": {
+        "spaceId": "<spaceId — a uuid from GET /api/spaces>"
+      },
+      "returns": "{success:true,data:<updated entry>}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if spaceId is missing."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/bind-app",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "appId"
+        ]
+      },
+      "groups": [
+        "knowledge-base",
+        "digital-human"
+      ],
+      "summary": "Bind a knowledge collection so a digital human can read it",
+      "body": "{\"appId\":\"<appId — a uuid from GET /api/apps>\"}",
+      "bodyExample": {
+        "appId": "<appId — a uuid from GET /api/apps>"
+      },
+      "returns": "{success:true,data:<updated entry>}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if appId is missing."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/unbind-app",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "appId"
+        ]
+      },
+      "groups": [
+        "knowledge-base",
+        "digital-human"
+      ],
+      "summary": "Unbind a knowledge collection from a digital human",
+      "body": "{\"appId\":\"<appId — a uuid from GET /api/apps>\"}",
+      "bodyExample": {
+        "appId": "<appId — a uuid from GET /api/apps>"
+      },
+      "returns": "{success:true,data:<updated entry>}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if appId is missing."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/linked-dirs",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "label",
+          "path"
+        ]
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Watch a server-local directory as a live document source",
+      "body": "{\"path\":\"/Users/me/Documents/product-docs\"}",
+      "bodyExample": {
+        "path": "/Users/me/Documents/product-docs"
+      },
+      "returns": "{success:true,data:{id,path,label,watching,lastScannedAt?}} on success",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Optional field: label (defaults to path)."
+        },
+        {
+          "kind": "note",
+          "text": "Failure carries a code instead of throwing: TOO_MANY_FILES (data:{count,limit}), DISK_ROOT (cannot watch a filesystem root), FOLDER_TOO_LARGE, PATH_NOT_FOUND, KB_NOT_FOUND."
+        },
+        {
+          "kind": "error",
+          "text": "400 if path is missing."
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/tlon/:kbId/linked-dirs/:linkId",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Stop watching a linked directory",
+      "returns": "{success:true,data:<removal result>}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Only removes the watch registration — the target folder and its files are untouched, and can be re-linked."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/linked-dirs/:linkId/retry",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Look for an unavailable linked directory again and resume watching it if it is back",
+      "returns": "{success:true,data:{id,path,label,watching:true,lastScannedAt?,learningPaused?}} when the folder is there",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "A link shows watching:false when its folder was missing at the last check (e.g. an unplugged drive). Halo looks again at every start; this asks now."
+        },
+        {
+          "kind": "note",
+          "text": "Failure carries a code: PATH_NOT_FOUND (the folder is still missing), LINK_NOT_FOUND, KB_NOT_FOUND."
+        },
+        {
+          "kind": "note",
+          "text": "learningPaused ({reason:\"too-many-files\",count,limit} or {reason:\"too-large\"}) on a link means the folder is there but over the watched-folder limits, so its files are not learned."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/files",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "filePaths"
+        ]
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Add existing server-local files to a collection by absolute path",
+      "body": "{\"filePaths\":[\"/absolute/path/to/file.pdf\"]}",
+      "bodyExample": {
+        "filePaths": [
+          "/absolute/path/to/file.pdf"
+        ]
+      },
+      "returns": "{success:true,data:{added:string[],rejected:string[]}}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if filePaths is missing or empty. Files are copied in, not linked — see linked-dirs for live-watched folders."
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/tlon/:kbId/raw",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "List the raw source files added to a collection",
+      "returns": "{success:true,data:[{name,path,size,learned:boolean,state:\"learned\"|\"pending\"|\"no-text\"|\"failed\",error?,source:\"raw\"|\"linked\",dirLabel?}]}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/remove-raw",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "relativePath"
+        ]
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Remove one document (raw source file) from a collection",
+      "body": "{\"relativePath\":\"raw/file.pdf\"}",
+      "bodyExample": {
+        "relativePath": "raw/file.pdf"
+      },
+      "returns": "{success:true,data:<removal result>}",
+      "notes": [
+        {
+          "kind": "error",
+          "text": "400 if relativePath is missing. Permanently deletes the copied file from the collection — no trash, no undo."
+        }
+      ],
+      "impact": "irreversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tlon/:kbId/index",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Read a collection's document map (index.md)",
+      "returns": "{success:true,data:string}  — markdown text, empty string if not yet generated"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/resolve-sources",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": [
+          "readPaths"
+        ]
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Map paths read from a collection back to their source documents",
+      "body": "{\"readPaths\":[\"/absolute/path/inside/the/collection\"]}",
+      "bodyExample": {
+        "readPaths": [
+          "/absolute/path/inside/the/collection"
+        ]
+      },
+      "returns": "{success:true,data:[{name:string,path:string}]}  — deduped, absolute, files that still exist",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Turns the copies a collection holds into citable originals. Paths that no longer exist are dropped silently, so a shorter list than you sent is normal. 400 when readPaths is not an array; an empty array is accepted and returns nothing."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/ingest",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Start indexing a collection's documents (fire-and-forget)",
+      "returns": "{success:true,data:true}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Returns immediately; the indexing job runs in the background. Poll GET /api/tlon/:kbId/ingest-status for progress — back off (2s, then double), do not tight-loop."
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/tlon/:kbId/clear-relearn",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Wipe extracted text and re-index a collection from scratch",
+      "returns": "{success:true,data:true} or {success:false,error:\"Learning is already in progress\"}",
+      "notes": [
+        {
+          "kind": "note",
+          "text": "Use when documents were updated in place and stale extracted text needs replacing. Only clears derived/regeneratable data (extracted text, index) — original source files are untouched and text is rebuilt automatically."
+        }
+      ],
+      "impact": "reversible"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tlon/:kbId/ingest-status",
+      "expose": "ai",
+      "reads": {
+        "query": [],
+        "body": []
+      },
+      "groups": [
+        "knowledge-base"
+      ],
+      "summary": "Get the current indexing progress for a collection",
+      "returns": "{success:true,data:{kbId,total,completed,current?,phase:\"idle\"|\"running\"|\"done\"|\"error\",error?,errors?:[{file,message}]}}"
+    }
+  ]
+}

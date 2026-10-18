@@ -1,0 +1,573 @@
+{
+  "spec_version": {
+    "source": "3e9d8721b749",
+    "en": "Version of the spec format. Leave it out; Halo fills in `\"1\"`.",
+    "zh": "spec 格式的版本。不用写，Halo 会填为 `\"1\"`。"
+  },
+  "name": {
+    "source": "9ff36b6e5852",
+    "en": "The name people see. For a skill it is also the folder name and the slash command, so a non-ASCII skill name is turned into an ASCII command name and the original is kept in `display_name`.",
+    "zh": "大家看到的名字。对技能来说它也是文件夹名和斜杠命令，所以非 ASCII 的技能名会被转成 ASCII 命令名，原名保存在 `display_name`。"
+  },
+  "display_name": {
+    "source": "c29d14a4feb0",
+    "en": "Name to show when `name` is not presentable, such as a skill named in Chinese. A matching `i18n` entry wins over it.",
+    "zh": "`name` 不适合直接显示时使用的名字，例如用中文命名的技能。`i18n` 中对应语言的名字优先。"
+  },
+  "version": {
+    "source": "35e4fb86d8f6",
+    "en": "Your version of the package, such as `1.0.0`. A Store update must carry a higher version.",
+    "zh": "这个包的版本，例如 `1.0.0`。发布到商店的新版本必须更高。"
+  },
+  "author": {
+    "source": "696a800dd3b8",
+    "en": "Who made it. When published, it becomes the namespace of the Store address, `<author>/<name>`. Optional for skills.",
+    "zh": "作者。发布后它会成为商店地址的命名空间：`<author>/<name>`。技能可以不写。"
+  },
+  "description": {
+    "source": "ce3ec1ec05da",
+    "en": "One or two sentences on what it does, shown in lists and the Store.",
+    "zh": "用一两句话说明它做什么，显示在列表和商店里。"
+  },
+  "icon": {
+    "source": "8d27ad46e741",
+    "en": "An emoji or an image URL. Anything else falls back to the type icon; a Digital Human without an icon gets a generated avatar.",
+    "zh": "一个 emoji 或图片 URL。其他值会退回类型图标；没有图标的数字人会得到自动生成的头像。"
+  },
+  "permissions": {
+    "source": "cb60a948de04",
+    "en": "Capabilities to turn on at install: `ai-browser`, `ai-terminal`, `email`, `im-push` (on by default anyway), `halo-api-ref` (Operate Halo) and `conversation-collab` (Conversation Collaboration), both off by default. A spec can only add a capability; the user can still turn any of them off.",
+    "zh": "安装时要打开的能力：`ai-browser`、`ai-terminal`、`email`、`im-push`（这四项默认就是开的），以及默认关闭的 `halo-api-ref`（操作 Halo）和 `conversation-collab`（对话协作）。spec 只能增加能力，用户仍可以关掉其中任何一项。"
+  },
+  "requires": {
+    "source": "1a9cdea77aba",
+    "en": "MCP servers and skills it depends on.",
+    "zh": "依赖的 MCP 服务器和技能。"
+  },
+  "requires.mcps": {
+    "source": "53440fe8cce2",
+    "en": "MCP servers it uses. Runs get only the servers listed here, and a run doesn't start while one of them is not installed, turned off, waiting for sign-in or failing. A chat gets every server of its workspace and the global ones, except those marked `enabled: false`.",
+    "zh": "它使用的 MCP 服务器。运行只拿到这里列出的服务器；其中有服务器没有安装、被关闭、等待登录或连接失败时，运行不会开始。聊天时它能用工作区和全局的全部服务器，标了 `enabled: false` 的除外。"
+  },
+  "requires.mcps[].id": {
+    "source": "954a193a645a",
+    "en": "Id of an installed MCP server.",
+    "zh": "已安装的 MCP 服务器的 id。"
+  },
+  "requires.mcps[].reason": {
+    "source": "1c81c2b7e7c3",
+    "en": "Why it needs the server, shown next to the dependency.",
+    "zh": "为什么需要这个服务器，显示在依赖旁边。"
+  },
+  "requires.mcps[].bundled": {
+    "source": "459da9126434",
+    "en": "Meant to mark an MCP server shipped inside the package.",
+    "zh": "本意是标记随包附带的 MCP 服务器。",
+    "status": "schema-only"
+  },
+  "requires.mcps[].enabled": {
+    "source": "081a0ec1bce9",
+    "en": "`false` keeps the declaration but stops this Digital Human from using the server, in runs and in chat. The server itself stays on for everyone else.",
+    "zh": "设为 `false` 会保留声明，但这位数字人在运行和聊天中都不再使用这个服务器。服务器本身对其他人照常可用。"
+  },
+  "requires.skills": {
+    "source": "2ad66d4b890f",
+    "en": "Skills to install together with it, as ids or objects. Every skill in its workspace or global scope is available to it anyway; this list only decides what gets installed.",
+    "zh": "随它一起安装的技能，可以写 id 或对象。它所在工作区和全局范围里的技能本来就都能用；这个列表只决定要安装哪些。"
+  },
+  "requires.skills[].id": {
+    "source": "23a7a30ef349",
+    "en": "Skill id.",
+    "zh": "技能 id。"
+  },
+  "requires.skills[].reason": {
+    "source": "1214e1bef302",
+    "en": "Why it needs the skill.",
+    "zh": "为什么需要这个技能。"
+  },
+  "requires.skills[].bundled": {
+    "source": "11b80591ba1d",
+    "en": "`true` when the skill ships inside the package under `skills/<id>/` rather than coming from the Store.",
+    "zh": "技能放在包内 `skills/<id>/` 下、而不是来自商店时设为 `true`。"
+  },
+  "requires.skills[].files": {
+    "source": "89f39a6f3d9f",
+    "en": "For a bundled skill, its files relative to `skills/<id>/`, such as `SKILL.md` and `index.js`.",
+    "zh": "包内技能的文件列表，路径相对于 `skills/<id>/`，例如 `SKILL.md` 和 `index.js`。"
+  },
+  "config_schema": {
+    "source": "94cd56d0f0df",
+    "en": "The settings form the user fills in at install and can change later. Every run and chat hands the Digital Human the current values by `key`, with defaults filled in.",
+    "zh": "用户在安装时填写、之后还能修改的设置表单。每次运行和聊天，数字人都会拿到按 `key` 给出的当前值，未填写的用默认值补上。"
+  },
+  "config_schema[].key": {
+    "source": "3d8578db364a",
+    "en": "Unique key of the setting.",
+    "zh": "设置项的唯一 key。"
+  },
+  "config_schema[].label": {
+    "source": "d7f153322ea9",
+    "en": "Label shown on the form.",
+    "zh": "表单上显示的标签。"
+  },
+  "config_schema[].type": {
+    "source": "b5016701775a",
+    "en": "Input control. `text` is multi-line, `string` single-line. There is no password or secret type, because the values are passed to the AI as plain text: for sites that need a login, use `browser_login`.",
+    "zh": "输入控件。`text` 是多行，`string` 是单行。没有密码或密钥类型，因为这些值会以明文交给 AI：需要登录的网站请用 `browser_login`。"
+  },
+  "config_schema[].description": {
+    "source": "793e24b5f703",
+    "en": "Help text under the field.",
+    "zh": "字段下方的说明文字。"
+  },
+  "config_schema[].required": {
+    "source": "2cd85e41ad9b",
+    "en": "Marks the field as required on the form.",
+    "zh": "在表单上标为必填。"
+  },
+  "config_schema[].default": {
+    "source": "504a0b721d4d",
+    "en": "Value filled in until the user changes it.",
+    "zh": "用户修改之前使用的值。"
+  },
+  "config_schema[].placeholder": {
+    "source": "cafae70faad7",
+    "en": "Hint shown in an empty field.",
+    "zh": "字段为空时显示的提示。"
+  },
+  "config_schema[].options": {
+    "source": "b397a72e5fd8",
+    "en": "Choices of a `select` field, at least one.",
+    "zh": "`select` 字段的选项，至少一个。"
+  },
+  "config_schema[].options[].label": {
+    "source": "309a6e7ccd73",
+    "en": "Text of the choice.",
+    "zh": "选项的文字。"
+  },
+  "config_schema[].options[].value": {
+    "source": "abaa00c00b65",
+    "en": "Value stored when it is chosen.",
+    "zh": "选中后保存的值。"
+  },
+  "store": {
+    "source": "099f430ca1aa",
+    "en": "Store listing details, used when the package is published or installed from a store.",
+    "zh": "商店条目信息，发布或从商店安装时使用。"
+  },
+  "store.slug": {
+    "source": "7554fdaf6a49",
+    "en": "Store address of the package. Publishing sets it to `<author>/<name>` for you.",
+    "zh": "包在商店里的地址。发布时会自动设为 `<author>/<name>`。"
+  },
+  "store.category": {
+    "source": "56dd510d8725",
+    "en": "Store category it is listed under.",
+    "zh": "在商店里归属的分类。"
+  },
+  "store.tags": {
+    "source": "cbb9ad8476ff",
+    "en": "Tags that help people find it in the Store.",
+    "zh": "帮助别人在商店里找到它的标签。"
+  },
+  "store.locale": {
+    "source": "98b03dcc5411",
+    "en": "Main language of the package, as a language tag such as `zh-CN`.",
+    "zh": "包的主要语言，用语言标签表示，例如 `zh-CN`。"
+  },
+  "store.min_app_version": {
+    "source": "d9f3c7a528fe",
+    "en": "Oldest Halo version it is meant for. The Store shows it; Halo does not block older versions.",
+    "zh": "适用的最低 Halo 版本。商店会显示它，但 Halo 不会因此阻止旧版本安装。"
+  },
+  "store.license": {
+    "source": "a31bbddd7cfe",
+    "en": "License, as an SPDX identifier such as `MIT`. Kept with the package.",
+    "zh": "许可证，使用 SPDX 标识，例如 `MIT`。随包保存。"
+  },
+  "store.homepage": {
+    "source": "6df8e5b3238f",
+    "en": "Project homepage. Kept with the package.",
+    "zh": "项目主页。随包保存。"
+  },
+  "store.repository": {
+    "source": "b8db7c9e7266",
+    "en": "Source repository. Kept with the package.",
+    "zh": "源码仓库地址。随包保存。"
+  },
+  "store.registry_id": {
+    "source": "20b7033bde3d",
+    "hidden": true
+  },
+  "store.install_source": {
+    "source": "d77cfa9fcdf4",
+    "hidden": true
+  },
+  "i18n": {
+    "source": "350be6a28f41",
+    "en": "Translations of the name, description, settings form and login labels, keyed by language tag such as `en` or `zh-CN`.",
+    "zh": "名称、简介、设置表单和登录标签的翻译，按语言标签区分，例如 `en`、`zh-CN`。"
+  },
+  "i18n.<locale>.name": {
+    "source": "a888e60d75e0",
+    "en": "Translated name.",
+    "zh": "翻译后的名称。"
+  },
+  "i18n.<locale>.description": {
+    "source": "0011b69a3bb0",
+    "en": "Translated description.",
+    "zh": "翻译后的简介。"
+  },
+  "i18n.<locale>.config_schema": {
+    "source": "5cb19261a7a8",
+    "en": "Translations of settings fields, keyed by the field `key`.",
+    "zh": "设置字段的翻译，按字段的 `key` 区分。"
+  },
+  "i18n.<locale>.config_schema.<key>.label": {
+    "source": "f7696a3a020a",
+    "en": "Translated label.",
+    "zh": "翻译后的标签。"
+  },
+  "i18n.<locale>.config_schema.<key>.description": {
+    "source": "0ebc1dfa3ba9",
+    "en": "Translated help text.",
+    "zh": "翻译后的说明文字。"
+  },
+  "i18n.<locale>.config_schema.<key>.placeholder": {
+    "source": "322b99ddc1cb",
+    "en": "Translated placeholder.",
+    "zh": "翻译后的占位提示。"
+  },
+  "i18n.<locale>.config_schema.<key>.options": {
+    "source": "8bcdfbe71846",
+    "en": "Translated choice labels, keyed by the choice value.",
+    "zh": "翻译后的选项文字，按选项的值区分。"
+  },
+  "i18n.<locale>.browser_login": {
+    "source": "c957805a4427",
+    "en": "Translated login labels, keyed by the `browser_login` URL.",
+    "zh": "登录标签的翻译，按 `browser_login` 的 URL 区分。"
+  },
+  "i18n.<locale>.browser_login.<key>.label": {
+    "source": "1a4be412cbcc",
+    "en": "Translated label.",
+    "zh": "翻译后的标签。"
+  },
+  "type": {
+    "source": "74d86f834e41",
+    "en": "Kind of package: `automation` (a Digital Human), `mcp`, `skill`, or `extension` (reserved).",
+    "zh": "包的类型：`automation`（数字人）、`mcp`、`skill`，或保留的 `extension`。"
+  },
+  "system_prompt": {
+    "source": "004e76aecca1",
+    "en": "The Digital Human's instructions: its role, its steps, what it must never do and when to ask. Everything it does on its own follows from this text.",
+    "zh": "数字人的指令：它的角色、步骤、绝不能做的事，以及什么时候要来问人。它自己做的一切都由这段文字决定。"
+  },
+  "subscriptions": {
+    "source": "09e30cbfbf23",
+    "en": "When it runs on its own. Leave it out for a Digital Human that only answers chats and messages from bots.",
+    "zh": "它什么时候自己开始运行。只回复聊天和机器人消息的数字人不需要写。"
+  },
+  "subscriptions[].id": {
+    "source": "5b61baeedc1c",
+    "en": "Id of this trigger, unique in the spec. Without one, triggers are numbered `0`, `1`, … in order.",
+    "zh": "这个触发器的 id，在 spec 内唯一。不写时按顺序编号为 `0`、`1`……"
+  },
+  "subscriptions[].source": {
+    "source": "f5740e91635c",
+    "en": "What starts a run.",
+    "zh": "什么会启动一次运行。"
+  },
+  "subscriptions[].source.type": {
+    "source": "8f955d92f7dd",
+    "en": "`schedule`, `file` and `webhook` start runs. `webpage`, `rss`, `custom` and `wecom` are accepted but nothing produces their events. Messages to a bot reach a Digital Human through its bot binding, not through a trigger.",
+    "zh": "会启动运行的是 `schedule`、`file` 和 `webhook`。`webpage`、`rss`、`custom` 和 `wecom` 可以写，但没有任何事件来源会产生它们的事件。发给机器人的消息通过机器人绑定交给数字人，不需要触发器。"
+  },
+  "subscriptions[].source.config@schedule": {
+    "source": "ddf3d95c6326",
+    "en": "When to run: `every` or `cron`.",
+    "zh": "运行时间：`every` 或 `cron`。"
+  },
+  "subscriptions[].source.config.every@schedule": {
+    "source": "bafcbf418a3a",
+    "en": "Interval such as `30m`, `2h` or `1d` (units `s`, `m`, `h`, `d`). If both `every` and `cron` are set, `every` wins.",
+    "zh": "间隔，例如 `30m`、`2h`、`1d`（单位 `s`、`m`、`h`、`d`）。同时写了 `every` 和 `cron` 时，以 `every` 为准。"
+  },
+  "subscriptions[].source.config.cron@schedule": {
+    "source": "3718986d5547",
+    "en": "Cron expression with 5 fields, or 6 with seconds first, such as `0 9 * * 1-5`. It is checked when the spec is saved.",
+    "zh": "cron 表达式，5 段，或以秒开头的 6 段，例如 `0 9 * * 1-5`。保存 spec 时会校验。"
+  },
+  "subscriptions[].source.config.workday_calendar@schedule": {
+    "source": "b4b4a6b8383c",
+    "en": "`true` runs only on mainland China working days, including make-up workdays, and skips public holidays. Use it with a schedule that fires every day, not `1-5`.",
+    "zh": "设为 `true` 时只在中国大陆的工作日运行，包括调休上班日，跳过法定节假日。请搭配每天都触发的计划，不要用 `1-5`。"
+  },
+  "subscriptions[].source.config@file": {
+    "source": "ddf3d95c6326",
+    "en": "Which file changes start a run.",
+    "zh": "哪些文件变化会启动运行。"
+  },
+  "subscriptions[].source.config.pattern@file": {
+    "source": "c00338ae022f",
+    "en": "Glob matched against the changed file's path inside its own workspace, such as `inbox/*.csv`. It matches the same path in every workspace Halo watches, not only this one.",
+    "zh": "与变动文件在它所在工作区内的相对路径匹配的通配模式，例如 `inbox/*.csv`。它会匹配 Halo 监视的每个工作区里的同一路径，而不只是这一个。"
+  },
+  "subscriptions[].source.config.path@file": {
+    "source": "506bfd8aab0a",
+    "en": "Folder whose files count, matched as part of the absolute path. Halo does not limit a file trigger to the Digital Human's own workspace: changes in any workspace it watches (those open in the app and those of other file triggers) count. Set `path` to a folder inside this workspace to keep the trigger there.",
+    "zh": "只算这个文件夹里的文件，与绝对路径做部分匹配。Halo 不会把文件触发限定在数字人自己的工作区：它监视的任何工作区（在应用里打开的，以及其他文件触发所在的）发生变化都算。把 `path` 设为本工作区里的文件夹，触发才只限于那里。"
+  },
+  "subscriptions[].source.config@webhook": {
+    "source": "ddf3d95c6326",
+    "en": "An HTTP endpoint at `/hooks/<path>` that other systems post JSON events to.",
+    "zh": "位于 `/hooks/<path>` 的 HTTP 入口，其他系统向它推送 JSON 事件。"
+  },
+  "subscriptions[].source.config.path@webhook": {
+    "source": "548e489ce6c6",
+    "en": "Path after `/hooks/`. Use lower case and a path no other Digital Human uses.",
+    "zh": "`/hooks/` 之后的路径。请用小写，并且不要与其他数字人重复。"
+  },
+  "subscriptions[].source.config.secret@webhook": {
+    "source": "28ac3daa5842",
+    "en": "Shared secret for the HMAC-SHA256 signature every request must carry. Without it, anyone who can reach Halo can start the Digital Human.",
+    "zh": "每个请求都必须携带的 HMAC-SHA256 签名所用的共享密钥。不设置时，任何能访问 Halo 的人都能启动这位数字人。"
+  },
+  "subscriptions[].source.config@webpage": {
+    "source": "ddf3d95c6326",
+    "en": "Meant to watch a web page for changes. To check a page, use a `schedule` and let the Digital Human open it in the AI Browser.",
+    "zh": "本意是监视网页变化。要检查网页，请用 `schedule`，让数字人在 AI 浏览器里打开它。",
+    "status": "no-producer"
+  },
+  "subscriptions[].source.config.watch@webpage": {
+    "source": "646c7f22dcdc",
+    "en": "What to watch on the page.",
+    "zh": "要监视页面上的什么。",
+    "status": "no-producer"
+  },
+  "subscriptions[].source.config.selector@webpage": {
+    "source": "12fbeecce6ec",
+    "en": "CSS selector to focus on.",
+    "zh": "要关注的 CSS 选择器。",
+    "status": "no-producer"
+  },
+  "subscriptions[].source.config.url@webpage": {
+    "source": "f3c83826ac83",
+    "en": "Page URL.",
+    "zh": "页面地址。",
+    "status": "no-producer"
+  },
+  "subscriptions[].source.config@rss": {
+    "source": "ddf3d95c6326",
+    "en": "Meant to follow an RSS feed. Use a `schedule` that reads the feed instead.",
+    "zh": "本意是订阅 RSS 源。请改用定时读取订阅源的 `schedule`。",
+    "status": "no-producer"
+  },
+  "subscriptions[].source.config.url@rss": {
+    "source": "756718c61d52",
+    "en": "Feed URL.",
+    "zh": "订阅源地址。",
+    "status": "no-producer"
+  },
+  "subscriptions[].source.config@custom": {
+    "source": "57ec93aca5dc",
+    "en": "Free-form settings for a custom event source. Halo has none built in.",
+    "zh": "自定义事件来源的任意配置。Halo 没有内置这样的来源。",
+    "status": "no-producer"
+  },
+  "subscriptions[].source.config@wecom": {
+    "source": "ddf3d95c6326",
+    "en": "Meant for WeCom messages. To have a Digital Human answer a WeCom bot, bind the bot to it in Settings › Message Channels.",
+    "zh": "本意是接收企业微信消息。要让数字人回复企业微信机器人，请在 设置 › 消息通道 中把机器人绑定给它。",
+    "status": "no-producer"
+  },
+  "subscriptions[].source.config.chatId@wecom": {
+    "source": "a1c53be236fa",
+    "en": "Chat to listen to.",
+    "zh": "要接收的聊天。",
+    "status": "no-producer"
+  },
+  "subscriptions[].frequency": {
+    "source": "5e59233668d2",
+    "en": "Meant as the range of intervals a user may pick. Halo does not enforce it.",
+    "zh": "本意是用户可选的间隔范围。Halo 不会据此做限制。"
+  },
+  "subscriptions[].frequency.default": {
+    "source": "fe499970fbab",
+    "en": "Suggested interval. It does not change when runs happen: set the schedule's `every` or `cron` for that.",
+    "zh": "建议的间隔。它不会改变运行时间：要改运行时间，请修改计划的 `every` 或 `cron`。"
+  },
+  "subscriptions[].frequency.min": {
+    "source": "b13f0204f365",
+    "en": "Meant as the shortest interval a user may pick.",
+    "zh": "本意是用户可选的最短间隔。",
+    "status": "schema-only"
+  },
+  "subscriptions[].frequency.max": {
+    "source": "6b43c88b0f36",
+    "en": "Meant as the longest interval a user may pick.",
+    "zh": "本意是用户可选的最长间隔。",
+    "status": "schema-only"
+  },
+  "subscriptions[].config_key": {
+    "source": "5aa4f834d2ac",
+    "en": "Meant to feed a setting into the trigger. It must name an existing `config_schema` key, or the spec is rejected, but the value is never used.",
+    "zh": "本意是把某个设置项的值交给触发器。它必须是已有的 `config_schema` key，否则 spec 校验不通过，但这个值不会被使用。",
+    "status": "schema-only"
+  },
+  "filters": {
+    "source": "4f5bf0d71aa7",
+    "en": "Meant as rules that drop events before a run starts. Put such conditions in the system prompt instead.",
+    "zh": "本意是在运行开始前过滤事件的规则。请把这类条件写进系统提示词。",
+    "status": "schema-only"
+  },
+  "filters[].field": {
+    "source": "0dc431b84e88",
+    "en": "Event field to test.",
+    "zh": "要检查的事件字段。",
+    "status": "schema-only"
+  },
+  "filters[].op": {
+    "source": "f99d47096e3d",
+    "en": "Comparison.",
+    "zh": "比较方式。",
+    "status": "schema-only"
+  },
+  "filters[].value": {
+    "source": "f9422c016039",
+    "en": "Value to compare with.",
+    "zh": "用来比较的值。",
+    "status": "schema-only"
+  },
+  "memory_schema": {
+    "source": "30159105529d",
+    "en": "What the Digital Human should keep in its memory file between runs, such as processed ids or a last-run time. It guides the AI; nothing checks it.",
+    "zh": "数字人在两次运行之间要记在记忆文件里的内容，例如已处理的 id、上次运行时间。它是给 AI 的指引，不会被校验。"
+  },
+  "memory_schema.<field>.type": {
+    "source": "88ccc52b39d8",
+    "en": "Kind of value, as a hint such as `string`, `number`, `date` or `array`.",
+    "zh": "值的种类，作为提示，例如 `string`、`number`、`date`、`array`。"
+  },
+  "memory_schema.<field>.description": {
+    "source": "9148c905c37a",
+    "en": "What the entry holds and how to update it.",
+    "zh": "这一项记什么、怎样更新。"
+  },
+  "output": {
+    "source": "933e3ceb0ce3",
+    "en": "Meant to configure notifications and output format. Ask for notifications in the system prompt instead: the Digital Human sends them through the notification channels set up in Settings.",
+    "zh": "本意是配置通知和输出格式。请在系统提示词里写明要发通知：数字人会通过 设置 里配置的通知通道发送。",
+    "status": "schema-only"
+  },
+  "output.notify": {
+    "source": "20ea17f43463",
+    "en": "Notification settings.",
+    "zh": "通知设置。",
+    "status": "schema-only"
+  },
+  "output.notify.system": {
+    "source": "ecde05445e3d",
+    "en": "Desktop notifications. The user sets them per Digital Human under Messages & Notifications › System Notifications.",
+    "zh": "桌面通知。由用户在每位数字人的 消息与通知 › 系统通知 中设置。",
+    "status": "schema-only"
+  },
+  "output.notify.channels": {
+    "source": "f32f95d6f51f",
+    "en": "Notification channels.",
+    "zh": "通知通道。",
+    "status": "schema-only"
+  },
+  "output.format": {
+    "source": "64868dc5ba1e",
+    "en": "Output format.",
+    "zh": "输出格式。",
+    "status": "schema-only"
+  },
+  "escalation": {
+    "source": "3dfd11f99068",
+    "en": "How long its questions wait for an answer. The Digital Human can always stop and ask.",
+    "zh": "它的提问等待回答的时长。数字人随时都可以停下来提问。"
+  },
+  "escalation.enabled": {
+    "source": "669ccf8d5d9c",
+    "en": "`false` does not stop it from asking, and `true` changes nothing. How far it may act alone comes from the system prompt.",
+    "zh": "设为 `false` 并不能阻止它提问，设为 `true` 也没有变化。它能自己做到哪一步，由系统提示词决定。",
+    "status": "schema-only"
+  },
+  "escalation.timeout_hours": {
+    "source": "d147184edfe7",
+    "en": "Hours a question waits before it expires; the run then ends as failed. Without it, a question waits until someone answers.",
+    "zh": "提问等待的小时数，超时后提问失效，这次运行以失败结束。不写时，提问会一直等到有人回答。"
+  },
+  "recommended_model": {
+    "source": "547e9ac890e2",
+    "en": "Model to suggest. Shown as a hint where the user picks the model; it does not switch the model.",
+    "zh": "推荐使用的模型。在用户选择模型的地方作为提示显示，不会自动切换模型。"
+  },
+  "browser_login": {
+    "source": "5920993e7c7c",
+    "en": "Websites the user must be signed in to in the AI Browser before it can work. Halo asks the user to sign in; the Digital Human never sees the password.",
+    "zh": "数字人工作前，用户需要在 AI 浏览器里登录的网站。Halo 会请用户登录，数字人永远拿不到密码。"
+  },
+  "browser_login[].url": {
+    "source": "fc4eac441e6b",
+    "en": "Sign-in page.",
+    "zh": "登录页地址。"
+  },
+  "browser_login[].label": {
+    "source": "ba96f010c1c9",
+    "en": "Name of the site, shown to the user.",
+    "zh": "网站名称，显示给用户。"
+  },
+  "mcp_server": {
+    "source": "ee29126cecc0",
+    "en": "How to start or reach the MCP server.",
+    "zh": "怎样启动或连接这个 MCP 服务器。"
+  },
+  "mcp_server.transport": {
+    "source": "6d6bfea7f03b",
+    "en": "`stdio` starts a local command; `sse` and `streamable-http` connect to a server URL.",
+    "zh": "`stdio` 启动一个本地命令；`sse` 和 `streamable-http` 连接一个服务器地址。"
+  },
+  "mcp_server.command": {
+    "source": "d2277cadb08c",
+    "en": "For `stdio`, the program to run, such as `npx`. For `sse` and `streamable-http`, the server URL: there is no separate `url` field.",
+    "zh": "`stdio` 时是要运行的程序，例如 `npx`。`sse` 和 `streamable-http` 时是服务器地址：没有单独的 `url` 字段。"
+  },
+  "mcp_server.args": {
+    "source": "4828a405fc31",
+    "en": "Arguments for the command (`stdio`).",
+    "zh": "命令的参数（`stdio`）。"
+  },
+  "mcp_server.env": {
+    "source": "ab537e742550",
+    "en": "Environment variables for the command. Numbers and booleans are turned into strings. Values are stored as written, so keep keys out of shared packages.",
+    "zh": "命令的环境变量。数字和布尔值会转成字符串。值按原样保存，不要把密钥放进要分享的包。"
+  },
+  "mcp_server.headers": {
+    "source": "ce96e72d841b",
+    "en": "HTTP headers for `sse` and `streamable-http`, such as an authorization header. Stored as written.",
+    "zh": "`sse` 和 `streamable-http` 使用的 HTTP 请求头，例如鉴权头。按原样保存。"
+  },
+  "mcp_server.cwd": {
+    "source": "9158cddce722",
+    "en": "Working folder for the command (`stdio`).",
+    "zh": "命令的工作文件夹（`stdio`）。"
+  },
+  "skill:author": {
+    "source": "2490d7b53c91",
+    "en": "Who made it. Optional for a skill. When published, it becomes the namespace of the Store address, `<author>/<name>`.",
+    "zh": "作者。技能可以不写。发布后它会成为商店地址的命名空间：`<author>/<name>`。"
+  },
+  "skill_content": {
+    "source": "3dfdbff42c04",
+    "en": "The whole `SKILL.md` of a one-file skill.",
+    "zh": "单文件技能的完整 `SKILL.md` 内容。"
+  },
+  "skill_files": {
+    "source": "80a4180de5da",
+    "en": "Every file of the skill, keyed by its path in the skill folder. Its `SKILL.md` wins over `skill_content`.",
+    "zh": "技能的全部文件，按它在技能文件夹中的路径区分。其中的 `SKILL.md` 优先于 `skill_content`。"
+  }
+}

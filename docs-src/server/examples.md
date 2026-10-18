@@ -1,193 +1,188 @@
 ---
-title: "Halo Server 集成示例"
-description: "端到端可复制示例：客服数字人的完整 curl 走查、WebSocket 流式示例，以及把异步 API 包成同步 ask() 的 Java 后端代码；附合同审查数字员工场景。"
----
-# 集成示例
-
-本文给出可直接复制的端到端示例。请先读[集成指南](./integration.md)了解整体链路与约束。
-
-约定占位符：
-
-- `<host>` —— Halo Server 主机
-- `<base>` —— Base URL；直连为 `http://<host>:8080`，经反向代理前缀为 `https://<host>/fc-xxxx`
-- `<token>` —— 服务访问令牌（即 `HALO_REMOTE_PASSWORD`）
-- `<appId>` —— 数字人 App ID
-- `<spaceId>` —— 数字人所在空间 ID
-
+title: "Halo Server 集成示例：curl、WebSocket 与 Java"
+description: "Halo Server 集成示例：客服数字人的 curl 走查、WebSocket 事件流，以及把异步 API 包成同步 ask() 的 Java 代码。"
+type: how-to
+audience: [developer]
 ---
 
-## 场景一：电商客服数字人
+# Halo Server 集成示例
 
-链路：登录校验 → 发送消息（带 conversationId）→ 取结果（轮询 / WebSocket）。
+这一页给出可以直接复制的端到端示例。整体链路和约束见 [Halo Server 集成指南](/server/integration)。
 
-### 1. 校验令牌（可选）
+示例中的占位符：
+
+- `$HALO_URL`、`$HALO_TOKEN`：基础地址和访问密码，设置方法见[快速上手](/developers/quickstart#set-variables)。直连时基础地址是 `http://<HOST>:8080`，经反向代理时是 `https://<HOST>/<PATH_PREFIX>`。
+- `<APP_ID>`：数字人的 ID。
+- `<SPACE_ID>`：数字人所在工作区的 ID。
+
+## 场景一：网店客服数字人 {#support}
+
+链路：校验密码 → 安装数字人 → 用用户自己的线程发消息 → 取回复。
+
+### 1. 校验访问密码 {#check-password}
 
 ```bash
-curl -sS -X POST "<base>/api/remote/login" \
+curl -s -X POST "$HALO_URL/api/remote/login" \
   -H "Content-Type: application/json" \
-  -d '{"token":"<token>"}'
-# => {"success":true}
+  -d "{\"token\":\"$HALO_TOKEN\"}"
 ```
 
-### 2.（一次性）创建客服数字人
+输出：
 
-如果你还没有数字人，可用 API 安装一个。**生产中通常在管理界面创建并调好人格**，这里给出 API 形式：
+```json
+{"success":true}
+```
+
+### 2. 安装客服数字人（一次性） {#install}
+
+生产中通常在 Halo 界面里创建并调试好数字人。用 API 安装的写法：
 
 ```bash
-curl -sS -X POST "<base>/api/apps/install" \
-  -H "Authorization: Bearer <token>" \
+curl -s -X POST "$HALO_URL/api/apps/install" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-        "spaceId": "<spaceId>",
+        "spaceId": "<SPACE_ID>",
         "spec": {
           "type": "automation",
           "name": "客服助手",
           "version": "1.0.0",
-          "author": "acme",
-          "description": "电商客服数字员工，回答订单、物流、退换货问题。",
-          "system_prompt": "你是 ACME 电商的客服助手。礼貌、简洁、准确地回答用户关于订单、物流、退换货的问题。无法确定时，引导用户提供订单号。",
-          "store": {}
+          "author": "example",
+          "description": "网店客服，回答订单、物流和退换货问题。",
+          "system_prompt": "你是一家网店的客服助手。礼貌、简洁、准确地回答订单、物流和退换货问题。不确定时，请用户提供订单号。"
         }
       }'
-# => {"success":true,"data":{"appId":"<appId>"}}
 ```
 
-### 3. 发送消息（带最终用户的 conversationId）
-
-为最终用户 `user-12345` 发送一条咨询：
-
-```bash
-curl -sS -X POST "<base>/api/apps/<appId>/chat/send" \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-        "spaceId": "<spaceId>",
-        "conversationId": "user-12345",
-        "message": "我的订单 A1001 到哪了？"
-      }'
-# => {"success":true,"data":{"conversationId":"app-chat:<appId>"}}
-```
-
-::: warning
-返回的 `conversationId` 永远是默认值 `app-chat:<appId>`，不是你传入的 `user-12345`。以你自己传入的为准来取结果。
-:::
-
-### 4a. 轮询取结果（仅适合默认会话）
-
-> 仅当**不做多用户隔离**（不传 `conversationId`，所有人共享默认会话）时，轮询才正确。下面演示默认会话下的轮询循环。
-
-```bash
-# 不带 conversationId 发送，落到默认会话
-curl -sS -X POST "<base>/api/apps/<appId>/chat/send" \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{"spaceId":"<spaceId>","message":"你们的退货政策是怎样的？"}'
-
-# 轮询状态，直到 isGenerating=false
-while true; do
-  status=$(curl -sS "<base>/api/apps/<appId>/chat/status" \
-    -H "Authorization: Bearer <token>" | grep -o '"isGenerating":[a-z]*')
-  echo "$status"
-  [ "$status" = '"isGenerating":false' ] && break
-  sleep 1
-done
-
-# 拉取消息，取最后一条 assistant 的 content
-curl -sS "<base>/api/apps/<appId>/chat/messages" \
-  -H "Authorization: Bearer <token>"
-# => {"success":true,"data":[
-#      {"id":"session-msg-1","role":"user","content":"你们的退货政策是怎样的？","timestamp":"..."},
-#      {"id":"session-msg-2","role":"assistant","content":"我们支持 7 天无理由退货……","timestamp":"...","thoughts":[],"thoughtsSummary":{"count":0,"types":{}}}
-#    ]}
-```
-
-### 4b. WebSocket 取结果（推荐，支持多用户隔离与流式）
-
-下面用 [`websocat`](https://github.com/vi/websocat) 演示握手与事件；生产中用各语言的 WS 客户端实现同样的帧序列。
-
-```bash
-# 与服务建立 WS 连接（注意 ws/wss 与路径前缀）
-websocat "<base-as-ws>/ws"
-```
-
-依次发送（每行一帧 JSON）：
+输出：
 
 ```json
-{"type":"auth","payload":{"token":"<token>"}}
-{"type":"subscribe","payload":{"conversationId":"user-12345"}}
+{"success":true,"data":{"appId":"<APP_ID>"}}
 ```
 
-服务端先回鉴权成功，随后在你 `chat/send` 后推送事件流（节选）：
+### 3. 用户发来一条消息 {#send}
+
+用户 12345 的线程键是 `app-chat:<APP_ID>:http:direct:user-12345`：
+
+```bash
+curl -s -X POST "$HALO_URL/api/apps/<APP_ID>/chat/send" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "spaceId": "<SPACE_ID>",
+        "conversationId": "app-chat:<APP_ID>:http:direct:user-12345",
+        "message": "我的订单 A1001 到哪了？"
+      }'
+```
+
+输出：
+
+```json
+{"success":true,"data":{"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+```
+
+### 4a. 轮询取回复 {#polling}
+
+```bash
+THREAD='app-chat:<APP_ID>:http:direct:user-12345'
+
+# 等到这个线程不再生成，间隔逐次加倍
+delay=2
+until curl -s "$HALO_URL/api/apps/<APP_ID>/chat/status?conversationId=$THREAD" \
+    -H "Authorization: Bearer $HALO_TOKEN" | grep -q '"isGenerating":false'; do
+  sleep "$delay"
+  delay=$((delay * 2))
+done
+
+# 读取聊天记录，最后一条 assistant 消息就是回复
+curl -s "$HALO_URL/api/apps/<APP_ID>/chat/messages?conversationId=$THREAD" \
+  -H "Authorization: Bearer $HALO_TOKEN"
+```
+
+输出（节选）：
+
+```json
+{"success":true,"data":[
+  {"id":"…","role":"user","content":"我的订单 A1001 到哪了？","timestamp":"…"},
+  {"id":"…","role":"assistant","content":"你的订单 A1001 正在派送中……","timestamp":"…"}
+]}
+```
+
+### 4b. 用 WebSocket 取回复 {#websocket}
+
+用任意 WebSocket 客户端（例如命令行工具 `websocat`）连接 `ws://<HOST>:8080/ws`，依次发送下面两帧，然后再调用第 3 步的 `chat/send`：
+
+```json
+{"type":"auth","payload":{"token":"<YOUR_ACCESS_PASSWORD>"}}
+{"type":"subscribe","payload":{"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+```
+
+服务端先回复鉴权成功，随后推送事件流（节选，省略了 `spaceId`）：
 
 ```json
 {"type":"auth:success"}
-{"type":"event","channel":"agent:message","data":{"type":"message","content":"","isNewTextBlock":true,"spaceId":"<spaceId>","conversationId":"user-12345"}}
-{"type":"event","channel":"agent:message","data":{"type":"message","delta":"您的订单","isStreaming":true,"spaceId":"<spaceId>","conversationId":"user-12345"}}
-{"type":"event","channel":"agent:message","data":{"type":"message","delta":" A1001 正在派送中……","isStreaming":true,"spaceId":"<spaceId>","conversationId":"user-12345"}}
-{"type":"event","channel":"agent:message","data":{"type":"message","content":"您的订单 A1001 正在派送中，预计明天送达。","isComplete":true,"spaceId":"<spaceId>","conversationId":"user-12345"}}
-{"type":"event","channel":"agent:complete","data":{"type":"complete","tokenUsage":{"inputTokens":1234,"outputTokens":56},"spaceId":"<spaceId>","conversationId":"user-12345"}}
+{"type":"event","channel":"agent:message","data":{"type":"message","content":"","isComplete":false,"isStreaming":false,"isNewTextBlock":true,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+{"type":"event","channel":"agent:message","data":{"type":"message","delta":"你的订单","isComplete":false,"isStreaming":true,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+{"type":"event","channel":"agent:message","data":{"type":"message","delta":" A1001 正在派送中……","isComplete":false,"isStreaming":true,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+{"type":"event","channel":"agent:message","data":{"type":"message","content":"你的订单 A1001 正在派送中，预计明天送达。","isComplete":true,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
+{"type":"event","channel":"agent:complete","data":{"type":"complete","duration":6120,"conversationId":"app-chat:<APP_ID>:http:direct:user-12345"}}
 ```
 
-取结果的逻辑：**累计 `agent:message` 的 `delta` 做流式展示；以 `isComplete:true` 那条的 `content` 为最终答复；收到 `agent:complete` 视为本轮结束。**
+拼接 `delta` 做逐字显示；`isComplete: true` 那条的 `content` 是最终答复；`agent:complete` 表示这一轮结束。规则详见[拼接回复文本](/developers/api/websocket#assemble-reply)。
 
-> `<base-as-ws>`：把 Base URL 的 `http`→`ws`、`https`→`wss`。例如 `https://<host>/fc-xxxx` → `wss://<host>/fc-xxxx`。
+## 把异步 API 包成同步的 ask()（Java） {#java}
 
----
-
-## 把异步 API 包成同步 `ask(userId, question)`（Java）
-
-业务系统往往希望一次调用就拿到一句答复。下面的 Java 伪代码用一条 WebSocket 长连接，把 Halo 的异步事件流封装成阻塞的 `ask()`，每个用户用自己的 `conversationId` 实现隔离。
+业务系统常常希望一次调用就拿到一句答复。下面的 Java 示例用一条 WebSocket 长连接，把事件流封装成阻塞的 `ask()`，每个用户用自己的线程：
 
 ```java
-// 依赖：任意 WebSocket 客户端（如 Java-WebSocket）、HTTP 客户端（如 java.net.http）、JSON 库。
+// 依赖：java.net.http（HttpClient、WebSocket）和任意 JSON 库（这里用 Jackson 的 JsonNode）。
 public class HaloAgentClient {
 
-  private final String base;      // 例如 https://<host>/fc-xxxx
-  private final String token;     // HALO_REMOTE_PASSWORD
+  private final String base;      // 例如 https://<HOST>/<PATH_PREFIX>
+  private final String token;     // 访问密码，从配置或密钥管理中读取
   private final String appId;
   private final String spaceId;
 
   private final HttpClient http = HttpClient.newHttpClient();
   private WebSocket ws;
 
-  // conversationId -> 等待该轮最终答复的 future
+  // 线程键 -> 等待这一轮最终答复的 future
   private final Map<String, CompletableFuture<String>> pending = new ConcurrentHashMap<>();
 
   public HaloAgentClient(String base, String token, String appId, String spaceId) {
     this.base = base; this.token = token; this.appId = appId; this.spaceId = spaceId;
   }
 
-  /** 建立并鉴权 WS 长连接。整个进程生命周期复用一条连接。 */
+  /** 建立并鉴权 WebSocket 长连接，整个进程复用一条连接。断线后重连并重新订阅。 */
   public void connect() {
     String wsUrl = base.replaceFirst("^http", "ws") + "/ws";
-    this.ws = HttpClient.newHttpClient()
-        .newWebSocketBuilder()
+    this.ws = http.newWebSocketBuilder()
         .buildAsync(URI.create(wsUrl), new WebSocket.Listener() {
           @Override public void onOpen(WebSocket webSocket) {
-            webSocket.sendText("{\"type\":\"auth\",\"payload\":{\"token\":\"" + token + "\"}}", true);
+            webSocket.sendText("{\"type\":\"auth\",\"payload\":{\"token\":" + jsonString(token) + "}}", true);
             webSocket.request(1);
           }
           @Override public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
-            handleFrame(data.toString());   // 见下
+            handleFrame(data.toString());
             webSocket.request(1);
             return null;
           }
         }).join();
   }
 
-  /** 同步问答：发送问题，阻塞直到该用户会话返回最终答复。 */
+  /** 同步问答：发出问题，阻塞到这个用户的线程返回最终答复。 */
   public String ask(String userId, String question) throws Exception {
-    String conversationId = "user-" + userId;       // 业务侧命名方案
+    String thread = "app-chat:" + appId + ":http:direct:user-" + userId; // userId 只含字母、数字、_ 和 -
     CompletableFuture<String> future = new CompletableFuture<>();
-    pending.put(conversationId, future);
+    pending.put(thread, future);
 
-    // 1) 订阅该用户的会话（幂等，重复订阅无副作用）
-    ws.sendText("{\"type\":\"subscribe\",\"payload\":{\"conversationId\":\"" + conversationId + "\"}}", true);
+    // 1) 订阅这个线程（重复订阅没有副作用）
+    ws.sendText("{\"type\":\"subscribe\",\"payload\":{\"conversationId\":" + jsonString(thread) + "}}", true);
 
-    // 2) 异步触发 Agent
-    String body = String.format(
-        "{\"spaceId\":\"%s\",\"conversationId\":\"%s\",\"message\":%s}",
-        spaceId, conversationId, jsonString(question));
+    // 2) 发出消息，Halo 在后台处理
+    String body = "{\"spaceId\":" + jsonString(spaceId)
+        + ",\"conversationId\":" + jsonString(thread)
+        + ",\"message\":" + jsonString(question) + "}";
     http.send(HttpRequest.newBuilder()
         .uri(URI.create(base + "/api/apps/" + appId + "/chat/send"))
         .header("Authorization", "Bearer " + token)
@@ -195,97 +190,91 @@ public class HaloAgentClient {
         .POST(HttpRequest.BodyPublishers.ofString(body))
         .build(), HttpResponse.BodyHandlers.ofString());
 
-    // 3) 阻塞等待最终答复（带超时兜底）
+    // 3) 等待最终答复，设置超时
     try {
-      return future.get(60, TimeUnit.SECONDS);
+      return future.get(120, TimeUnit.SECONDS);
     } finally {
-      pending.remove(conversationId);
+      pending.remove(thread);
     }
   }
 
-  /** 处理一帧 WS 消息：按 conversationId 把最终答复/错误投递给对应 future。 */
+  /** 按线程键把最终答复或错误交给对应的 future。 */
   private void handleFrame(String json) {
     JsonNode msg = parse(json);
     if (!"event".equals(msg.path("type").asText())) return;
 
     String channel = msg.path("channel").asText();
     JsonNode d = msg.path("data");
-    String conversationId = d.path("conversationId").asText();
-    CompletableFuture<String> f = pending.get(conversationId);
-    if (f == null) return;
+    CompletableFuture<String> f = pending.get(d.path("conversationId").asText());
+    if (f == null) return; // 其他线程的状态事件也会到达，忽略即可
 
     if ("agent:message".equals(channel) && d.path("isComplete").asBoolean(false)) {
-      f.complete(d.path("content").asText());          // 最终答复
+      f.complete(d.path("content").asText());
     } else if ("agent:error".equals(channel)) {
-      f.completeExceptionally(new RuntimeException(d.path("error").asText())); // 出错
+      f.completeExceptionally(new RuntimeException(d.path("error").asText()));
     }
-    // agent:complete 可作为「本轮结束」二次确认；若已在 isComplete 处 complete 则忽略。
   }
 }
 ```
 
+`jsonString()` 和 `parse()` 分别用你的 JSON 库实现字符串转义和解析。
+
 要点：
 
-- **一条 WS 连接服务所有用户**，按 `conversationId` 多路复用，避免每次问答都重连。
-- **最终答复**取 `agent:message` 中 `isComplete:true` 的 `content`；**错误**走 `agent:error`。
-- **超时兜底**必不可少（示例用 60s），防止某轮无终止事件时永久阻塞。
-- 需要流式 UX 时，在 `handleFrame` 里额外处理 `agent:message` 的 `delta`（`isStreaming:true`），增量推给前端。
+- **一条连接服务所有用户**，按线程键分发事件，不需要每次问答都重连。
+- **最终答复**取 `isComplete: true` 的 `agent:message` 的 `content`；**错误**看 `agent:error`。
+- **一定要设超时**，避免某一轮没有结束事件时永远阻塞。
+- **同一个用户串行提问**：上一轮结束前不要在同一个线程里发下一条。
+- 需要逐字显示时，在 `handleFrame` 里把 `delta` 增量推给前端。
 
----
+## 场景二：合同审查数字人 {#contract-review}
 
-## 场景二：合同审查数字员工
-
-同一套接口，换一个人格即可得到完全不同的数字员工。合同审查助手的 spec 示例：
+同一套接口换一个人设，就是另一种数字人。合同审查助手的 spec：
 
 ```bash
-curl -sS -X POST "<base>/api/apps/install" \
-  -H "Authorization: Bearer <token>" \
+curl -s -X POST "$HALO_URL/api/apps/install" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-        "spaceId": "<spaceId>",
+        "spaceId": "<SPACE_ID>",
         "spec": {
           "type": "automation",
           "name": "合同审查助手",
           "version": "1.0.0",
-          "author": "acme-legal",
+          "author": "example",
           "description": "审阅合同条款，识别风险点并给出修改建议。",
-          "system_prompt": "你是企业法务的合同审查助手。逐条审阅用户提交的合同条款，识别对我方不利的风险点（责任、赔付、违约、知识产权、争议解决等），按风险等级（高/中/低）列出，并给出可直接替换的修改建议。引用条款原文。",
-          "store": {}
+          "system_prompt": "你是法务部门的合同审查助手。逐条审阅用户提交的合同条款，找出对我方不利的风险点（责任、赔付、违约、知识产权、争议解决等），按高、中、低列出，并给出可以直接替换的修改建议，引用条款原文。"
         }
       }'
 ```
 
-调用方式与客服场景完全一致——按合同/审查任务分配 `conversationId`（例如 `contract-2026-0042`），发送条款文本，再通过 WebSocket 取流式审查结论：
+调用方式和客服场景一样：按审查任务分配线程，例如 `app-chat:<APP_ID>:http:direct:contract-2026-0042`，发送条款文本，再通过 WebSocket 取回审查结论：
 
 ```bash
-curl -sS -X POST "<base>/api/apps/<appId>/chat/send" \
-  -H "Authorization: Bearer <token>" \
+curl -s -X POST "$HALO_URL/api/apps/<APP_ID>/chat/send" \
+  -H "Authorization: Bearer $HALO_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-        "spaceId": "<spaceId>",
-        "conversationId": "contract-2026-0042",
+        "spaceId": "<SPACE_ID>",
+        "conversationId": "app-chat:<APP_ID>:http:direct:contract-2026-0042",
         "message": "请审查：第 8 条 乙方应在任何情况下对甲方的全部损失承担无限连带责任。"
       }'
 ```
 
-业务侧用同一个 `HaloAgentClient.ask("contract-2026-0042", clauseText)` 即可拿到同步结论。**人格的差异完全由 `system_prompt` 决定，集成代码零改动。** 这正是「一种数字人 = 一种人格，多会话隔离」模型的价值：业务后端写一次对接，便可承载任意多种数字员工。
+人设的差别完全由 `system_prompt` 决定，对接代码不用改：后台写一次对接，就能承载任意多种数字人。
 
----
-
-## 常见问题排查
+## 常见问题 {#troubleshooting}
 
 | 现象 | 可能原因 | 处理 |
 |---|---|---|
-| `401 Invalid token` | 令牌错误或未带 Bearer 头 | 核对 `<token>` 与 `Authorization` 头 |
-| WS 连上即被关闭 | 鉴权帧未发或令牌错 | 连接后第一帧必须发 `auth`，等到 `auth:success` 再订阅 |
-| 收不到任何事件 | 订阅的 `conversationId` 与发送的不一致 | 确保 `subscribe` 与 `chat/send` 用同一个 `conversationId` |
-| 轮询拿到别人的历史 | 用自定义 `conversationId` 却走了轮询 | 多用户隔离必须走 WebSocket；轮询只对默认会话有效 |
-| `503` | App Manager/Runtime 未就绪（冷启动） | 稍候重试 |
+| `401 Invalid token` | 访问密码错误，或没有带 Bearer 头 | 核对 `$HALO_TOKEN` 和 `Authorization` 头 |
+| `400 Invalid conversationId` | 线程键格式不对，例如直接传了 `user-12345` | 用 `app-chat:<APP_ID>:http:direct:<USER_KEY>` |
+| WebSocket 连上就被关闭 | 没有先发 `auth`，或密码错误 | 连接后第一帧发 `auth`，收到 `auth:success` 再订阅 |
+| 收不到某个线程的回复 | 订阅的线程键和发送时用的不一致 | `subscribe` 和 `chat/send` 用同一个 `conversationId` |
+| `503` | 服务还在启动 | 冷启动后稍等再试 |
 
----
+## 相关页面 {#related}
 
-## 相关文档
-
-- [集成指南](./integration.md) —— 链路、会话生命周期、两种取结果方式的取舍。
-- [配置说明](./configuration.md) —— 令牌、端口、大模型网关。
-- [数字人文档](../digital-humans/overview) —— 数字人 spec 与人格设计。
+- [Halo Server 集成指南](/server/integration)：线程、两种取回复方式和错误处理
+- [WebSocket 事件](/developers/api/websocket)：全部事件频道
+- [Halo Server 配置](/server/configuration)：访问密码、端口和大模型网关

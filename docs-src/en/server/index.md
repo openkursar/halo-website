@@ -1,72 +1,89 @@
 ---
-title: "Halo Server Quickstart"
-description: "A few commands to run Halo as a service, then open it in a browser and get the exact same Halo management UI as the desktop app."
+title: "Halo Server quickstart: run Halo as a service"
+description: "Halo Server quickstart: run Halo as a service on Linux, open the desktop interface in a browser, and call its API from your systems."
+type: how-to
+audience: [developer, admin]
+platforms: [server]
 ---
-# Halo Server
 
-Halo Server is the headless edition of Halo — the **same application** as desktop Halo, only the runtime shape differs: desktop opens a window on macOS / Windows for a human; the Server edition runs the real Halo Electron main process headless in a Linux container (`HALO_SERVER_MODE=1`), replacing the human UI with an HTTP + WebSocket API. Because it runs the complete app, all of desktop Halo's capabilities are there.
+# Halo Server quickstart
 
-**Deploy it, open the URL in a browser, and what you see is the full Halo management UI — identical to the desktop app, except now it runs on a server 24/7 and your backends can drive it over an API.**
+Halo Server is the headless server form of Halo and the same app as the desktop one: it runs Halo's main process headless in a Linux container (`HALO_SERVER_MODE=1`), opens no window, and serves the HTTP API and WebSocket instead. Everything the desktop app can do, it can do.
 
-## Quickstart
+After deploying, open its address in a browser and you get the same Halo interface as on the desktop; your back-end systems can call it through the API.
+
+## Before you start {#before-you-start}
+
+You need a Linux server that runs Docker with at least 4–8 GB of memory, Node.js (Halo does not publish a server image, so you build the app bundle from source), and your own model endpoint and key. See [Deploy with Docker](/en/server/deployment-docker#before-you-start) for the full requirements.
+
+## 1. Build and run {#run}
+
+These are the shortest commands, the same as steps 1 and 2 of [Deploy with Docker](/en/server/deployment-docker); data is written to the mounted `/srv/halo-data`:
 
 ```bash
 git clone https://github.com/openkursar/hello-halo.git
 cd hello-halo
 npm ci
-npm run build:server              # builds the Linux app bundle into deploy/server/bundle/
+npm run build:server
 docker build -t halo-server deploy/server
 
 docker run -d --name halo-server \
   -p 8080:8080 \
-  -e HALO_REMOTE_PASSWORD=set-your-own-token \
+  -v /srv/halo-data:/data \
+  -e HALO_DATA_DIR=/data \
+  -e HALO_REMOTE_PASSWORD=<YOUR_ACCESS_PASSWORD> \
   -e HALO_AI_PROVIDER=openai \
-  -e HALO_AI_API_URL=<your-llm-gateway> \
-  -e HALO_AI_API_KEY=<your-key> \
-  -e HALO_AI_MODEL=<model-name> \
+  -e HALO_AI_API_URL=https://ai-gateway.example.com/v1 \
+  -e HALO_AI_API_KEY=<YOUR_API_KEY> \
+  -e HALO_AI_MODEL=<MODEL_NAME> \
   halo-server
 ```
 
-The deployment files live in the Halo repository's `deploy/server/` directory. `npm run build:server` generates the Linux app bundle from source (it needs a Node environment; see [Build Your Own Image](./build.md)), and `docker build` needs network access to pull the base image and install system libraries and fonts.
+- `<YOUR_ACCESS_PASSWORD>`: a random password of 8–64 characters, for example the output of `openssl rand -hex 24`. The sign-in page does not accept fewer than 8 characters, so do not rely on the default.
+- `<YOUR_API_KEY>`, `<MODEL_NAME>`: the key and model name of your model gateway.
 
-## Open the management UI
+For what each option does, the `docker compose` form and the base image, see [Deploy with Docker](/en/server/deployment-docker).
 
-Open in your browser:
+## 2. Open the interface {#open}
 
-```
-http://localhost:8080
-```
+Open `http://<HOST>:8080` in a browser and sign in with the access password. You see the same Halo interface as on the desktop: workspaces, tasks, Digital Humans and tool calls are all there.
 
-Log in with the `HALO_REMOTE_PASSWORD` you set — what you get is the **exact same Halo management UI as the desktop app**: spaces, tasks, digital humans, tool calls, all of it.
+## 3. Verify the service {#verify}
 
-At this point you already have a Halo running as a **service**.
-
-> For programmatic callers, skip the login page and call the API directly with `Authorization: Bearer <HALO_REMOTE_PASSWORD>`. See the [Integration Guide](./integration.md).
-
-## Verify it is running
+Check that the service is up (public endpoint, no password needed):
 
 ```bash
-# liveness probe (public endpoint, no token)
-curl http://localhost:8080/api/remote/status
-# => {"success":true,"data":{"active":true,"clients":0,"version":"1.0.0"}}
-
-# validate the service token
-curl -X POST http://localhost:8080/api/remote/login \
-  -H "Content-Type: application/json" \
-  -d '{"token":"<HALO_REMOTE_PASSWORD>"}'
-# => {"success":true}
+curl http://127.0.0.1:8080/api/remote/status
 ```
 
-## Next
+Output:
 
-- **[Configuration (env vars)](./configuration.md)** — point at your own LLM gateway, set the access token, persist your data.
-- **[Docker deployment](./deployment-docker.md)** — `docker compose`, persistent volumes, resource sizing.
-- **[Function-platform deployment](./deployment-faas.md)** — deploy on serverless (Knative-based).
-- **[Integration (for backends)](./integration.md)** — HTTP API, WebSocket events, multi-user digital-human examples.
+```json
+{"success":true,"data":{"active":true,"clients":0,"version":"1.0.0"}}
+```
 
-::: tip Two things before production
-1. **Persistence**: by default data is written to `/tmp/.halo` inside the container and lost when the container is removed. Mount a volume and set `HALO_DATA_DIR` (see [Configuration](./configuration.md)); app data such as global skills and the AI engine's conversation records is then kept on that volume too.
-2. **Resources**: Halo runs a full Electron (Chromium) main process and needs real memory — provision **≥ 4–8 GB** for the container.
+Check the access password:
+
+```bash
+curl -X POST http://127.0.0.1:8080/api/remote/login \
+  -H "Content-Type: application/json" \
+  -d '{"token":"<YOUR_ACCESS_PASSWORD>"}'
+```
+
+Output:
+
+```json
+{"success":true}
+```
+
+::: done
+When you can sign in from the browser and see the Halo interface, Halo Server is running. Back-end programs skip the sign-in page and send `Authorization: Bearer <YOUR_ACCESS_PASSWORD>` with every request; see the [HTTP API overview](/en/developers/api/).
 :::
 
-> Halo Server is a **stateful, single-instance** service (SQLite + files + in-memory sessions): **scale vertically** (more CPU / memory for the single instance), do not naively horizontal-scale — multiple instances each hold independent state and split your data. See the scaling notes in [Function-platform deployment](./deployment-faas.md#concurrency-scaling-important).
+Halo Server is a stateful, single-instance service (SQLite, files and in-memory sessions). For more capacity, give the one instance more CPU and memory rather than adding instances: several instances each hold their own state and drift apart. See [Serverless deployment](/en/server/deployment-faas#scaling) for details.
+
+## Next steps {#next-steps}
+
+- [Halo Server configuration](/en/server/configuration): connect your model gateway, set the access password, persist data
+- [Deploy with Docker](/en/server/deployment-docker): `docker compose`, volumes and resource sizing
+- [Halo Server integration guide](/en/server/integration): use Digital Humans as the AI back end of your systems
