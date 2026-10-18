@@ -37,22 +37,19 @@ jobs:
         working-directory: docs-src
 
       - name: Assemble site
-        run: |
-          mkdir -p dist
-          # Landing page at root
-          cp index.html dist/
-          cp CNAME dist/
-          cp robots.txt dist/
-          cp sitemap.xml dist/
-          cp llms.txt dist/
-          cp -r assets dist/assets
-          # Docs at /docs/
-          cp -r docs-src/.vitepress/dist dist/docs
+        run: ./scripts/assemble-site.sh
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+
+      - name: Upload site for the haloxe.com mirror
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist
+          retention-days: 1
 
   deploy:
     environment:
@@ -67,3 +64,24 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # haloxe.com mirror: the same files, served by the edge Worker "halo-site".
+  deploy-haloxe:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download site
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: dist
+
+      - name: Deploy haloxe.com
+        working-directory: haloxe
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx -y wrangler@4.151.1 deploy

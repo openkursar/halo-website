@@ -1,0 +1,16 @@
+# Worker "halo-site": haloxe.com and www.haloxe.com are attached to it as
+# custom domains in the dashboard. Other haloxe.com hosts (issuer, r-*) belong
+# to the tunnel issuer and must never be routed here.
+# Deploy needs CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN in the environment.
+name = "halo-site"
+main = "worker-site.js"
+compatibility_date = "2025-01-01"
+workers_dev = false
+preview_urls = false
+
+[assets]
+directory = "../dist"
+binding = "ASSETS"
+# The www -> apex redirect lives in the script, so it must see every request.
+run_worker_first = true
+not_found_handling = "404-page"
