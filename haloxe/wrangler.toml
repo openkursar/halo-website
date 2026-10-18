@@ -14,3 +14,5 @@ binding = "ASSETS"
 # The www -> apex redirect lives in the script, so it must see every request.
 run_worker_first = true
 not_found_handling = "404-page"
+# Exact-path serving; the Worker maps directories to index.html itself.
+html_handling = "none"
