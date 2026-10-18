@@ -4,7 +4,7 @@ description: "企业微信对机器人的发送者做了匿名化处理，配置
 ---
 # 企微机器人：显示真实姓名
 
-> 联系人列表里显示的是 `wohR_KCgAA7Jg8dwFDgikQt2k0MZE18A` 这样一串 ID？这篇文档告诉你怎么把它变成真实姓名。
+> 联系人列表里显示的是 `wmAbCdEfGhIjKlMnOpQrStUvWxYz0123` 这样一串 ID？这篇文档告诉你怎么把它变成真实姓名。
 
 ---
 

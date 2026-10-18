@@ -434,7 +434,7 @@ OA 审批助手演示的是模式 A（API 代理型）。如果你的需求是�
 |---|---|
 | **从社交媒体抓数据**（小红书、微博、知乎搜索结果） | [第三章 3.1 模式 B：XHR 拦截型](./guide-03-reference.md#_3-1-halo-browser-action-四种模式) |
 | **在网页上发内容**（评论、发帖、私信） | [第三章 3.1 模式 C：DOM 注入型](./guide-03-reference.md#_3-1-halo-browser-action-四种模式) |
-| **复杂多步业务流转**（DPMS 类研发流水线） | [第三章 3.1 模式 D：混合型](./guide-03-reference.md#_3-1-halo-browser-action-四种模式) |
+| **复杂多步业务流转**（研发流水线类） | [第三章 3.1 模式 D：混合型](./guide-03-reference.md#_3-1-halo-browser-action-四种模式) |
 | **找不到类似的现成包** | 商店 / [GitHub 仓库](https://github.com/openkursar/digital-human-protocol) |
 
 找到接近的模板，按这一章的方法创建即可。

@@ -114,14 +114,14 @@ AI 思考超时（约 5 分钟）。解决：
 
 所以**重装、删配置、重装系统都没用**——失效的路径记录在空间配置里，重装不会修复它。
 
-常见触发场景：工作目录被设在了安装目录下（例如 `D:\Program Files\Halo-WeBank\spaces`），而 VDI 迁移或"删目录重装"之后，这个子文件夹没有被重新创建。
+常见触发场景：工作目录被设在了安装目录下（例如 `D:\Program Files\Halo\spaces`），而 VDI 迁移或"删目录重装"之后，这个子文件夹没有被重新创建。
 
 定位：设置 → 系统 → 打开日志，搜索 `resolved=`，等号后面就是实际使用的工作目录。把这个路径粘贴到文件管理器打开，大概率打不开（目录已不存在）。
 
 解决：把这个目录建回来即可。若路径在 `Program Files` 下，需**以管理员身份**打开 PowerShell，执行（把路径换成你日志里看到的那个）：
 
 ```powershell
-New-Item -ItemType Directory -Force "D:\Program Files\Halo-WeBank\spaces" | Out-Null
+New-Item -ItemType Directory -Force "D:\Program Files\Halo\spaces" | Out-Null
 ```
 
 然后重启 Halo 即可恢复。
