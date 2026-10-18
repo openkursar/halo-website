@@ -1,0 +1,8 @@
+{
+  "baseline": ["docs-src/.vitepress/data/url-baseline.json", ".docs-work/audit/url-baseline.json"],
+  "urlMap": ["docs-src/.vitepress/data/url-map.json", ".docs-work/spec/url-map.json"],
+  "src": ["docs-src"],
+  "localDenylist": [".docs-work/spec/leak-denylist.txt"],
+  "allowEmails": ["imwangfu@gmail.com"],
+  "allowCodeHosts": ["news.ycombinator.com"]
+}

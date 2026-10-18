@@ -1,382 +1,128 @@
-import { defineConfig } from 'vitepress'
-import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vitepress'
+import { excludedLinks, isInternal, isStrict, reportMissingSnippets, srcExclude } from './config/edition'
+import { builtSources, isPlannedPath, isRedirectedLink } from './config/ia'
+import { nav, sidebar } from './config/navigation'
+import { sitemapTransform, staticHead, transformHead } from './config/head'
+import { search } from './config/search'
+import { configureMarkdown } from './config/markdown'
+import { missingImagePlaceholders, reportMissingImages } from './config/assets'
+import { Report } from './build/report'
+import { writeRedirectStubs } from './build/redirects'
+import { writeAiLayer } from './build/ai-layer'
+import { runChecks } from './build/checks'
+import { writeFeeds } from './build/feed'
 
-// Internal (intranet) build switch. Set HALO_INTERNAL=1 to strip public-only
-// content (e.g. open-source/community messaging, contact page) from the build.
-const isInternal = process.env.HALO_INTERNAL === '1'
+const hidden = excludedLinks()
 
-// Source for internal-only content injected by `<!-- internal:NAME -->` markers.
-// Kept out of git (see docs-src/.gitignore); only present on the intranet build
-// machine, so confidential values never reach the public repo or site.
-const internalDir = fileURLToPath(new URL('../.internal', import.meta.url))
+// Pages without a translation yet: the language switcher sends readers to the
+// other locale's home instead of a 404 (see theme/composables/langs.ts).
+const built = builtSources()
+const unpaired = [...built].filter((f) => !built.has(f.startsWith('en/') ? f.slice(3) : `en/${f}`))
 
-// Pages excluded entirely from the internal build.
-const internalExcludePages = [
-  'guide/philosophy.md',
-  'en/guide/philosophy.md',
-  'contact.md',
-  'en/contact.md',
-]
-
-// Sidebar/nav links pointing at the excluded pages (filtered out internally).
-const internalExcludeLinks = [
-  '/guide/philosophy',
-  '/en/guide/philosophy',
-  '/contact',
-  '/en/contact',
-]
-
-type SidebarGroup = { text: string; items: { text: string; link: string }[] }
-
-// Drop links to excluded pages, then drop any group left empty.
-function filterSidebar(groups: SidebarGroup[]): SidebarGroup[] {
-  if (!isInternal) return groups
-  return groups
-    .map((g) => ({ ...g, items: g.items.filter((i) => !internalExcludeLinks.includes(i.link)) }))
-    .filter((g) => g.items.length > 0)
+// Nav and sidebar never point at pages this edition leaves out.
+function prune<T extends { link?: string; items?: T[] }>(items: T[]): T[] {
+  return items
+    .filter((i) => !i.link || !hidden.has(i.link))
+    .map((i) => (i.items ? { ...i, items: prune(i.items) } : i))
+    .filter((i) => !i.items || i.items.length > 0)
 }
 
-function filterNav<T extends { link?: string }>(items: T[]): T[] {
-  if (!isInternal) return items
-  return items.filter((i) => !i.link || !internalExcludeLinks.includes(i.link))
+function pruneSidebar(multi: Record<string, any[]>) {
+  return Object.fromEntries(Object.entries(multi).map(([k, v]) => [k, prune(v)]))
 }
 
-const zhSidebar = [
-  {
-    text: '认识 Halo',
-    items: [
-      { text: 'Halo 是什么', link: '/guide/what-is-halo' },
-      { text: '核心理念', link: '/guide/philosophy' },
-      { text: '从 Claude Code 迁移', link: '/guide/from-claude-code' },
-      { text: '更新日志', link: '/guide/changelog' },
-    ]
+const localeTheme = {
+  zh: {
+    outline: { level: [2, 3] as [number, number], label: '本页内容' },
+    docFooter: { prev: '上一页', next: '下一页' },
+    lastUpdated: { text: '最后更新于', formatOptions: { dateStyle: 'short' as const } },
+    editLink: isInternal ? undefined : { pattern: 'https://github.com/openkursar/halo-website/edit/main/docs-src/:path', text: '在 GitHub 上编辑此页' },
+    returnToTopLabel: '回到顶部',
+    sidebarMenuLabel: '菜单',
+    darkModeSwitchLabel: '外观',
+    langMenuLabel: '切换语言',
+    notFound: { title: '页面不存在', quote: '这个地址没有内容。可以用上方搜索，或回到文档首页。', linkText: '返回文档首页' },
   },
-  {
-    text: '上手指南',
-    items: [
-      { text: '1. 安装 Halo', link: '/getting-started/install' },
-      { text: '2. 配置 AI 模型', link: '/getting-started/setup-ai' },
-      { text: '3. 第一次对话', link: '/getting-started/first-chat' },
-      { text: '4. 接入企业微信 Bot', link: '/getting-started/wecom-bot' },
-      { text: '5. 创建更多数字人', link: '/getting-started/create-digital-human' },
-      { text: '6. 配置邮箱', link: '/getting-started/email' },
-    ]
+  en: {
+    outline: { level: [2, 3] as [number, number], label: 'On this page' },
+    docFooter: { prev: 'Previous', next: 'Next' },
+    lastUpdated: { text: 'Last updated', formatOptions: { dateStyle: 'short' as const } },
+    editLink: isInternal ? undefined : { pattern: 'https://github.com/openkursar/halo-website/edit/main/docs-src/:path', text: 'Edit this page on GitHub' },
+    notFound: { title: 'Page not found', quote: 'Nothing lives at this address. Try the search above, or go back to the docs home.', linkText: 'Back to the docs home' },
   },
-  {
-    text: '用户手册',
-    items: [
-      { text: '第零章：安装与第一次打开', link: '/manual/00-install-and-first-open' },
-      { text: '第一章：企微机器人配置', link: '/manual/01-wecom-bot' },
-      { text: '第二章：创建和使用数字人', link: '/manual/02-digital-human' },
-      { text: '第三章：用 Halo 发邮件', link: '/manual/03-email' },
-      { text: '第四章：和 AI 对话基础', link: '/manual/04-chat-basics' },
-      { text: '第五章：空间管理', link: '/manual/chapter05-space-management' },
-      { text: '第六章：AI 浏览器', link: '/manual/chapter06-ai-browser' },
-      { text: '第七章：远程访问', link: '/manual/chapter07-remote-access' },
-      { text: '第八章：设置、应用商店与排障', link: '/manual/chapter08-settings-and-troubleshooting' },
-    ]
-  },
-  {
-    text: '功能详解',
-    items: [
-      { text: '空间', link: '/features/spaces' },
-      { text: 'AI 浏览器', link: '/features/ai-browser' },
-      { text: 'AI 终端', link: '/features/ai-terminal' },
-      { text: '知识库', link: '/features/knowledge-base' },
-      { text: '远程访问', link: '/features/remote-access' },
-      { text: 'MCP 服务器', link: '/features/mcp' },
-      { text: 'Skills 技能', link: '/features/skills' },
-      { text: '命令', link: '/features/commands' },
-    ]
-  },
-  {
-    text: '数字人开发指南',
-    items: [
-      { text: '第一章：快速上手', link: '/digital-humans/guide-01-quickstart' },
-      { text: '第二章：改造一个数字人', link: '/digital-humans/guide-02-build' },
-      { text: '第三章：参考手册', link: '/digital-humans/guide-03-reference' },
-    ]
-  },
-  {
-    text: '数字人进阶',
-    items: [
-      { text: '数字人概述', link: '/digital-humans/overview' },
-      { text: '数字人商店', link: '/digital-humans/store' },
-      { text: '生产级数字人制作', link: '/digital-humans/production-guide' },
-      { text: '数字人协作与通信', link: '/digital-humans/collaboration' },
-      { text: '企微 Bot 进阶玩法', link: '/digital-humans/wecom-bot-features' },
-      { text: '企微 Bot 显示真实姓名', link: '/digital-humans/wecom-name-resolution' },
-      { text: '连接个人微信', link: '/digital-humans/personal-wechat' },
-      { text: 'DHP 协议', link: '/digital-humans/dhp-protocol' },
-    ]
-  },
-  {
-    text: 'Halo 服务版（Server）',
-    items: [
-      { text: '快速开始', link: '/server/' },
-      { text: '配置（环境变量）', link: '/server/configuration' },
-      { text: '容器部署', link: '/server/deployment-docker' },
-      { text: '函数平台部署', link: '/server/deployment-faas' },
-      { text: '集成指南', link: '/server/integration' },
-      { text: 'HTTP API 参考', link: '/server/api-reference' },
-      { text: 'WebSocket 事件协议', link: '/server/websocket' },
-      { text: '集成示例', link: '/server/examples' },
-      { text: '自建镜像与工作原理', link: '/server/build' },
-    ]
-  },
-  {
-    text: '安全与权限',
-    items: [
-      { text: '权限控制', link: '/advanced/security' },
-    ]
-  },
-  {
-    text: '常见问题',
-    items: [
-      { text: 'FAQ', link: '/troubleshooting/faq' },
-      { text: 'API 错误码', link: '/troubleshooting/api-errors' },
-    ]
-  },
-  {
-    text: '更多',
-    items: [
-      { text: '更新日志', link: '/guide/changelog' },
-      { text: '配置路径', link: '/advanced/config-paths' },
-      { text: '换电脑迁移', link: '/advanced/migrate' },
-      { text: '联系我们', link: '/contact' },
-    ]
-  },
-]
-
-const enSidebar = [
-  {
-    text: 'Getting Started',
-    items: [
-      { text: 'What is Halo', link: '/en/guide/what-is-halo' },
-      { text: 'Philosophy', link: '/en/guide/philosophy' },
-    ]
-  },
-  {
-    text: 'Quick Start',
-    items: [
-      { text: 'Installation', link: '/en/guide/installation' },
-      { text: 'Your First Conversation', link: '/en/guide/quickstart' },
-    ]
-  },
-  {
-    text: 'Features',
-    items: [
-      { text: 'Spaces', link: '/en/features/spaces' },
-      { text: 'AI Browser', link: '/en/features/ai-browser' },
-      { text: 'AI Terminal', link: '/en/features/ai-terminal' },
-      { text: 'Knowledge Base', link: '/en/features/knowledge-base' },
-      { text: 'Remote Access', link: '/en/features/remote-access' },
-      { text: 'Image Input', link: '/en/features/image-input' },
-      { text: 'MCP Servers', link: '/en/features/mcp' },
-      { text: 'Skills', link: '/en/features/skills' },
-      { text: 'Commands', link: '/en/features/commands' },
-    ]
-  },
-  {
-    text: 'Digital Humans',
-    items: [
-      { text: 'Overview', link: '/en/digital-humans/overview' },
-      { text: 'Store', link: '/en/digital-humans/store' },
-      { text: 'Create', link: '/en/digital-humans/create' },
-      { text: 'Collaboration', link: '/en/digital-humans/collaboration' },
-      { text: 'DHP Protocol', link: '/en/digital-humans/dhp-protocol' },
-    ]
-  },
-  {
-    text: 'Halo Server',
-    items: [
-      { text: 'Quickstart', link: '/en/server/' },
-      { text: 'Configuration', link: '/en/server/configuration' },
-      { text: 'Deploy with Docker', link: '/en/server/deployment-docker' },
-      { text: 'Deploy on Function Platform', link: '/en/server/deployment-faas' },
-      { text: 'Integration Guide', link: '/en/server/integration' },
-      { text: 'HTTP API Reference', link: '/en/server/api-reference' },
-      { text: 'WebSocket Protocol', link: '/en/server/websocket' },
-      { text: 'Examples', link: '/en/server/examples' },
-      { text: 'Build Your Own Image', link: '/en/server/build' },
-    ]
-  },
-  {
-    text: 'Troubleshooting',
-    items: [
-      { text: 'Common Errors', link: '/en/troubleshooting/common-errors' },
-      { text: 'API Error Codes', link: '/en/troubleshooting/api-errors' },
-    ]
-  },
-  {
-    text: 'Advanced',
-    items: [
-      { text: 'Config Paths', link: '/en/advanced/config-paths' },
-      { text: 'Move to a New Computer', link: '/en/advanced/migrate' },
-      { text: 'Best Practices', link: '/en/advanced/best-practices' },
-    ]
-  },
-  {
-    text: 'Contact',
-    items: [
-      { text: 'Community & Support', link: '/en/contact' },
-    ]
-  },
-]
+}
 
 export default defineConfig({
   base: '/docs/',
+  cleanUrls: false,
   title: 'Halo',
-  description: 'Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans.',
-
+  titleTemplate: ':title | Halo AI',
+  description: 'Halo AI 工作站文档',
   appearance: 'light',
+  lastUpdated: true,
 
-  sitemap: {
-    hostname: 'https://hello-halo.cc/docs/',
-  },
+  srcExclude: srcExclude(),
 
-  // Internal build: exclude public-only pages entirely.
-  srcExclude: isInternal ? internalExcludePages : [],
+  // Outside strict mode, links to IA pages not written yet and to old URLs that
+  // now redirect are tolerated, so pages can be migrated one batch at a time.
+  // Strict mode (CI) fails both.
+  ignoreDeadLinks: isStrict ? false : [(url: string) => isPlannedPath(url) || isRedirectedLink(url)],
+
+  sitemap: isInternal ? undefined : { hostname: 'https://hello-halo.cc/docs/', transformItems: sitemapTransform },
 
   markdown: {
-    config: (md) => {
-      // Internal build: strip regions wrapped in
-      // <!-- public:start --> ... <!-- public:end --> from the source.
-      md.core.ruler.before('normalize', 'strip_public', (state) => {
-        if (isInternal) {
-          state.src = state.src.replace(
-            /<!--\s*public:start\s*-->[\s\S]*?<!--\s*public:end\s*-->/g,
-            ''
-          )
-        }
-      })
-
-      // Internal build: replace `<!-- internal:NAME -->` markers with the
-      // contents of `.internal/NAME.md`. On the public build the marker stays
-      // an inert HTML comment. A missing file collapses to nothing so the
-      // build never breaks when a snippet is absent.
-      md.core.ruler.before('normalize', 'inject_internal', (state) => {
-        if (!isInternal) return
-        state.src = state.src.replace(/<!--\s*internal:([\w-]+)\s*-->/g, (_, name) => {
-          const file = `${internalDir}/${name}.md`
-          return fs.existsSync(file) ? fs.readFileSync(file, 'utf-8') : ''
-        })
-      })
-    }
+    image: { lazyLoading: true },
+    config: configureMarkdown,
   },
 
-  head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/docs/logo.svg' }],
-    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
-    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
-    ['link', { href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', rel: 'stylesheet' }],
-    ['meta', { name: 'theme-color', content: '#3b82f6' }],
-    // SEO
-    ['meta', { name: 'robots', content: 'index, follow' }],
-    ['meta', { property: 'og:site_name', content: 'Halo' }],
-    ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    // Baidu Analytics
-    ['script', {}, `var _hmt = _hmt || [];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?ba1b0224eb934176ead125ffccc8861b";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s)})();`],
-    // Google Analytics (GA4)
-    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-6V61P0940T' }],
-    ['script', {}, `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-6V61P0940T');`],
-  ],
+  head: staticHead,
+  transformHead,
 
-  transformPageData(pageData) {
-    const canonicalUrl = `https://hello-halo.cc/docs/${pageData.relativePath}`
-      .replace(/index\.md$/, '')
-      .replace(/\.md$/, '.html')
-
-    const title = pageData.frontmatter.title || pageData.title || 'Halo Docs'
-    const description = pageData.frontmatter.description || pageData.description || 'Halo - AI Desktop Agent powered by Claude Code.'
-
-    pageData.frontmatter.head ??= []
-    pageData.frontmatter.head.push(
-      ['link', { rel: 'canonical', href: canonicalUrl }],
-      ['meta', { property: 'og:title', content: title }],
-      ['meta', { property: 'og:description', content: description }],
-      ['meta', { property: 'og:url', content: canonicalUrl }],
-      ['meta', { name: 'twitter:title', content: title }],
-      ['meta', { name: 'twitter:description', content: description }],
-    )
+  vite: {
+    plugins: isStrict ? [] : [missingImagePlaceholders()],
+    resolve: {
+      alias: [{ find: /^\.\.\/composables\/langs(\.js)?$/, replacement: fileURLToPath(new URL('./theme/composables/langs.ts', import.meta.url)) }],
+    },
   },
 
   locales: {
     root: {
       lang: 'zh-CN',
-      label: '中文',
-      themeConfig: {
-        nav: filterNav([
-          { text: '文档', link: '/guide/what-is-halo' },
-          { text: '用户手册', link: '/manual/00-install-and-first-open' },
-          { text: '数字人', link: '/digital-humans/overview' },
-          { text: '常见问题', link: '/troubleshooting/common-errors' },
-        ]),
-        sidebar: filterSidebar(zhSidebar),
-      }
+      label: '简体中文',
+      themeConfig: { nav: prune(nav('zh')), sidebar: pruneSidebar(sidebar('zh')), ...localeTheme.zh },
     },
     en: {
       lang: 'en-US',
       label: 'English',
       link: '/en/',
-      themeConfig: {
-        nav: filterNav([
-          { text: 'Docs', link: '/en/guide/what-is-halo' },
-          { text: 'Digital Humans', link: '/en/digital-humans/overview' },
-          { text: 'Troubleshooting', link: '/en/troubleshooting/common-errors' },
-        ]),
-        sidebar: filterSidebar(enSidebar),
-      }
-    }
+      themeConfig: { nav: prune(nav('en')), sidebar: pruneSidebar(sidebar('en')), ...localeTheme.en },
+    },
   },
 
   themeConfig: {
     logo: '/logo.svg',
     siteTitle: 'Halo',
-
-    socialLinks: isInternal
-      ? []
-      : [
-          { icon: 'github', link: 'https://github.com/openkursar/hello-halo' }
-        ],
-
+    // Read by theme components that behave differently in the intranet edition.
+    haloEdition: isInternal ? 'internal' : 'public',
+    haloUnpaired: unpaired,
+    socialLinks: isInternal ? [] : [{ icon: 'github', link: 'https://github.com/openkursar/hello-halo' }],
     footer: {
-      message: '基于 MIT 协议开源',
-      copyright: isInternal
-        ? '© 2025 Halo'
-        : '© 2025 Halo · <a href="https://hello-halo.cc" target="_blank">hello-halo.cc</a>'
+      message: isInternal ? '' : '基于 MIT 协议开源 · Open source under the MIT license',
+      copyright: isInternal ? '© 2025 Halo' : '© 2025 Halo · <a href="https://hello-halo.cc" target="_blank">hello-halo.cc</a>',
     },
+    search,
+  } as any,
 
-    search: {
-      provider: 'local',
-      options: {
-        locales: {
-          root: {
-            translations: {
-              button: { buttonText: '搜索文档', buttonAriaLabel: '搜索文档' },
-              modal: {
-                noResultsText: '未找到相关结果',
-                resetButtonTitle: '清除搜索',
-                footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' }
-              }
-            }
-          }
-        }
-      }
-    },
-
-    editLink: isInternal
-      ? undefined
-      : {
-          pattern: 'https://github.com/openkursar/halo-website/edit/main/docs-src/:path',
-          text: '在 GitHub 上编辑此页'
-        },
-
-    lastUpdated: {
-      text: '最后更新于',
-      formatOptions: { dateStyle: 'short' }
-    },
-  }
+  async buildEnd(siteConfig) {
+    reportMissingSnippets()
+    reportMissingImages()
+    const report = new Report()
+    const stubs = writeRedirectStubs(siteConfig, report)
+    const ai = writeAiLayer(siteConfig)
+    if (!isInternal) writeFeeds(siteConfig)
+    console.log(`[docs-build] ${stubs.length} redirect stub(s), ${ai.twins} .md twin(s), ${ai.mirror} agent-mirror page(s)`)
+    runChecks(siteConfig, stubs, report)
+    report.finish()
+  },
 })

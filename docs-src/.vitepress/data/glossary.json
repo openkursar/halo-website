@@ -1,0 +1,1041 @@
+{
+ "version": 1,
+ "source": "hello-halo v3.0.4 locales",
+ "terms": [
+  {
+   "id": "workspace",
+   "zh": "工作区",
+   "en": "workspace",
+   "ui": [
+    {
+     "key": "Workspace",
+     "en": "Workspace",
+     "zh": "工作空间"
+    },
+    {
+     "key": "Halo Workspace",
+     "en": "Halo Workspace",
+     "zh": "Halo 工作区"
+    },
+    {
+     "key": "New Space",
+     "en": "New Space",
+     "zh": "新建空间"
+    },
+    {
+     "key": "Manage workspaces",
+     "en": "Manage workspaces",
+     "zh": "管理工作区"
+    }
+   ],
+   "zh_def": "一个文件夹，加上它里面的会话、记忆和资源。一个项目用一个工作区。",
+   "en_def": "A folder plus its conversations, memory and resources. Use one per project.",
+   "page": "features/spaces",
+   "avoid_zh": "空间（引用界面文字时除外）、项目、目录",
+   "avoid_en": "space (except in API docs: spaceId, /api/spaces), project",
+   "note": "UI zh varies by label (工作区 / 工作空间 / 空间): always quote the exact label."
+  },
+  {
+   "id": "halo-workspace",
+   "zh": "Halo 工作区",
+   "en": "Halo Workspace",
+   "ui": [
+    {
+     "key": "Halo Workspace",
+     "en": "Halo Workspace",
+     "zh": "Halo 工作区"
+    }
+   ],
+   "zh_def": "Halo 自带的工作区，打开 Halo 就在这里，适合临时的事。",
+   "en_def": "The built-in workspace Halo opens in; good for one-off work.",
+   "page": "features/spaces",
+   "avoid_zh": "临时空间、Halo 空间",
+   "avoid_en": "temporary space, Halo space",
+   "note": ""
+  },
+  {
+   "id": "conversation",
+   "zh": "会话",
+   "en": "conversation",
+   "ui": [
+    {
+     "key": "Conversation",
+     "en": "Conversation",
+     "zh": "会话"
+    },
+    {
+     "key": "Conversations",
+     "en": "Conversations",
+     "zh": "对话"
+    },
+    {
+     "key": "New conversation",
+     "en": "New",
+     "zh": "新对话"
+    }
+   ],
+   "zh_def": "在某个工作区里和 Halo 的一段对话。",
+   "en_def": "One chat thread with Halo inside a workspace.",
+   "page": "features/conversations",
+   "avoid_zh": "聊天窗口",
+   "avoid_en": "session, chat window",
+   "note": "Nav rail says 会话; the list section says 对话; the button key \"New conversation\" shows \"New\" in English."
+  },
+  {
+   "id": "digital-human",
+   "zh": "数字人",
+   "en": "Digital Human",
+   "ui": [
+    {
+     "key": "Digital Human",
+     "en": "Digital Human",
+     "zh": "数字人"
+    },
+    {
+     "key": "Digital Humans",
+     "en": "Digital Humans",
+     "zh": "数字人"
+    },
+    {
+     "key": "My Digital Humans",
+     "en": "My Digital Humans",
+     "zh": "我的数字人"
+    }
+   ],
+   "zh_def": "能自己干活的 AI 成员：按计划、按事件或在 IM 里被叫到时工作，有自己的记忆和设置。",
+   "en_def": "An AI member that works on its own — on a schedule, on events or when messaged in IM — with its own memory and settings.",
+   "page": "digital-humans/overview",
+   "avoid_zh": "应用、App、智能体、机器人",
+   "avoid_en": "app, agent, bot",
+   "note": "Capitalized in English prose, following the README."
+  },
+  {
+   "id": "team",
+   "zh": "团队",
+   "en": "team",
+   "ui": [
+    {
+     "key": "Teams",
+     "en": "Teams",
+     "zh": "团队"
+    },
+    {
+     "key": "Keep this team",
+     "en": "Keep this team",
+     "zh": "保留此团队"
+    }
+   ],
+   "zh_def": "几位数字人在一位负责人带领下分工、交接、交付结果；可以临时组建，也可以保存下来。",
+   "en_def": "Several Digital Humans led by a lead that split a job, hand work over and deliver results; temporary or saved.",
+   "page": "digital-humans/collaboration",
+   "avoid_zh": "群组、小组",
+   "avoid_en": "group, crew",
+   "note": ""
+  },
+  {
+   "id": "temporary-collaboration",
+   "zh": "临时协作",
+   "en": "temporary collaboration",
+   "ui": [
+    {
+     "key": "Temporary collaboration",
+     "en": "Temporary collaboration",
+     "zh": "临时协作"
+    }
+   ],
+   "zh_def": "AI 为当前任务临时组建的团队，任务结束即解散，想保留可以说「保留这个团队」。",
+   "en_def": "A team the AI assembles for the task at hand; keep it if you want to reuse it.",
+   "page": "digital-humans/collaboration",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "lead",
+   "zh": "负责人",
+   "en": "lead",
+   "ui": [
+    {
+     "key": "Lead",
+     "en": "Lead",
+     "zh": "负责人"
+    }
+   ],
+   "zh_def": "团队里负责拆分任务、分派工作、在团队决定不了时来问你的成员。",
+   "en_def": "The team member that plans, assigns work and asks you when the team cannot decide.",
+   "page": "digital-humans/collaboration",
+   "avoid_zh": "队长、管理员",
+   "avoid_en": "leader, manager, admin",
+   "note": ""
+  },
+  {
+   "id": "cross-computer-team",
+   "zh": "跨电脑团队",
+   "en": "team across computers",
+   "ui": [
+    {
+     "key": "Invite",
+     "en": "Invite",
+     "zh": "邀请"
+    },
+    {
+     "key": "Invite link",
+     "en": "Invite link",
+     "zh": "邀请链接"
+    },
+    {
+     "key": "Join a team",
+     "en": "Join a team",
+     "zh": "加入团队"
+    }
+   ],
+   "zh_def": "有成员在同事电脑上的团队，凭邀请链接加入。成员在同一局域网里直接连到发起团队的电脑（需要打开远程访问），跨网络时经过你们自己部署的联邦网关。",
+   "en_def": "A team with members on colleagues' computers, joined by an invite link. Members on the same network connect straight to the host computer (with Remote Access on); across networks they go through a Federation Gateway you run yourselves.",
+   "page": "digital-humans/cross-computer-teams",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "federation-gateway",
+   "zh": "联邦网关",
+   "en": "Federation Gateway",
+   "ui": [
+    {
+     "key": "Federation Gateway",
+     "en": "Federation Gateway",
+     "zh": "联邦网关"
+    }
+   ],
+   "zh_def": "你自己部署的中继服务，让不在同一网络的电脑加入同一个团队，负责在它们之间转发消息。",
+   "en_def": "A relay you deploy yourself so computers on different networks can join one team; it passes messages between them.",
+   "page": "advanced/federation-gateway",
+   "avoid_zh": "中继服务器、云端",
+   "avoid_en": "relay server, cloud",
+   "note": "Settings text: \"Relay team collaboration through a gateway server so members outside your local network can join.\""
+  },
+  {
+   "id": "capabilities",
+   "zh": "能力",
+   "en": "capabilities",
+   "ui": [
+    {
+     "key": "Capabilities",
+     "en": "Capabilities",
+     "zh": "能力"
+    },
+    {
+     "key": "Web Control",
+     "en": "Web Control",
+     "zh": "网页控制"
+    },
+    {
+     "key": "AI Terminal",
+     "en": "AI Terminal",
+     "zh": "AI 终端"
+    },
+    {
+     "key": "Text Recognition",
+     "en": "Text Recognition",
+     "zh": "文字识别"
+    },
+    {
+     "key": "Operate Halo",
+     "en": "Operate Halo",
+     "zh": "操作 Halo"
+    },
+    {
+     "key": "Team Collaboration",
+     "en": "Team Collaboration",
+     "zh": "团队协作"
+    }
+   ],
+   "zh_def": "输入框 ＋ 里按会话开关的能力。AI 可以请你打开，但不能自己打开。",
+   "en_def": "Per-conversation switches in the composer ＋. The AI can ask you to turn one on but cannot turn it on itself.",
+   "page": "features/capabilities",
+   "avoid_zh": "工具集、插件",
+   "avoid_en": "toolsets, plugins",
+   "note": "Not the same as 能力库 / Capability library."
+  },
+  {
+   "id": "capability-library",
+   "zh": "能力库",
+   "en": "Capability library",
+   "ui": [
+    {
+     "key": "Capability library",
+     "en": "Capability library",
+     "zh": "能力库"
+    }
+   ],
+   "zh_def": "管理已安装技能和 MCP 服务器的地方。",
+   "en_def": "Where installed skills and MCP servers are managed.",
+   "page": "features/skills",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": "Do not confuse with the composer 能力 / Capabilities."
+  },
+  {
+   "id": "skill",
+   "zh": "技能",
+   "en": "skill",
+   "ui": [
+    {
+     "key": "Skills",
+     "en": "Skills",
+     "zh": "技能"
+    }
+   ],
+   "zh_def": "一份可复用的做事说明（SKILL.md），AI 需要时会用，也可以用 / 调用。",
+   "en_def": "A reusable instruction package (SKILL.md) the AI uses when relevant, or that you call with /.",
+   "page": "features/skills",
+   "avoid_zh": "Skill（中文正文里）、插件",
+   "avoid_en": "plugin, template",
+   "note": ""
+  },
+  {
+   "id": "mcp-server",
+   "zh": "MCP 服务器",
+   "en": "MCP server",
+   "ui": [
+    {
+     "key": "MCP",
+     "en": "MCP",
+     "zh": "MCP"
+    }
+   ],
+   "zh_def": "通过 Model Context Protocol 接入的外部工具服务。",
+   "en_def": "An external tool server connected through the Model Context Protocol.",
+   "page": "features/mcp",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "knowledge-base",
+   "zh": "知识库",
+   "en": "knowledge base",
+   "ui": [
+    {
+     "key": "Knowledge Base",
+     "en": "Knowledge Base",
+     "zh": "知识库"
+    },
+    {
+     "key": "Knowledge",
+     "en": "Knowledge",
+     "zh": "知识"
+    },
+    {
+     "key": "Sources",
+     "en": "Sources",
+     "zh": "来源"
+    }
+   ],
+   "zh_def": "你的资料，在本机提取成可检索的文字；AI 回答时查阅，并列出「来源」。",
+   "en_def": "Your documents, extracted on your computer into searchable text; the AI reads them and lists its sources.",
+   "page": "features/knowledge-base",
+   "avoid_zh": "资料库、向量库",
+   "avoid_en": "vector database, RAG",
+   "note": ""
+  },
+  {
+   "id": "memory",
+   "zh": "记忆",
+   "en": "memory",
+   "ui": [
+    {
+     "key": "Memory",
+     "en": "Memory",
+     "zh": "记忆"
+    },
+    {
+     "key": "Workspace memory",
+     "en": "Workspace memory",
+     "zh": "工作区记忆"
+    },
+    {
+     "key": "Consolidate now",
+     "en": "Consolidate now",
+     "zh": "立即整合"
+    },
+    {
+     "key": "Automatic consolidation",
+     "en": "Automatic consolidation",
+     "zh": "自动整合"
+    },
+    {
+     "key": "Use workspace memory",
+     "en": "Use workspace memory",
+     "zh": "使用工作区记忆"
+    },
+    {
+     "key": "Clear Memory",
+     "en": "Clear Memory",
+     "zh": "清除记忆"
+    }
+   ],
+   "zh_def": "Halo 在会话之间记住的东西：同一工作区的会话共享工作区记忆；每位数字人有自己的记忆（当前状态、历史、主题）。",
+   "en_def": "What Halo keeps between conversations: conversations in a workspace share workspace memory; each Digital Human has its own (current state, history, topics).",
+   "page": "features/memory",
+   "avoid_zh": "内存（2.x 旧译）",
+   "avoid_en": "",
+   "note": "Not the knowledge base: memory is written by the AI, a knowledge base holds your documents."
+  },
+  {
+   "id": "topic",
+   "zh": "主题",
+   "en": "topic",
+   "ui": [],
+   "zh_def": "记忆里关于某一件事的一页笔记，由 AI 编写和整理。",
+   "en_def": "One page of memory about one subject, written and tidied by the AI.",
+   "page": "features/memory",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": "Appears in counts such as \"{{count}} topics\" / 「{{count}} 个主题」."
+  },
+  {
+   "id": "task-panel",
+   "zh": "任务面板",
+   "en": "task panel",
+   "ui": [
+    {
+     "key": "Tasks",
+     "en": "Tasks",
+     "zh": "任务"
+    },
+    {
+     "key": "Needs you",
+     "en": "Needs you",
+     "zh": "需要你处理"
+    },
+    {
+     "key": "Running",
+     "en": "Running",
+     "zh": "运行中"
+    },
+    {
+     "key": "Pinned",
+     "en": "Pinned",
+     "zh": "已置顶"
+    }
+   ],
+   "zh_def": "所有工作区里正在运行的工作和等你处理的问题，集中在一个列表。",
+   "en_def": "One list of running work and questions waiting for you, across all workspaces.",
+   "page": "features/tasks",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "changes",
+   "zh": "变更",
+   "en": "Changes view",
+   "ui": [
+    {
+     "key": "Changes",
+     "en": "Changes",
+     "zh": "变更"
+    },
+    {
+     "key": "View changes",
+     "en": "View changes",
+     "zh": "查看变更"
+    },
+    {
+     "key": "Quick review",
+     "en": "Quick review",
+     "zh": "快速评审"
+    },
+    {
+     "key": "Team review",
+     "en": "Team review",
+     "zh": "团队评审"
+    }
+   ],
+   "zh_def": "查看工作区 Git 仓库的改动、暂存、提交，并让 AI 评审。",
+   "en_def": "See, stage and commit Git changes in the workspace, and have the AI review them.",
+   "page": "features/code-review",
+   "avoid_zh": "差异视图",
+   "avoid_en": "diff view",
+   "note": ""
+  },
+  {
+   "id": "canvas",
+   "zh": "画布",
+   "en": "canvas",
+   "ui": [
+    {
+     "key": "Open in canvas",
+     "en": "Open in canvas",
+     "zh": "在画布中打开"
+    }
+   ],
+   "zh_def": "右侧的多标签查看区，用来看文件、浏览器、终端、团队和变更。",
+   "en_def": "The tabbed viewer on the right for files, the browser, the terminal, the team view and changes.",
+   "page": "features/files-and-canvas",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "workspace-resources",
+   "zh": "工作区资源",
+   "en": "workspace resources",
+   "ui": [
+    {
+     "key": "Open workspace resources",
+     "en": "Open workspace resources",
+     "zh": "展开工作区资源"
+    }
+   ],
+   "zh_def": "右侧栏，有文件、数字人、技能、MCP 几个标签。",
+   "en_def": "The right rail with Files, Digital Humans, Skill and MCP tabs.",
+   "page": "features/files-and-canvas",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "ai-browser",
+   "zh": "AI 浏览器",
+   "en": "AI Browser",
+   "ui": [
+    {
+     "key": "Open browser",
+     "en": "Open browser",
+     "zh": "打开浏览器"
+    },
+    {
+     "key": "Web Control",
+     "en": "Web Control",
+     "zh": "网页控制"
+    }
+   ],
+   "zh_def": "Halo 内置的浏览器，AI 用你已登录的状态操作网页；你可以旁观和接手。",
+   "en_def": "A built-in browser the AI operates with your signed-in sessions; you can watch and take over.",
+   "page": "features/ai-browser",
+   "avoid_zh": "爬虫",
+   "avoid_en": "scraper",
+   "note": "The composer switch that enables it is 网页控制 / Web Control."
+  },
+  {
+   "id": "ai-terminal",
+   "zh": "AI 终端",
+   "en": "AI Terminal",
+   "ui": [
+    {
+     "key": "AI Terminal",
+     "en": "AI Terminal",
+     "zh": "AI 终端"
+    },
+    {
+     "key": "Open terminal",
+     "en": "Open terminal",
+     "zh": "打开终端"
+    }
+   ],
+   "zh_def": "你和 AI 共用、一直开着的终端。",
+   "en_def": "A persistent terminal you and the AI share.",
+   "page": "features/ai-terminal",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "store",
+   "zh": "商店",
+   "en": "Store",
+   "ui": [
+    {
+     "key": "Store",
+     "en": "Store",
+     "zh": "商店"
+    },
+    {
+     "key": "App Store",
+     "en": "App Store",
+     "zh": "应用商店"
+    },
+    {
+     "key": "Publish to Store",
+     "en": "Publish to Store",
+     "zh": "发布到商店"
+    }
+   ],
+   "zh_def": "浏览并安装数字人和技能；「设置 › 应用商店」管理商店来源。",
+   "en_def": "Browse and install Digital Humans and skills; Settings › App Store manages the sources.",
+   "page": "digital-humans/store",
+   "avoid_zh": "市场、应用市场（除非引用旧版本）",
+   "avoid_en": "marketplace",
+   "note": ""
+  },
+  {
+   "id": "message-channels",
+   "zh": "消息通道",
+   "en": "message channels",
+   "ui": [
+    {
+     "key": "Message Channels",
+     "en": "Message Channels",
+     "zh": "消息通道"
+    },
+    {
+     "key": "WeCom Intelligent Bot",
+     "en": "WeCom Intelligent Bot",
+     "zh": "企业微信智能机器人"
+    },
+    {
+     "key": "Feishu Bot",
+     "en": "Feishu Bot",
+     "zh": "飞书机器人"
+    },
+    {
+     "key": "WeChat Bot",
+     "en": "WeChat Bot",
+     "zh": "微信机器人"
+    },
+    {
+     "key": "Email",
+     "en": "Email",
+     "zh": "电子邮件"
+    },
+    {
+     "key": "Webhook",
+     "en": "Webhook",
+     "zh": "Webhook"
+    }
+   ],
+   "zh_def": "连接 IM 和邮件：双向机器人绑定到一位数字人；单向通知渠道只负责发出消息。",
+   "en_def": "Connections to IM and email: two-way bots bound to one Digital Human, and one-way notification channels.",
+   "page": "digital-humans/channels",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "bot",
+   "zh": "机器人",
+   "en": "bot",
+   "ui": [],
+   "zh_def": "IM 那一端的身份（企业微信、飞书、微信里），把消息转给一位数字人。",
+   "en_def": "The identity on the IM side (WeCom, Feishu, WeChat) that relays messages to one Digital Human.",
+   "page": "digital-humans/channels",
+   "avoid_zh": "数字人（两者不同）",
+   "avoid_en": "Digital Human (they differ)",
+   "note": ""
+  },
+  {
+   "id": "reachable-contacts",
+   "zh": "可联系的联系人",
+   "en": "Reachable Contacts",
+   "ui": [
+    {
+     "key": "Reachable Contacts",
+     "en": "Reachable Contacts",
+     "zh": "可联系的联系人"
+    },
+    {
+     "key": "Add from existing chats",
+     "en": "Add from existing chats",
+     "zh": "从已有会话添加"
+    },
+    {
+     "key": "Sent proactively",
+     "en": "Sent proactively",
+     "zh": "主动发送"
+    }
+   ],
+   "zh_def": "一位数字人可以主动发消息的会话。",
+   "en_def": "The chats a Digital Human may send messages to on its own.",
+   "page": "digital-humans/notifications",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "permission-control",
+   "zh": "权限控制",
+   "en": "Permission Control",
+   "ui": [
+    {
+     "key": "Permission Control",
+     "en": "Permission Control",
+     "zh": "权限控制"
+    },
+    {
+     "key": "Guest Permissions",
+     "en": "Guest Permissions",
+     "zh": "访客权限"
+    },
+    {
+     "key": "Guest Allowed Tools",
+     "en": "Guest Allowed Tools",
+     "zh": "访客允许使用的工具"
+    },
+    {
+     "key": "Guest Access",
+     "en": "Guest Access",
+     "zh": "访客访问权限"
+    }
+   ],
+   "zh_def": "决定通过机器人找数字人的人能让它做什么：主人拥有完整权限，访客只能用允许的工具。",
+   "en_def": "Decides what people messaging a bot can make its Digital Human do: the owner has full access, guests only the allowed tools.",
+   "page": "digital-humans/permissions",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "owner-guest",
+   "zh": "主人 / 访客",
+   "en": "owner / guest",
+   "ui": [],
+   "zh_def": "主人是机器人认定的你本人：第一个私聊这个机器人的人会成为主人；访客是通过机器人发消息的其他人。",
+   "en_def": "The owner is you, as the bot knows you: the first person to message the bot directly becomes its owner. Guests are everyone else who messages the bot.",
+   "page": "digital-humans/permissions",
+   "avoid_zh": "管理员 / 用户",
+   "avoid_en": "admin / user",
+   "note": ""
+  },
+  {
+   "id": "reminder",
+   "zh": "提醒",
+   "en": "reminder",
+   "ui": [
+    {
+     "key": "Reminders",
+     "en": "Reminders",
+     "zh": "提醒"
+    },
+    {
+     "key": "Cancel this reminder",
+     "en": "Cancel this reminder",
+     "zh": "取消此提醒"
+    }
+   ],
+   "zh_def": "在数字人的聊天里说一句就能设置的一次性或重复提醒。",
+   "en_def": "A one-off or recurring reminder you set by asking a Digital Human in its chat.",
+   "page": "digital-humans/reminders",
+   "avoid_zh": "闹钟",
+   "avoid_en": "alarm",
+   "note": ""
+  },
+  {
+   "id": "schedule",
+   "zh": "计划任务",
+   "en": "schedule",
+   "ui": [
+    {
+     "key": "Schedule",
+     "en": "Schedule",
+     "zh": "计划任务"
+    },
+    {
+     "key": "Run now",
+     "en": "Run now",
+     "zh": "立即运行"
+    },
+    {
+     "key": "Only on mainland China working days",
+     "en": "Only on mainland China working days",
+     "zh": "仅限中国大陆工作日"
+    }
+   ],
+   "zh_def": "数字人什么时候自己运行。",
+   "en_def": "When a Digital Human runs by itself.",
+   "page": "digital-humans/triggers",
+   "avoid_zh": "cron（用户文档里）",
+   "avoid_en": "cron (in user guides)",
+   "note": ""
+  },
+  {
+   "id": "trigger",
+   "zh": "触发器",
+   "en": "trigger",
+   "ui": [
+    {
+     "key": "Trigger",
+     "en": "Trigger",
+     "zh": "触发器"
+    }
+   ],
+   "zh_def": "让数字人开始一次运行的条件：计划、事件或消息。",
+   "en_def": "What starts a run: a schedule, an event or a message.",
+   "page": "digital-humans/triggers",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "run",
+   "zh": "运行",
+   "en": "run",
+   "ui": [
+    {
+     "key": "Run",
+     "en": "Run",
+     "zh": "运行"
+    },
+    {
+     "key": "Not started",
+     "en": "Not started",
+     "zh": "未启动"
+    }
+   ],
+   "zh_def": "数字人完成一次任务的过程，留有可查看的记录。",
+   "en_def": "One execution of a Digital Human's job, with a record you can open.",
+   "page": "digital-humans/manage",
+   "avoid_zh": "执行实例、job",
+   "avoid_en": "job, execution",
+   "note": ""
+  },
+  {
+   "id": "dh-settings",
+   "zh": "能力与设置",
+   "en": "Capabilities and settings",
+   "ui": [
+    {
+     "key": "Capabilities and settings",
+     "en": "Capabilities and settings",
+     "zh": "能力与设置"
+    },
+    {
+     "key": "Tools & Resources",
+     "en": "Tools & Resources",
+     "zh": "工具与资源"
+    }
+   ],
+   "zh_def": "数字人的设置页：模型、工具与资源、记忆、通知等。",
+   "en_def": "A Digital Human's settings: model, tools and resources, memory, notifications and more.",
+   "page": "digital-humans/capabilities",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "model",
+   "zh": "模型 / AI 来源 / 提供商",
+   "en": "model / AI source / provider",
+   "ui": [
+    {
+     "key": "AI Model",
+     "en": "AI Model",
+     "zh": "AI 模型"
+    },
+    {
+     "key": "Configure AI Source",
+     "en": "Configure AI Source",
+     "zh": "配置 AI 来源"
+    },
+    {
+     "key": "Manage AI Provider",
+     "en": "Manage AI Provider",
+     "zh": "管理 AI 提供商"
+    },
+    {
+     "key": "Switch model",
+     "en": "Switch model",
+     "zh": "切换模型"
+    }
+   ],
+   "zh_def": "AI 来源是一个账号或一个 Key；每个来源提供若干模型；模型按会话选择。",
+   "en_def": "An AI source is one account or key; each offers models; the model is chosen per conversation.",
+   "page": "features/models",
+   "avoid_zh": "渠道（除非引用界面）",
+   "avoid_en": "channel",
+   "note": ""
+  },
+  {
+   "id": "deep-thinking",
+   "zh": "深度思考",
+   "en": "Deep Thinking",
+   "ui": [
+    {
+     "key": "Deep Thinking",
+     "en": "Deep Thinking",
+     "zh": "深度思考"
+    }
+   ],
+   "zh_def": "模型回答前思考的深浅，从「关闭」到「最大」，按会话设置。",
+   "en_def": "How much the model reasons before answering, from Off to Max, set per conversation.",
+   "page": "features/models",
+   "avoid_zh": "推理强度、思考强度（只作别名）",
+   "avoid_en": "thinking effort, reasoning effort (alias only)",
+   "note": ""
+  },
+  {
+   "id": "quota",
+   "zh": "剩余配额",
+   "en": "remaining quota",
+   "ui": [
+    {
+     "key": "Remaining quota",
+     "en": "Remaining quota",
+     "zh": "剩余配额"
+    }
+   ],
+   "zh_def": "提供商报告的剩余额度，只在提供商支持时显示。",
+   "en_def": "The allowance left, shown only when the provider reports it.",
+   "page": "features/models",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "agent-engine",
+   "zh": "Agent 引擎",
+   "en": "agent engine",
+   "ui": [
+    {
+     "key": "AI Agent Engine",
+     "en": "AI Agent Engine",
+     "zh": "AI Agent 引擎"
+    }
+   ],
+   "zh_def": "驱动 AI 干活的运行时：默认是 Claude Code SDK，另有 Halo SDK、Codex SDK 和 DeepSeek dsh（后三个为实验性）。",
+   "en_def": "The runtime that drives the AI's work: Claude Code SDK by default, plus Halo SDK, Codex SDK and DeepSeek dsh (the last three are experimental).",
+   "page": "features/agent-engines",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "remote-access",
+   "zh": "远程访问",
+   "en": "Remote Access",
+   "ui": [
+    {
+     "key": "Remote Access",
+     "en": "Remote Access",
+     "zh": "远程访问"
+    }
+   ],
+   "zh_def": "用手机或其他设备打开你的 Halo，局域网或互联网都可以；也是 HTTP API 的入口。",
+   "en_def": "Open your Halo from a phone or another device, on your network or over the internet; also the door to the HTTP API.",
+   "page": "features/remote-access",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "operate-halo",
+   "zh": "操作 Halo",
+   "en": "Operate Halo",
+   "ui": [
+    {
+     "key": "Operate Halo",
+     "en": "Operate Halo",
+     "zh": "操作 Halo"
+    }
+   ],
+   "zh_def": "一项能力：打开后，AI 可以通过 Halo 自己的接口替你改设置、管理工作区和数字人。",
+   "en_def": "A capability that lets the AI change settings and manage workspaces and Digital Humans through Halo's own API.",
+   "page": "features/operate-halo",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "reference-conversation",
+   "zh": "引用会话",
+   "en": "Reference a conversation",
+   "ui": [
+    {
+     "key": "Reference a conversation",
+     "en": "Reference a conversation",
+     "zh": "引用会话"
+    },
+    {
+     "key": "Chat with a digital human",
+     "en": "Chat with a digital human",
+     "zh": "与数字人聊天"
+    }
+   ],
+   "zh_def": "让 AI 读取同一工作区的另一个会话，或直接给它发消息。",
+   "en_def": "Let the AI read another conversation in the workspace, or message it directly.",
+   "page": "features/cross-conversation",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "goal",
+   "zh": "目标",
+   "en": "goal",
+   "ui": [
+    {
+     "key": "Goal",
+     "en": "Goal",
+     "zh": "目标"
+    }
+   ],
+   "zh_def": "给会话设定的目标和「完成标准」，上下文被压缩后也会保留。",
+   "en_def": "An objective plus \"done when\" criteria set for a conversation; it survives context compaction.",
+   "page": "features/conversations",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": "Halo SDK engine only in 3.0.4 (inventory area 01)."
+  },
+  {
+   "id": "processing-notice",
+   "zh": "处理中提示",
+   "en": "Processing Notice",
+   "ui": [
+    {
+     "key": "Processing Notice",
+     "en": "Processing Notice",
+     "zh": "处理中提示"
+    }
+   ],
+   "zh_def": "IM 里回复超过一定时间时先发出的「正在处理」提示，可以关闭。",
+   "en_def": "The \"working on it\" message a bot sends in IM when a reply takes a while; can be turned off.",
+   "page": "digital-humans/wecom-bot-features",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "package",
+   "zh": "数字人包",
+   "en": "Digital Human package",
+   "ui": [],
+   "zh_def": "可分享的数字人文件：.dhpkg、.zip、.yaml，或含 spec.yaml 的文件夹。",
+   "en_def": "A shareable Digital Human file: .dhpkg, .zip, .yaml, or a folder with spec.yaml.",
+   "page": "digital-humans/manage",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": "Formats from the import dialog text."
+  },
+  {
+   "id": "halo-server",
+   "zh": "Halo Server",
+   "en": "Halo Server",
+   "ui": [],
+   "zh_def": "以服务形式运行的无界面 Halo，用浏览器打开同样的界面。",
+   "en_def": "Headless Halo run as a service, with the same UI in a browser.",
+   "page": "server/",
+   "avoid_zh": "Halo 服务器版（混用）",
+   "avoid_en": "",
+   "note": ""
+  },
+  {
+   "id": "developer-mode",
+   "zh": "开发者模式",
+   "en": "Developer Mode",
+   "ui": [
+    {
+     "key": "Developer Mode",
+     "en": "Developer Mode",
+     "zh": "开发者模式"
+    }
+   ],
+   "zh_def": "打开后输出更详细的诊断日志。",
+   "en_def": "Writes more detailed diagnostic logs.",
+   "page": "troubleshooting/diagnostics",
+   "avoid_zh": "",
+   "avoid_en": "",
+   "note": ""
+  }
+ ]
+}

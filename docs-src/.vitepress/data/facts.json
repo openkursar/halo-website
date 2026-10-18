@@ -1,0 +1,40 @@
+{
+  "version": "3.0.4",
+  "releaseDate": "2026-10-17",
+  "name": {
+    "zh": "Halo",
+    "zhFull": "Halo AI 工作站",
+    "en": "Halo",
+    "enFull": "Halo AI Workstation"
+  },
+  "alternateName": [
+    "Halo AI",
+    "Halo AI 工作站",
+    "Halo AI Workstation",
+    "hello-halo"
+  ],
+  "category": {
+    "zh": "开源 AI 桌面工作站",
+    "en": "open-source desktop AI workstation"
+  },
+  "definition": {
+    "zh": "Halo 是一款开源 AI 桌面工作站（MIT 协议）：在你自己的电脑上对话、写代码、做文档，可接入 Claude Code、Codex 等 Agent 引擎；还能拥有长期在岗的数字人，让它们组成团队分工协作，并通过手机、飞书、微信或企业微信随时交办。",
+    "en": "Halo is an open-source (MIT) desktop AI workstation: chat, code and make documents on your own computer with agent engines such as Claude Code and Codex, and run Digital Humans that stay on duty and work in teams, reachable from your phone, Feishu, WeChat or WeCom."
+  },
+  "definitionStatus": "draft owned by reviewer (SEO.md §4.4); verify against inventory/FEATURES.md before launch",
+  "facts": {
+    "zh": "免费开源；模型费用由你的账号或 API 提供商收取；macOS 12+（Apple 芯片 / Intel）、Windows 10+ x64、Linux glibc 2.34+、Android 远程客户端；当前版本 3.0.4。",
+    "en": "Free and open source; model usage is billed by your account or API provider; macOS 12+ (Apple silicon/Intel), Windows 10+ x64, Linux glibc 2.34+, Android remote client; current version 3.0.4."
+  },
+  "platforms": {
+    "zh": "macOS 12+（Apple 芯片 / Intel）、Windows 10+ x64、Linux glibc 2.34+、Android 远程客户端",
+    "en": "macOS 12+ (Apple silicon/Intel), Windows 10+ x64, Linux glibc 2.34+, Android remote client",
+    "schema": "macOS 12+, Windows 10+ (x64), Linux (glibc 2.34+), Android (remote client)"
+  },
+  "license": "MIT",
+  "site": "https://hello-halo.cc/",
+  "repo": "https://github.com/openkursar/hello-halo",
+  "docsRepo": "https://github.com/openkursar/halo-website",
+  "download": "https://github.com/openkursar/hello-halo/releases/latest",
+  "landingDownload": "https://hello-halo.cc/#download"
+}

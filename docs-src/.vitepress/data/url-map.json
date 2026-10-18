@@ -1,0 +1,768 @@
+{
+ "version": 1,
+ "generated": "2026-10-18",
+ "canonicalOrigin": "https://hello-halo.cc",
+ "base": "/docs/",
+ "rules": [
+  "Every URL in .docs-work/audit/url-baseline.json appears exactly once as \"from\".",
+  "status \"kept\": the page still exists at the same URL (content may be rewritten).",
+  "status \"redirect\": the build writes a static stub at the old path (format owned by reviewer, checked by seo-check.mjs rules stub.*): <html lang> of the old locale, <title>{target title} | Halo AI</title>, <meta http-equiv=\"refresh\" content=\"0; url=ROOT-RELATIVE TO\">, <link rel=\"canonical\" href=\"ABSOLUTE TO without #fragment\">, a script that calls location.replace(TO) and appends location.hash only when TO has no anchor, and a visible link (\"本页已移动到 …\" / \"This page has moved to …\"). Root-relative targets keep haloxe.com mirror visitors on the mirror. No robots meta. Stubs are excluded from the sitemap.",
+  "Directory URLs (ending in \"/\") get the stub at <dir>/index.html; other URLs at the same .html path.",
+  "Targets are final (one hop) and are real pages in the new tree; \"#anchor\" targets must exist as explicit {#id} headings in both locales.",
+  "Internal links must never point at a \"from\" URL that has status \"redirect\"."
+ ],
+ "requiredAnchors": [
+  {
+   "page": "https://hello-halo.cc/docs/en/developers/digital-humans/production.html",
+   "anchor": "browser-scripts"
+  },
+  {
+   "page": "https://hello-halo.cc/docs/en/digital-humans/create.html",
+   "anchor": "say-it"
+  },
+  {
+   "page": "https://hello-halo.cc/docs/en/digital-humans/triggers.html",
+   "anchor": "im-messages"
+  }
+ ],
+ "entries": [
+  {
+   "from": "https://hello-halo.cc/docs/advanced/best-practices.html",
+   "to": "https://hello-halo.cc/docs/advanced/best-practices.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/advanced/best-practices.html",
+   "to": "https://hello-halo.cc/docs/en/advanced/best-practices.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/advanced/config-paths.html",
+   "to": "https://hello-halo.cc/docs/advanced/config-paths.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/advanced/config-paths.html",
+   "to": "https://hello-halo.cc/docs/en/advanced/config-paths.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/advanced/migrate.html",
+   "to": "https://hello-halo.cc/docs/advanced/migrate.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/advanced/migrate.html",
+   "to": "https://hello-halo.cc/docs/en/advanced/migrate.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/advanced/security.html",
+   "to": "https://hello-halo.cc/docs/advanced/security.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/contact.html",
+   "to": "https://hello-halo.cc/docs/contact.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/contact.html",
+   "to": "https://hello-halo.cc/docs/en/contact.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/collaboration.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/collaboration.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/digital-humans/collaboration.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/collaboration.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/create.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/create.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/digital-humans/create.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/create.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/dhp-protocol.html",
+   "to": "https://hello-halo.cc/docs/developers/dhp.html",
+   "status": "redirect",
+   "note": "authoring moves to the developer section"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/digital-humans/dhp-protocol.html",
+   "to": "https://hello-halo.cc/docs/en/developers/dhp.html",
+   "status": "redirect",
+   "note": "authoring moves to the developer section"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/guide-01-quickstart.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/manage.html",
+   "status": "redirect",
+   "note": "install/run/logs/pause content is user-facing"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/guide-02-build.html",
+   "to": "https://hello-halo.cc/docs/developers/digital-humans/build.html",
+   "status": "redirect",
+   "note": "authoring moves to the developer section"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/guide-03-reference.html",
+   "to": "https://hello-halo.cc/docs/developers/digital-humans/spec.html",
+   "status": "redirect",
+   "note": "reference manual → spec reference (patterns → production)"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/overview.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/overview.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/digital-humans/overview.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/overview.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/personal-wechat.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/personal-wechat.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/production-guide.html",
+   "to": "https://hello-halo.cc/docs/developers/digital-humans/production.html",
+   "status": "redirect",
+   "note": "authoring moves to the developer section"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/store.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/store.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/digital-humans/store.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/store.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/wecom-bot-features.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/wecom-bot-features.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/wecom-bot.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/wecom-bot.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/digital-humans/wecom-name-resolution.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/wecom-name-resolution.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/ai-browser.html",
+   "to": "https://hello-halo.cc/docs/en/features/ai-browser.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/ai-browser.html",
+   "to": "https://hello-halo.cc/docs/features/ai-browser.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/ai-terminal.html",
+   "to": "https://hello-halo.cc/docs/en/features/ai-terminal.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/ai-terminal.html",
+   "to": "https://hello-halo.cc/docs/features/ai-terminal.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/commands.html",
+   "to": "https://hello-halo.cc/docs/en/features/commands.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/commands.html",
+   "to": "https://hello-halo.cc/docs/features/commands.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/image-input.html",
+   "to": "https://hello-halo.cc/docs/en/features/image-input.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/image-input.html",
+   "to": "https://hello-halo.cc/docs/features/image-input.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/knowledge-base.html",
+   "to": "https://hello-halo.cc/docs/en/features/knowledge-base.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/knowledge-base.html",
+   "to": "https://hello-halo.cc/docs/features/knowledge-base.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/mcp.html",
+   "to": "https://hello-halo.cc/docs/en/features/mcp.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/mcp.html",
+   "to": "https://hello-halo.cc/docs/features/mcp.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/remote-access.html",
+   "to": "https://hello-halo.cc/docs/en/features/remote-access.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/remote-access.html",
+   "to": "https://hello-halo.cc/docs/features/remote-access.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/skills.html",
+   "to": "https://hello-halo.cc/docs/en/features/skills.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/skills.html",
+   "to": "https://hello-halo.cc/docs/features/skills.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/features/spaces.html",
+   "to": "https://hello-halo.cc/docs/en/features/spaces.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/spaces.html",
+   "to": "https://hello-halo.cc/docs/features/spaces.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/guide/installation.html",
+   "to": "https://hello-halo.cc/docs/en/getting-started/install.html",
+   "status": "redirect",
+   "note": "merged into the single start track; en now mirrors zh slugs"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/guide/installation.html",
+   "to": "https://hello-halo.cc/docs/getting-started/install.html",
+   "status": "redirect",
+   "note": "merged into the single start track"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/guide/philosophy.html",
+   "to": "https://hello-halo.cc/docs/en/guide/philosophy.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/guide/philosophy.html",
+   "to": "https://hello-halo.cc/docs/guide/philosophy.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/guide/quickstart.html",
+   "to": "https://hello-halo.cc/docs/en/getting-started/first-chat.html",
+   "status": "redirect",
+   "note": "merged into \"Your first task\"; en now mirrors zh slugs"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/guide/quickstart.html",
+   "to": "https://hello-halo.cc/docs/getting-started/first-chat.html",
+   "status": "redirect",
+   "note": "merged into \"Your first task\""
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/guide/what-is-halo.html",
+   "to": "https://hello-halo.cc/docs/en/guide/what-is-halo.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/guide/what-is-halo.html",
+   "to": "https://hello-halo.cc/docs/guide/what-is-halo.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/",
+   "to": "https://hello-halo.cc/docs/en/",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/",
+   "to": "https://hello-halo.cc/docs/",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/api-reference.html",
+   "to": "https://hello-halo.cc/docs/en/developers/api/",
+   "status": "redirect",
+   "note": "hand-written reference replaced by the generated reference"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/api-reference.html",
+   "to": "https://hello-halo.cc/docs/developers/api/",
+   "status": "redirect",
+   "note": "hand-written reference replaced by the generated reference"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/build.html",
+   "to": "https://hello-halo.cc/docs/en/server/build.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/build.html",
+   "to": "https://hello-halo.cc/docs/server/build.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/configuration.html",
+   "to": "https://hello-halo.cc/docs/en/server/configuration.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/configuration.html",
+   "to": "https://hello-halo.cc/docs/server/configuration.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/deployment-docker.html",
+   "to": "https://hello-halo.cc/docs/en/server/deployment-docker.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/deployment-docker.html",
+   "to": "https://hello-halo.cc/docs/server/deployment-docker.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/deployment-faas.html",
+   "to": "https://hello-halo.cc/docs/en/server/deployment-faas.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/deployment-faas.html",
+   "to": "https://hello-halo.cc/docs/server/deployment-faas.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/examples.html",
+   "to": "https://hello-halo.cc/docs/en/server/examples.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/examples.html",
+   "to": "https://hello-halo.cc/docs/server/examples.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/",
+   "to": "https://hello-halo.cc/docs/en/server/",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/",
+   "to": "https://hello-halo.cc/docs/server/",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/integration.html",
+   "to": "https://hello-halo.cc/docs/en/server/integration.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/integration.html",
+   "to": "https://hello-halo.cc/docs/server/integration.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/server/websocket.html",
+   "to": "https://hello-halo.cc/docs/en/developers/api/websocket.html",
+   "status": "redirect",
+   "note": "WebSocket protocol moves next to the HTTP reference"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/server/websocket.html",
+   "to": "https://hello-halo.cc/docs/developers/api/websocket.html",
+   "status": "redirect",
+   "note": "WebSocket protocol moves next to the HTTP reference"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/troubleshooting/api-errors.html",
+   "to": "https://hello-halo.cc/docs/en/troubleshooting/api-errors.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/troubleshooting/api-errors.html",
+   "to": "https://hello-halo.cc/docs/troubleshooting/api-errors.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/en/troubleshooting/common-errors.html",
+   "to": "https://hello-halo.cc/docs/en/troubleshooting/common-errors.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/troubleshooting/common-errors.html",
+   "to": "https://hello-halo.cc/docs/troubleshooting/common-errors.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/features/email.html",
+   "to": "https://hello-halo.cc/docs/features/email.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/getting-started/create-digital-human.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/create.html",
+   "status": "redirect",
+   "note": "one canonical page per topic"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/getting-started/email.html",
+   "to": "https://hello-halo.cc/docs/features/email.html",
+   "status": "redirect",
+   "note": "third copy of the email setup"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/getting-started/first-chat.html",
+   "to": "https://hello-halo.cc/docs/getting-started/first-chat.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/getting-started/install.html",
+   "to": "https://hello-halo.cc/docs/getting-started/install.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/getting-started/setup-ai.html",
+   "to": "https://hello-halo.cc/docs/getting-started/setup-ai.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/getting-started/wecom-bot.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/wecom-bot.html",
+   "status": "redirect",
+   "note": "third copy of the WeCom setup"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/guide/changelog.html",
+   "to": "https://hello-halo.cc/docs/guide/changelog.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/guide/from-claude-code.html",
+   "to": "https://hello-halo.cc/docs/guide/from-claude-code.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/00-install-and-first-open.html",
+   "to": "https://hello-halo.cc/docs/getting-started/install.html",
+   "status": "redirect",
+   "note": "manual folded into the start track (sign-in part → setup-ai)"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/01-wecom-bot.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/wecom-bot.html",
+   "status": "redirect",
+   "note": "manual folded into channel how-to"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/02-digital-human.html",
+   "to": "https://hello-halo.cc/docs/digital-humans/create.html",
+   "status": "redirect",
+   "note": "manual folded into Digital Human how-tos"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/03-email.html",
+   "to": "https://hello-halo.cc/docs/features/email.html",
+   "status": "redirect",
+   "note": "manual folded into the email how-to"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/04-chat-basics.html",
+   "to": "https://hello-halo.cc/docs/features/conversations.html",
+   "status": "redirect",
+   "note": "manual folded into Conversations (models part → features/models)"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/PROGRESS.html",
+   "to": "https://hello-halo.cc/docs/getting-started/",
+   "status": "redirect",
+   "note": "published work log removed; the start track is the successor of the user manual"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/chapter05-space-management.html",
+   "to": "https://hello-halo.cc/docs/features/spaces.html",
+   "status": "redirect",
+   "note": "manual folded into Workspaces"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/chapter06-ai-browser.html",
+   "to": "https://hello-halo.cc/docs/features/ai-browser.html",
+   "status": "redirect",
+   "note": "manual folded into AI Browser"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/chapter07-remote-access.html",
+   "to": "https://hello-halo.cc/docs/features/remote-access.html",
+   "status": "redirect",
+   "note": "manual folded into Remote Access"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/manual/chapter08-settings-and-troubleshooting.html",
+   "to": "https://hello-halo.cc/docs/features/settings.html",
+   "status": "redirect",
+   "note": "manual folded into the Settings reference (store, WeChat, errors split out)"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/ai-browser/",
+   "to": "https://hello-halo.cc/docs/en/features/ai-browser.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/ai-browser/scripting.html",
+   "to": "https://hello-halo.cc/docs/en/developers/digital-humans/production.html#browser-scripts",
+   "status": "redirect",
+   "note": "agent guide → human page section"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/ai-model-setup/",
+   "to": "https://hello-halo.cc/docs/en/features/models.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/ai-model-setup/troubleshooting.html",
+   "to": "https://hello-halo.cc/docs/en/troubleshooting/api-errors.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/ai-terminal/",
+   "to": "https://hello-halo.cc/docs/en/features/ai-terminal.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/SKILL.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/create.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/examples.html",
+   "to": "https://hello-halo.cc/docs/en/developers/digital-humans/build.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/im-triggers.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/triggers.html#im-messages",
+   "status": "redirect",
+   "note": "agent guide → human page section"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/interview-checklist.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/create.html#say-it",
+   "status": "redirect",
+   "note": "agent guide → human page section"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/spec-reference.html",
+   "to": "https://hello-halo.cc/docs/en/developers/digital-humans/spec.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/email-setup/",
+   "to": "https://hello-halo.cc/docs/en/features/email.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/getting-started/",
+   "to": "https://hello-halo.cc/docs/en/getting-started/install.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/",
+   "to": "https://hello-halo.cc/docs/en/developers/docs-for-ai.html",
+   "status": "redirect",
+   "note": "agent-guide index → page that explains the docs for AI tools"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/knowledge-base/",
+   "to": "https://hello-halo.cc/docs/en/features/knowledge-base.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/message-channels/",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/channels.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/message-channels/wecom-bot.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/wecom-bot.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/message-channels/weixin-ilink.html",
+   "to": "https://hello-halo.cc/docs/en/digital-humans/personal-wechat.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/remote-access/",
+   "to": "https://hello-halo.cc/docs/en/features/remote-access.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/skills-and-mcp/",
+   "to": "https://hello-halo.cc/docs/en/features/skills.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/public/ai-guides/spaces-and-agents/",
+   "to": "https://hello-halo.cc/docs/en/features/spaces.html",
+   "status": "redirect",
+   "note": "agent guide → human page"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/seo/ai-agent-automation.html",
+   "to": "https://hello-halo.cc/docs/seo/ai-agent-automation.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/seo/ai-desktop-agent.html",
+   "to": "https://hello-halo.cc/docs/seo/ai-desktop-agent.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/seo/ai-digital-human.html",
+   "to": "https://hello-halo.cc/docs/seo/ai-digital-human.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/seo/ai-digital-worker.html",
+   "to": "https://hello-halo.cc/docs/seo/ai-digital-worker.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/seo/ai-niuma.html",
+   "to": "https://hello-halo.cc/docs/seo/ai-niuma.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/seo/claude-code-desktop.html",
+   "to": "https://hello-halo.cc/docs/seo/claude-code-desktop.html",
+   "status": "kept",
+   "note": "kept"
+  },
+  {
+   "from": "https://hello-halo.cc/docs/troubleshooting/faq.html",
+   "to": "https://hello-halo.cc/docs/troubleshooting/faq.html",
+   "status": "kept",
+   "note": "kept"
+  }
+ ]
+}

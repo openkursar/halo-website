@@ -1,0 +1,290 @@
+{
+  "labels": {
+    "zh": {
+      "operation": "操作",
+      "endpoint": "端点",
+      "group": "分组",
+      "covers": "包含",
+      "operations": "操作数",
+      "name": "名称",
+      "description": "说明",
+      "pathParams": "路径参数",
+      "pathParamFallback": "路径参数。",
+      "query": "查询参数",
+      "requiredMark": "（必填）",
+      "listSeparator": "、",
+      "colon": "：",
+      "body": "请求体",
+      "response": "响应",
+      "errors": "错误",
+      "example": "示例",
+      "irreversible": "不可撤销",
+      "irreversibleText": "执行后无法撤销，数据也不会进入回收站。调用前请确认这是用户想要的结果。",
+      "narrower": "只想做范围更小的操作时，改用",
+      "reversible": "可撤销",
+      "assistant": "助手可调用",
+      "wrapped": "Halo 助手通过专用工具完成这项操作；直接调用端点会跳过该工具附带的处理：",
+      "groupLead": "所有路径都相对于你的 Halo 地址，每个请求都要带上访问密码。示例中的 `$HALO_URL` 和 `$HALO_TOKEN` 按[快速上手](/developers/quickstart)设置；地址、鉴权和错误约定见 [HTTP API 概览]({overview})。"
+    },
+    "en": {
+      "operation": "Operation",
+      "endpoint": "Endpoint",
+      "group": "Group",
+      "covers": "Covers",
+      "operations": "Operations",
+      "name": "Name",
+      "description": "Description",
+      "pathParams": "Path parameters",
+      "pathParamFallback": "Path parameter.",
+      "query": "Query parameters",
+      "requiredMark": " (required)",
+      "listSeparator": ", ",
+      "colon": ": ",
+      "body": "Request body",
+      "response": "Response",
+      "errors": "Errors",
+      "example": "Example",
+      "irreversible": "Irreversible",
+      "irreversibleText": "This cannot be undone, and nothing goes to a trash folder. Make sure it is what the user wants before you call it.",
+      "narrower": "If you only need something narrower, use",
+      "reversible": "Reversible",
+      "assistant": "Assistant",
+      "wrapped": "Halo's assistant does this through a dedicated tool; calling the endpoint directly skips what that tool adds:",
+      "groupLead": "Paths are relative to your Halo base URL, and every request carries the access password. Set `$HALO_URL` and `$HALO_TOKEN` as in the [quickstart](/en/developers/quickstart); base URL, authentication and error conventions are in the [HTTP API overview]({overview})."
+    }
+  },
+  "groups": {
+    "conversation": {
+      "zh": {
+        "title": "会话 API：发起任务、读取和管理会话",
+        "heading": "API：会话",
+        "name": "会话",
+        "description": "Halo HTTP API 会话接口：发起一轮任务、停止运行、查看进行中的会话，列出、读取、重命名、星标和删除会话。",
+        "intro": "会话是工作区里你和 Halo 助手之间的对话线程。API 按工作区组织会话，路径里的工作区写作 `spaces`。用这些接口在会话中发起任务、跟进和停止运行，并管理会话列表。与数字人的聊天在 [API：数字人](/developers/api/digital-human) 页。",
+        "short": "发起和停止任务，列出、读取和管理会话"
+      },
+      "en": {
+        "title": "Conversations API: start and manage conversations",
+        "heading": "API: Conversations",
+        "name": "Conversations",
+        "description": "Halo HTTP API for conversations: start a turn of work, stop it, see what is running, and list, read, rename, star and delete conversations.",
+        "intro": "Conversations are the threads between a user and Halo's assistant inside a workspace (`space` in the API paths). Use these operations to start work in a conversation, follow and stop it, and manage the conversation list. Chats with a Digital Human are on [API: Digital Humans](/en/developers/api/digital-human).",
+        "short": "Start and stop work; list, read and manage conversations"
+      }
+    },
+    "workspace": {
+      "zh": {
+        "title": "工作区 API：工作区、文件与记忆",
+        "heading": "API：工作区与文件",
+        "name": "工作区与文件",
+        "description": "Halo HTTP API 工作区与文件接口：创建、排序和删除工作区，修改工作区设置与记忆，浏览和读取工作区里的文件。",
+        "intro": "工作区是 Halo 干活的地方，每个工作区都有一个工作目录（API 中叫 `space`）。用这些接口创建和整理工作区、修改工作区设置与共享记忆，并浏览和读取工作区里的文件。",
+        "short": "工作区的增删改、设置与记忆，浏览和读取文件"
+      },
+      "en": {
+        "title": "Workspaces API: workspaces, files and memory",
+        "heading": "API: Workspaces and files",
+        "name": "Workspaces and files",
+        "description": "Halo HTTP API for workspaces and files: create, reorder and delete workspaces, change their settings and memory, and browse and read their files.",
+        "intro": "Workspaces (`space` in the API) are where Halo works, and each one has a working folder. Use these operations to create and arrange workspaces, change their settings and shared memory, and browse and read the files they hold.",
+        "short": "Workspaces, their settings and memory; browse and read files"
+      }
+    },
+    "digital-human": {
+      "zh": {
+        "title": "数字人 API：安装、配置和对话",
+        "heading": "API：数字人",
+        "name": "数字人",
+        "description": "Halo HTTP API 数字人接口：安装和卸载、暂停和恢复、修改配置、查看运行记录与活动，以及与数字人对话。",
+        "intro": "数字人按计划、按事件或在收到消息时开始工作（API 中叫 `app`）。用这些接口安装和卸载、暂停和恢复、修改配置、查看运行记录与活动，并与数字人对话。",
+        "short": "安装、配置、运行记录，以及与数字人对话"
+      },
+      "en": {
+        "title": "Digital Humans API: install, configure and chat",
+        "heading": "API: Digital Humans",
+        "name": "Digital Humans",
+        "description": "Halo HTTP API for Digital Humans: install and uninstall, pause and resume, configure, read run history and activity, and chat with them.",
+        "intro": "Digital Humans (`app` in the API) start work on a schedule, on events, or when someone messages them. Use these operations to install and remove them, pause and resume them, change their configuration, read their run history and activity, and chat with them.",
+        "short": "Install, configure, run history, and chat with Digital Humans"
+      }
+    },
+    "team": {
+      "zh": {
+        "title": "团队 API：成员、运行与触发器",
+        "heading": "API：团队",
+        "name": "团队",
+        "description": "Halo HTTP API 团队接口：创建和解散团队、管理成员与协作关系、启动和停止运行、设置触发器，查看看板与产出。",
+        "intro": "团队是为同一个目标协作的一组数字人。用这些接口创建和解散团队、管理成员与协作关系、启动和停止运行、设置触发器，并查看看板、会话和运行中产出的文件。",
+        "short": "团队与成员、运行、触发器、看板和产出"
+      },
+      "en": {
+        "title": "Teams API: members, runs and triggers",
+        "heading": "API: Teams",
+        "name": "Teams",
+        "description": "Halo HTTP API for teams of Digital Humans: create and dissolve teams, manage members, start and stop runs, set triggers, and read boards and outputs.",
+        "intro": "A team is a group of Digital Humans working toward one goal. Use these operations to create and dissolve teams, manage members and how they work together, start and stop runs, set triggers, and read boards, conversations and the files a run produced.",
+        "short": "Teams and members, runs, triggers, boards and outputs"
+      }
+    },
+    "knowledge-base": {
+      "zh": {
+        "title": "知识库 API：文档导入与索引",
+        "heading": "API：知识库",
+        "name": "知识库",
+        "description": "Halo HTTP API 知识库接口：创建和删除知识库、绑定到工作区或数字人、导入文档并查看索引进度。",
+        "intro": "知识库是供 Halo 检索的文档集合（API 路径里写作 `tlon`）。用这些接口创建和删除知识库、绑定到工作区或数字人、导入和移除文档，并查看索引进度。",
+        "short": "知识库、绑定、文档导入与索引"
+      },
+      "en": {
+        "title": "Knowledge base API: import and index documents",
+        "heading": "API: Knowledge bases",
+        "name": "Knowledge bases",
+        "description": "Halo HTTP API for knowledge bases: create and delete collections, bind them to workspaces and Digital Humans, import documents and follow indexing.",
+        "intro": "A knowledge base is a collection of documents Halo can search (`tlon` in the API paths). Use these operations to create and delete knowledge bases, bind them to workspaces and Digital Humans, import and remove documents, and follow indexing.",
+        "short": "Knowledge bases, bindings, document import and indexing"
+      }
+    },
+    "channels": {
+      "zh": {
+        "title": "消息通道 API：即时通讯与通知",
+        "heading": "API：消息通道",
+        "name": "消息通道",
+        "description": "Halo HTTP API 消息通道接口：连接和断开即时通讯通道、把聊天绑定到数字人、读取聊天记录、测试通知。",
+        "intro": "消息通道把数字人接入企业微信、飞书、微信等即时通讯平台，通知则用于向外发送提醒。用这些接口连接和断开通道、把聊天绑定到数字人、读取已绑定聊天的记录，并测试通知。新建通道和填写凭据请在 **设置 › 消息通道** 中完成。",
+        "short": "即时通讯通道、聊天绑定与记录、通知"
+      },
+      "en": {
+        "title": "Message channels API: IM chats and notifications",
+        "heading": "API: Message channels",
+        "name": "Message channels",
+        "description": "Halo HTTP API for message channels and notifications: connect IM channels, bind chats to Digital Humans, read chat transcripts, test notifications.",
+        "intro": "Message channels connect Digital Humans to IM platforms such as WeCom, Feishu and WeChat; notifications send alerts out. Use these operations to connect and disconnect channels, bind chats to Digital Humans, read the transcripts of bound chats, and test notifications. Create channels and enter their credentials in **Settings › Message Channels**.",
+        "short": "IM channels, chat bindings and transcripts, notifications"
+      }
+    },
+    "settings": {
+      "zh": {
+        "title": "设置 API：模型、版本与诊断",
+        "heading": "API：设置与模型",
+        "name": "设置与模型",
+        "description": "Halo HTTP API 设置与模型接口：版本、模型来源与模型切换、安全策略、Agent 引擎和 MCP 服务器诊断。",
+        "intro": "读取这台 Halo 的配置和能力：版本、模型来源与模型、安全策略、Agent 引擎和 MCP 服务器诊断，并切换模型来源与模型。API Key 等凭据不通过这套 API 写入，请在 Halo 的 **设置** 中填写。",
+        "short": "版本、模型、安全策略、引擎与 MCP 诊断"
+      },
+      "en": {
+        "title": "Settings API: models, version and diagnostics",
+        "heading": "API: Settings and models",
+        "name": "Settings and models",
+        "description": "Halo HTTP API for settings and models: version, model sources and switching models, security policy, agent engines and MCP server diagnostics.",
+        "intro": "Read how this Halo is configured and what it can do — version, model sources and models, security policy, agent engines and MCP server diagnostics — and switch the model source and model. Credentials such as API keys are not written through this API; enter them in **Settings** in the Halo app.",
+        "short": "Version, models, security policy, engines and MCP diagnostics"
+      }
+    },
+    "store": {
+      "zh": {
+        "title": "商店 API：浏览、安装与更新",
+        "heading": "API：商店",
+        "name": "商店",
+        "description": "Halo HTTP API 商店接口：浏览和搜索商店、查看详情，安装和卸载数字人与技能，管理商店来源与更新。",
+        "intro": "浏览和搜索商店、查看条目详情，安装和卸载数字人与技能，从本地 `.dhpkg` 文件安装，并管理商店来源与更新。发布到商店请在 Halo 中操作，见 [发布到商店](/developers/store-publishing)。",
+        "short": "浏览、安装与卸载、商店来源与更新"
+      },
+      "en": {
+        "title": "Store API: browse, install and update",
+        "heading": "API: Store",
+        "name": "Store",
+        "description": "Halo HTTP API for the Store: browse and search listings, install and uninstall Digital Humans and skills, and manage Store sources and updates.",
+        "intro": "Browse and search the Store, read a listing, install and uninstall Digital Humans and skills, install from a local `.dhpkg` file, and manage Store sources and updates. Publishing happens in the Halo app; see [Publish to the Store](/en/developers/store-publishing).",
+        "short": "Browse, install and uninstall, Store sources and updates"
+      }
+    },
+    "terminal": {
+      "zh": {
+        "title": "终端 API：创建、输入与回读",
+        "heading": "API：终端",
+        "name": "终端",
+        "description": "Halo HTTP API 终端接口：创建终端会话、发送输入、调整大小、回读输出和关闭终端会话。",
+        "intro": "这些是 Halo 中可被用户查看和输入的终端会话：创建、发送输入、调整大小、回读输出和关闭。实时输出通过 [WebSocket](/developers/api/websocket#terminal) 推送。终端只在 macOS 和 Windows 上提供，在 Linux 上每个终端接口都返回 `403`。",
+        "short": "终端会话的创建、输入、输出与关闭"
+      },
+      "en": {
+        "title": "Terminal API: create, type into and read sessions",
+        "heading": "API: Terminal",
+        "name": "Terminal",
+        "description": "Halo HTTP API for terminal sessions: create a session, send input, resize it, read back its output and close it again.",
+        "intro": "These are the terminal sessions shown in Halo, which a user can watch and type into: create one, send input, resize it, read back its output and close it. Live output streams over the [WebSocket](/en/developers/api/websocket#terminal). The terminal is available on macOS and Windows only; on Linux every terminal operation answers `403`.",
+        "short": "Create, type into, read and close terminal sessions"
+      }
+    }
+  },
+  "params": {
+    "spaceId": {
+      "zh": "工作区 ID，来自 GET /api/spaces。Halo 工作区的 ID 固定为 `halo-temp`。",
+      "en": "Workspace id, from GET /api/spaces. The Halo Workspace is always `halo-temp`."
+    },
+    "conversationId": {
+      "zh": "会话 ID，来自 GET /api/spaces/:spaceId/conversations。",
+      "en": "Conversation id, from GET /api/spaces/:spaceId/conversations."
+    },
+    "messageId": {
+      "zh": "消息 ID，来自 GET /api/spaces/:spaceId/conversations/:conversationId 返回的消息列表。",
+      "en": "Message id, from the messages returned by GET /api/spaces/:spaceId/conversations/:conversationId."
+    },
+    "appId": {
+      "zh": "数字人 ID，来自 GET /api/apps。",
+      "en": "Digital Human id, from GET /api/apps."
+    },
+    "teamId": {
+      "zh": "团队 ID，来自 GET /api/teams。",
+      "en": "Team id, from GET /api/teams."
+    },
+    "epochId": {
+      "zh": "团队的一次运行或一段会话的 ID，来自 GET /api/teams/:teamId/epochs。",
+      "en": "Id of one team run or conversation, from GET /api/teams/:teamId/epochs."
+    },
+    "checkId": {
+      "zh": "团队成员设置的定期检查的 ID。",
+      "en": "Id of a periodic check a team member set."
+    },
+    "triggerId": {
+      "zh": "触发器 ID，来自 GET /api/teams/:teamId/triggers。",
+      "en": "Trigger id, from GET /api/teams/:teamId/triggers."
+    },
+    "runId": {
+      "zh": "数字人一次运行的 ID，即 GET /api/apps/:appId/activity 中的 runId。",
+      "en": "Id of one Digital Human run, the runId in GET /api/apps/:appId/activity."
+    },
+    "entryId": {
+      "zh": "活动记录 ID，来自 GET /api/apps/:appId/activity。",
+      "en": "Activity entry id, from GET /api/apps/:appId/activity."
+    },
+    "reminderId": {
+      "zh": "提醒 ID，来自 GET /api/apps/:appId/reminders。",
+      "en": "Reminder id, from GET /api/apps/:appId/reminders."
+    },
+    "kbId": {
+      "zh": "知识库 ID，来自 GET /api/tlon。",
+      "en": "Knowledge base id, from GET /api/tlon."
+    },
+    "linkId": {
+      "zh": "知识库关联文件夹的 ID。",
+      "en": "Id of a folder linked to a knowledge base."
+    },
+    "registryId": {
+      "zh": "商店来源 ID，来自 GET /api/store/registries。",
+      "en": "Store source id, from GET /api/store/registries."
+    },
+    "slug": {
+      "zh": "商店条目的标识（slug），来自 GET /api/store/apps。",
+      "en": "Store listing slug, from GET /api/store/apps."
+    },
+    "sourceId": {
+      "zh": "模型来源 ID，来自 GET /api/config。",
+      "en": "Model source id, from GET /api/config."
+    },
+    "modelId": {
+      "zh": "模型 ID，与模型来源中列出的模型一致。",
+      "en": "Model id, as listed in a model source."
+    }
+  }
+}

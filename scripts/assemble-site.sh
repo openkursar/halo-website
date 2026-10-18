@@ -10,3 +10,7 @@ mkdir -p dist
 cp index.html CNAME robots.txt sitemap.xml llms.txt dist/
 cp -r assets dist/assets
 cp -r docs-src/.vitepress/dist dist/docs
+# GitHub Pages serves only a root 404.html; without it, unknown /docs/ URLs get
+# GitHub's generic page. The docs 404 uses absolute /docs/ asset paths, so it
+# works at the root too (the haloxe Worker already falls back to /docs/404.html).
+cp docs-src/.vitepress/dist/404.html dist/404.html

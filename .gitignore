@@ -1,2 +1,4 @@
 dist/
 .wrangler/
+.docs-work/
+.internal-check/

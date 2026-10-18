@@ -1,0 +1,617 @@
+[
+ {
+  "url": "https://hello-halo.cc/docs/advanced/best-practices.html",
+  "title": "最佳实践 | Halo",
+  "description": "Halo 使用最佳实践，帮助你更高效地使用 AI 桌面助手。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/advanced/best-practices.html",
+  "title": "Best Practices | Halo",
+  "description": "Tips and best practices for getting the most out of Halo AI desktop agent."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/advanced/config-paths.html",
+  "title": "配置路径 | Halo",
+  "description": "Halo 各类配置文件的存放位置说明。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/advanced/config-paths.html",
+  "title": "Config Paths | Halo",
+  "description": "Location of Halo configuration files on different operating systems."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/advanced/migrate.html",
+  "title": "换电脑迁移 Halo | Halo | Halo",
+  "description": "把 Halo 完整搬到新电脑：需要拷贝哪两个目录、哪些需要重新登录；只想带走某个数字人时，用安装包导出再导入。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/advanced/migrate.html",
+  "title": "Move Halo to a New Computer | Halo",
+  "description": "Move Halo to a new computer: which two folders to copy and what you need to sign in to again. To take a single digital human, export it as a package and import it."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/advanced/security.html",
+  "title": "权限控制 | Halo",
+  "description": "Halo 的权限控制和安全设置说明。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/contact.html",
+  "title": "联系我们 | Halo",
+  "description": "Halo 社区、反馈渠道和联系方式。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/contact.html",
+  "title": "Contact & Community | Halo",
+  "description": "Halo community channels, feedback, and support contacts."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/collaboration.html",
+  "title": "数字人协作与通信 | Halo",
+  "description": "通过 REST API 实现多个 Halo 数字人之间的分工协作和消息传递。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/digital-humans/collaboration.html",
+  "title": "Digital Human Collaboration | Halo",
+  "description": "Enable multi-agent collaboration between Halo digital humans via REST API communication."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/create.html",
+  "title": "创建数字人 | Halo",
+  "description": "通过自然语言对话或编写 spec.yaml 创建你的 Halo 数字人。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/digital-humans/create.html",
+  "title": "Create a Digital Human | Halo",
+  "description": "Create your own Halo digital human using natural language or spec.yaml configuration."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/dhp-protocol.html",
+  "title": "DHP 协议 - 数字人分发标准 | Halo",
+  "description": "DHP（Digital Human Protocol）是 Halo 的开放 AI 数字人分发协议，开发者可发布数字人供一键安装。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/digital-humans/dhp-protocol.html",
+  "title": "DHP Protocol - Digital Human Distribution | Halo",
+  "description": "DHP (Digital Human Protocol) is Halo's open standard for distributing and installing AI digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/guide-01-quickstart.html",
+  "title": "第一章：快速上手 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/guide-02-build.html",
+  "title": "第二章：创建一个 Browser Action 数字人 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/guide-03-reference.html",
+  "title": "第三章：参考手册 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/overview.html",
+  "title": "AI 数字人 - 7×24 小时自动化智能体 | Halo | Halo",
+  "description": "Halo 数字人是 7×24 小时自动运行的 AI 智能体。支持定时任务自动化、事件响应、AI 浏览器网页操作、数据爬取、报告生成和团队协作。免费开源。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/digital-humans/overview.html",
+  "title": "Digital Humans - 24/7 Autonomous AI Agents | Halo | Halo",
+  "description": "Halo Digital Humans are autonomous AI agents that run 24/7. Automate scheduled tasks, web scraping, report generation, monitoring, and more. Open source and free."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/personal-wechat.html",
+  "title": "连接个人微信 | Halo",
+  "description": "让 Halo 数字人在个人微信中与你对话，无需企业微信账号。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/production-guide.html",
+  "title": "生产级数字人制作指南 | Halo",
+  "description": "从 demo 到生产级：学习如何制作稳定可靠的 Halo 数字人，包括 prompt 优化、错误处理和监控。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/store.html",
+  "title": "数字人商店 - 一键安装 AI 应用 | Halo",
+  "description": "从 Halo 数字人商店一键安装社区开发者制作的数字人，开箱即用。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/digital-humans/store.html",
+  "title": "Digital Human Store | Halo",
+  "description": "Browse and one-click install community-made digital humans from the Halo store."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/wecom-bot-features.html",
+  "title": "企业微信机器人进阶玩法 | Halo",
+  "description": "企业微信 + Halo 数字人的高级用法：群聊、消息推送、多机器人协作。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/wecom-bot.html",
+  "title": "配置企业微信智能机器人 | Halo",
+  "description": "将 Halo 数字人接入企业微信，让 AI 自动回复员工消息。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/digital-humans/wecom-name-resolution.html",
+  "title": "企微机器人：显示真实姓名 | Halo",
+  "description": "企业微信对机器人的发送者做了匿名化处理，配置姓名解析 URL 后，Halo 里的联系人会显示真实姓名而不是一串 ID。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/ai-browser.html",
+  "title": "AI Browser Automation - Web Scraping & Auto-fill | Halo | Halo",
+  "description": "Halo's built-in AI browser lets AI agents automatically browse, fill forms, scrape data, and automate web tasks. No coding or crawler scripts needed."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/ai-browser.html",
+  "title": "AI 浏览器自动化 - 网页爬取与自动操作 | Halo | Halo",
+  "description": "Halo 内置 AI 浏览器，让 AI 智能体自动打开网页、搜索信息、填写表单、抓取数据。无需写爬虫代码，实现全自动网页操作和数据采集。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/ai-terminal.html",
+  "title": "AI Terminal - A Real Terminal You Share with the AI | Halo",
+  "description": "Halo's AI Terminal is a persistent interactive terminal that you and the AI see and drive together: log in over SSH and hand over to the AI, run other command-line tools, and keep long tasks going."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/ai-terminal.html",
+  "title": "AI 终端 - 和 AI 共用一个真正的终端 | Halo | Halo",
+  "description": "Halo 的 AI 终端是一个持续存在的交互式终端：你和 AI 看到并操作同一个会话，适合 SSH 登录服务器后交给 AI 继续操作、调用其他命令行工具和跑长任务。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/commands.html",
+  "title": "Commands | Halo",
+  "description": "Built-in commands and shortcuts available in Halo AI desktop agent."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/commands.html",
+  "title": "命令 | Halo",
+  "description": "Halo 支持的内置命令和快捷操作。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/image-input.html",
+  "title": "Image Input - Multimodal AI | Halo",
+  "description": "Send images to Halo AI for analysis, OCR recognition, and visual understanding."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/image-input.html",
+  "title": "图片输入 - 多模态 AI | Halo",
+  "description": "向 Halo AI 发送图片，利用多模态能力进行图片分析、OCR 识别和视觉理解。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/knowledge-base.html",
+  "title": "Knowledge Base - Let the AI Answer from Your Documents | Halo",
+  "description": "Put PDFs, Office documents, images, Markdown and other files into a Halo knowledge base; the AI reads them when answering and lists its sources. Watched folders keep learning new and changed files."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/knowledge-base.html",
+  "title": "知识库 - 让 AI 基于你的文档回答 | Halo | Halo",
+  "description": "把 PDF、Office 文档、图片、Markdown 等资料放进 Halo 知识库，AI 回答时会查阅这些文档并列出出处；可监视文件夹，自动学习新增和修改的文件。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/mcp.html",
+  "title": "MCP Servers - Extend AI Capabilities | Halo",
+  "description": "Install MCP (Model Context Protocol) servers to extend Halo AI agent's capabilities with external tools."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/mcp.html",
+  "title": "MCP 服务器 - 扩展 AI 能力 | Halo",
+  "description": "通过 MCP（Model Context Protocol）协议为 Halo 安装外部工具服务器，扩展 AI 的能力边界。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/remote-access.html",
+  "title": "Remote Access - Control AI from Anywhere | Halo",
+  "description": "Access your Halo AI desktop agent from any device, anywhere — phone, tablet, or another computer."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/remote-access.html",
+  "title": "远程访问 - 随时随地控制 AI | Halo",
+  "description": "通过 Halo 远程访问功能，用手机、平板或任意设备随时随地控制你的 AI 桌面助手。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/skills.html",
+  "title": "Skills - Reusable AI Templates | Halo",
+  "description": "Create reusable instruction templates for Halo AI, invoke with /skill-name in any conversation."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/skills.html",
+  "title": "Skills 技能 - 可复用指令模板 | Halo",
+  "description": "定义可复用的 AI 指令模板，在任何对话中用 /技能名 快速调用，提升 AI 工作效率。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/features/spaces.html",
+  "title": "Spaces - Project Isolation | Halo",
+  "description": "Organize projects into isolated workspaces in Halo, each with independent context, history, and AI settings."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/spaces.html",
+  "title": "空间 - 项目隔离管理 | Halo",
+  "description": "使用 Halo 空间功能隔离不同项目的上下文、对话历史和 AI 设置。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/guide/installation.html",
+  "title": "Install Halo - One-click AI Desktop App | Halo",
+  "description": "Download and install Halo AI desktop agent on macOS, Windows, or Linux. No coding required."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/guide/installation.html",
+  "title": "安装 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/guide/philosophy.html",
+  "title": "Philosophy - Kill Ugly Raw Source | Halo",
+  "description": "The design philosophy behind Halo: bringing frontier AI capabilities to everyone through a beautiful desktop experience."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/guide/philosophy.html",
+  "title": "核心理念 - Kill Ugly Raw Source | Halo",
+  "description": "Halo 的设计哲学：让 AI 重写一切丑陋的原始代码，用最前沿的 AI 能力服务每一个人。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/guide/quickstart.html",
+  "title": "Quick Start - Your First AI Conversation | Halo",
+  "description": "Start your first conversation with Halo AI in 30 seconds. Experience AI-powered file management, data analysis, and web automation."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/guide/quickstart.html",
+  "title": "30 秒开始第一个对话 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/guide/what-is-halo.html",
+  "title": "What is Halo - Open Source Claude Code Desktop App & AI Agent | Halo",
+  "description": "Halo is an open-source Claude Code desktop alternative. A visual GUI for Claude Code Agent with remote access, AI browser automation, and 24/7 digital humans. Free download for macOS, Windows, and Linux."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/guide/what-is-halo.html",
+  "title": "Halo 是什么 - Claude Code 桌面版 AI 智能体应用 | Halo",
+  "description": "Halo 是开源的 Claude Code 桌面版替代方案，将 Claude Code Agent 完整能力封装为可视化桌面 AI 应用。支持远程访问、AI 浏览器自动化、7×24 小时数字人。免费下载，支持 macOS/Windows/Linux。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/",
+  "title": "Halo Docs | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/",
+  "title": "Halo 文档 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/api-reference.html",
+  "title": "HTTP API Reference | Halo",
+  "description": "Complete reference for the Halo Server Remote Access HTTP API: auth, digital-human (App) lifecycle and chat, generic agent and conversations, config and health. Every endpoint verified against source, with curl examples."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/api-reference.html",
+  "title": "HTTP API 参考 | Halo",
+  "description": "Halo Server 远程访问 HTTP API 的完整参考：鉴权、数字人（App）生命周期与对话、通用 Agent 与会话、配置与健康检查。每个端点均按源码核对，附 curl 示例。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/build.html",
+  "title": "Build Your Own Image & How It Works | Halo",
+  "description": "Build the Halo Server deploy bundle yourself from Halo source (to rebrand, swap the provider, or track the latest source), plus how the headless server works."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/build.html",
+  "title": "自建镜像与工作原理 | Halo",
+  "description": "从 Halo 源码自己构建 Halo Server 的部署 bundle（用于改品牌、换 Provider 或跟最新源码），以及无头服务端的工作原理。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/configuration.html",
+  "title": "Halo Server Configuration | Halo",
+  "description": "Environment-variable reference for Halo Server: data persistence, the service access token, and connecting your own enterprise LLM gateway."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/configuration.html",
+  "title": "Halo Server 配置 | Halo",
+  "description": "Halo Server 的环境变量配置参考：数据持久化、服务访问令牌、以及企业自有大模型网关的接入方式。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/deployment-docker.html",
+  "title": "Docker Deployment | Halo",
+  "description": "Deploy Halo Server with plain Docker: build the image from deploy/server in the Halo repository, mount a persistent data volume, and configure the access token and your own LLM gateway."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/deployment-docker.html",
+  "title": "Docker 部署 | Halo",
+  "description": "用普通 Docker 部署 Halo Server：用 Halo 主仓库的 deploy/server 构建镜像，挂载持久化数据卷，配置访问令牌与企业自有大模型网关。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/deployment-faas.html",
+  "title": "Serverless Deployment (Knative) | Halo",
+  "description": "Deploy Halo Server on a serverless function platform (Knative-based): repo build, environment variables, NFS persistent volume, resource sizing, and scaling caveats."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/deployment-faas.html",
+  "title": "Serverless 部署（Knative） | Halo",
+  "description": "在 Serverless 函数平台（Knative 体系）上部署 Halo Server：仓库构建、环境变量、NFS 持久卷、资源规格与扩缩容注意事项。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/examples.html",
+  "title": "Halo Server Integration Examples | Halo",
+  "description": "End-to-end copy-pasteable examples: a full curl walkthrough of the customer-service flow, a streaming WebSocket example, and Java backend code that wraps the async API into a synchronous ask(); plus a contract-review digital-employee scenario."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/examples.html",
+  "title": "Halo Server 集成示例 | Halo",
+  "description": "端到端可复制示例：客服数字人的完整 curl 走查、WebSocket 流式示例，以及把异步 API 包成同步 ask() 的 Java 后端代码；附合同审查数字员工场景。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/",
+  "title": "Halo Server Quickstart | Halo",
+  "description": "A few commands to run Halo as a service, then open it in a browser and get the exact same Halo management UI as the desktop app."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/",
+  "title": "Halo Server 快速开始 | Halo",
+  "description": "几条命令把 Halo 跑成一个服务，然后用浏览器打开，得到和桌面版一模一样的 Halo 管理界面。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/integration.html",
+  "title": "Halo Server Integration Guide | Halo",
+  "description": "Integrate Halo Server as an AI agent backend for your business system: digital-human creation, conversation isolation, result delivery (polling vs WebSocket), multi-user isolation, auth, and error handling."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/integration.html",
+  "title": "Halo Server 集成指南 | Halo",
+  "description": "把 Halo Server 作为 AI 智能体后端接入企业业务系统：数字人创建、会话隔离、结果获取（轮询 vs WebSocket）、多用户隔离、鉴权与错误处理。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/server/websocket.html",
+  "title": "WebSocket Event Protocol | Halo",
+  "description": "Halo Server's real-time WebSocket event protocol: connection handshake, authentication, conversation subscription, the event envelope, and the agent:* channels that carry streamed AI thoughts and results."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/server/websocket.html",
+  "title": "WebSocket 事件协议 | Halo",
+  "description": "Halo Server 的 WebSocket 实时事件协议：连接握手、鉴权、订阅会话、事件信封，以及承载 AI 流式思考与结果的 agent:* 频道。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/troubleshooting/api-errors.html",
+  "title": "API Error Codes | Halo",
+  "description": "Quick reference for AI model API error codes including Anthropic, OpenAI, and third-party providers."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/troubleshooting/api-errors.html",
+  "title": "API 错误码 | Halo",
+  "description": "AI 模型 API 错误码速查表，包括 Anthropic、OpenAI 等常见错误解决方案。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/en/troubleshooting/common-errors.html",
+  "title": "Common Errors | Halo",
+  "description": "Troubleshoot common issues and errors when using Halo AI desktop agent."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/troubleshooting/common-errors.html",
+  "title": "常见错误排查 | Halo",
+  "description": "Halo 使用中常见错误的排查和解决方法。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/features/email.html",
+  "title": "邮件功能 | Halo",
+  "description": "使用 Halo 的邮件功能让 AI 和数字人自动处理邮件。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/getting-started/create-digital-human.html",
+  "title": "创建数字人 - 7×24 小时 AI 自动化 | Halo",
+  "description": "在 Halo 中创建数字人，实现定时任务、监控和自动化流水线，让 AI 全天候工作。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/getting-started/email.html",
+  "title": "配置邮箱 | Halo",
+  "description": "为 Halo 配置邮箱功能，让数字人能够自动收发邮件。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/getting-started/first-chat.html",
+  "title": "第一次对话 - 体验 AI 智能助手 | Halo",
+  "description": "发送你的第一条消息给 Halo AI，体验文件管理、数据分析、网页操作等 AI 自动化能力。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/getting-started/install.html",
+  "title": "安装 Halo - 免费下载 Claude Code 桌面版 AI 助手 | Halo",
+  "description": "一键下载安装 Halo AI 桌面助手。支持 macOS、Windows、Linux，无需 Node.js 或终端，Claude Code 的完整 Agent 能力开箱即用。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/getting-started/setup-ai.html",
+  "title": "配置 AI 模型 - 登录或填 API Key | Halo",
+  "description": "为 Halo 配置 AI 模型：可用账号登录免 Key，也可在内置渠道列表里选好供应商只填 API Key，一步完成 AI 连接。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/getting-started/wecom-bot.html",
+  "title": "接入企业微信 Bot | Halo",
+  "description": "将 Halo 数字人接入企业微信机器人，让 AI 在企业微信中自动回复消息。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/guide/changelog.html",
+  "title": "更新日志 - Halo 版本历史 | Halo",
+  "description": "Halo 桌面 AI 助手的完整版本更新记录，包括新功能、改进和修复。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/guide/from-claude-code.html",
+  "title": "从 Claude Code 迁移到 Halo | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/00-install-and-first-open.html",
+  "title": "第零章：安装 Halo 并第一次打开 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/01-wecom-bot.html",
+  "title": "第一章：连接企业微信机器人 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/02-digital-human.html",
+  "title": "第二章：创建和使用数字人 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/03-email.html",
+  "title": "第三章：用 Halo 收发邮件 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/04-chat-basics.html",
+  "title": "第四章：和 AI 对话——进阶技巧 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/PROGRESS.html",
+  "title": "Halo 用户手册 · 写作进度 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/chapter05-space-management.html",
+  "title": "第五章：空间管理——给 AI 一个专属工作间 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/chapter06-ai-browser.html",
+  "title": "第六章：让 AI 帮你操作网页——AI 浏览器 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/chapter07-remote-access.html",
+  "title": "第七章：随时随地用 Halo——远程访问 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/manual/chapter08-settings-and-troubleshooting.html",
+  "title": "第八章：设置、应用商店与排障 | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/ai-browser/",
+  "title": "AI Browser — Controlling Halo's Embedded Browser | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/ai-browser/scripting.html",
+  "title": "browser_run — Writing Production Browser Automation Scripts | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/ai-model-setup/",
+  "title": "Configuring AI Models — What Actually Happens in Settings → AI Model | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/ai-model-setup/troubleshooting.html",
+  "title": "AI Model Setup — Troubleshooting | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/ai-terminal/",
+  "title": "AI Terminal — A Persistent Terminal Shared with the User | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/SKILL.html",
+  "title": "Creating a Halo Digital Human — What the Tools Don't Tell You | Halo",
+  "description": "Authoring guide for Halo digital humans (automation apps). Read before calling create_automation_app or update_automation_app."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/examples.html",
+  "title": "Worked Examples | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/im-triggers.html",
+  "title": "IM / WeCom Triggering — How It Actually Works | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/interview-checklist.html",
+  "title": "Interview Checklist — What to Ask, and What Not To | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/create-digital-human/spec-reference.html",
+  "title": "App Spec Field Reference (condensed, automation-focused) | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/email-setup/",
+  "title": "Email Setup — Mailbox Tools vs. Notification Alerts | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/getting-started/",
+  "title": "Getting Started — Install, First Run, Updates, and Where Files Live | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/",
+  "title": "Halo Official Guides — Index | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/knowledge-base/",
+  "title": "Knowledge Base — Documents the AI Answers From | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/message-channels/",
+  "title": "Message Channels — WeCom Bot, WeChat iLink Bot, Feishu Bot, and IM Wiring | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/message-channels/wecom-bot.html",
+  "title": "WeCom Intelligent Bot (企业微信智能机器人) — Setup, Permissions, Diagnosis | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/message-channels/weixin-ilink.html",
+  "title": "WeChat Bot / iLink (微信机器人) — Setup, Limits, Diagnosis | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/remote-access/",
+  "title": "Remote Access — HTTP API, Auth, and the Internet Tunnel | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/skills-and-mcp/",
+  "title": "Skills & MCP — Installing, Scoping, and Authoring | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/public/ai-guides/spaces-and-agents/",
+  "title": "Spaces, Space Conversations, and Digital Humans | Halo",
+  "description": "Halo - AI Desktop Agent powered by Claude Code. Visual interface, remote access, AI browser, and 24/7 digital humans."
+ },
+ {
+  "url": "https://hello-halo.cc/docs/seo/ai-agent-automation.html",
+  "title": "AI Agent 自动化 - 从对话到自主执行 | Halo | Halo",
+  "description": "用 Halo 构建 AI Agent 自动化工作流——自然语言创建、定时触发、AI 浏览器操作网页、多 Agent 协作。不写代码也能实现复杂自动化。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/seo/ai-desktop-agent.html",
+  "title": "AI 桌面助手 - 用自然语言操控你的电脑 | Halo | Halo",
+  "description": "Halo 是一款 AI 桌面助手，让你用自然语言直接操控电脑——写代码、管理文件、分析数据、操作网页，无需编程基础。支持 macOS、Windows、Linux 免费下载。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/seo/ai-digital-human.html",
+  "title": "AI 数字人 - 7×24 自动执行任务的 AI 智能体 | Halo | Halo",
+  "description": "用 Halo 创建 AI 数字人，让它按计划自动执行任务——数据爬取、报告生成、消息推送、网页操作。不用写代码，自然语言创建，7×24 小时运行。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/seo/ai-digital-worker.html",
+  "title": "AI 数字员工 - 不休息不摸鱼的 AI 打工人 | Halo | Halo",
+  "description": "用 Halo 创建你的 AI 数字员工——自动处理重复性工作、监控数据、生成报告、爬取信息。不用发工资，7×24 小时在线，自然语言指挥。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/seo/ai-niuma.html",
+  "title": "AI 牛马 - 让 AI 替你干脏活累活 | Halo | Halo",
+  "description": "不想当牛马？让 AI 当。用 Halo 创建 AI 牛马，自动处理重复劳动——数据爬取、填表、整理文件、监控、报告。你下班了，AI 还在跑。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/seo/claude-code-desktop.html",
+  "title": "Claude Code 桌面版 - 不用终端的 Claude Code GUI | Halo | Halo",
+  "description": "Halo 是 Claude Code 的桌面版替代方案。完整继承 Claude Code Agent 能力，但提供图形界面——不用命令行、不用装 Node.js，下载即用。"
+ },
+ {
+  "url": "https://hello-halo.cc/docs/troubleshooting/faq.html",
+  "title": "常见问题 FAQ | Halo",
+  "description": "Halo 常见问题解答，基于用户真实咨询整理。"
+ }
+]

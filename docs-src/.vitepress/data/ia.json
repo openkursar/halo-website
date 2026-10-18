@@ -1,0 +1,1541 @@
+{
+ "version": 1,
+ "note": "Generated from the IA (spec/IA.md). Page names = H1 and sidebar labels.",
+ "sections": [
+  {
+   "id": "start",
+   "zh": "快速开始",
+   "en": "Get started",
+   "link": "getting-started/",
+   "prefixes": [
+    "getting-started/",
+    "guide/"
+   ],
+   "groups": [
+    {
+     "zh": "认识 Halo",
+     "en": "About Halo",
+     "items": [
+      {
+       "slug": "guide/what-is-halo",
+       "zh": "Halo 是什么",
+       "en": "What is Halo",
+       "type": "explanation",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "guide/concepts",
+       "zh": "核心概念",
+       "en": "Core concepts",
+       "type": "explanation",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "guide/glossary",
+       "zh": "术语表",
+       "en": "Glossary",
+       "type": "reference",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "guide/philosophy",
+       "zh": "核心理念",
+       "en": "Philosophy",
+       "type": "explanation",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "public"
+      }
+     ]
+    },
+    {
+     "zh": "快速开始",
+     "en": "Quick start",
+     "items": [
+      {
+       "slug": "getting-started/",
+       "zh": "快速开始",
+       "en": "Get started",
+       "type": "tutorial",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "getting-started/install",
+       "zh": "安装 Halo",
+       "en": "Install Halo",
+       "type": "tutorial",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "getting-started/setup-ai",
+       "zh": "连接 AI 模型",
+       "en": "Connect an AI model",
+       "type": "tutorial",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "getting-started/api-keys",
+       "zh": "获取 API Key",
+       "en": "Get an API key",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "getting-started/first-chat",
+       "zh": "完成第一个任务",
+       "en": "Your first task",
+       "type": "tutorial",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "getting-started/app-tour",
+       "zh": "认识 Halo 界面",
+       "en": "A tour of Halo",
+       "type": "explanation",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "换个工具过来",
+     "en": "Coming from another tool",
+     "items": [
+      {
+       "slug": "guide/from-claude-code",
+       "zh": "从 Claude Code / Codex 迁移",
+       "en": "Coming from Claude Code or Codex",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "guides",
+   "zh": "使用指南",
+   "en": "Guides",
+   "link": "features/",
+   "prefixes": [
+    "features/",
+    "advanced/",
+    "use-cases/",
+    "seo/"
+   ],
+   "groups": [
+    {
+     "zh": "日常使用",
+     "en": "Everyday use",
+     "items": [
+      {
+       "slug": "features/",
+       "zh": "使用指南",
+       "en": "Guides",
+       "type": "hub",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/spaces",
+       "zh": "工作区",
+       "en": "Workspaces",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/conversations",
+       "zh": "会话",
+       "en": "Conversations",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/image-input",
+       "zh": "文件和图片",
+       "en": "Files and images",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/models",
+       "zh": "模型与账号",
+       "en": "Models and accounts",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/memory",
+       "zh": "记忆",
+       "en": "Memory",
+       "type": "explanation",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/tasks",
+       "zh": "任务面板",
+       "en": "The task panel",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/parallel-work",
+       "zh": "同时推进多件事",
+       "en": "Work on several things at once",
+       "type": "how-to",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "让 AI 动手",
+     "en": "What the AI can do",
+     "items": [
+      {
+       "slug": "features/capabilities",
+       "zh": "能力开关",
+       "en": "Capabilities",
+       "type": "explanation",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/ai-browser",
+       "zh": "AI 浏览器",
+       "en": "AI Browser",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/ai-terminal",
+       "zh": "AI 终端",
+       "en": "AI Terminal",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/knowledge-base",
+       "zh": "知识库",
+       "en": "Knowledge Base",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/office-documents",
+       "zh": "Office 文档",
+       "en": "Office documents",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/files-and-canvas",
+       "zh": "文件与画布",
+       "en": "Files and the canvas",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/email",
+       "zh": "邮件与日历",
+       "en": "Email and calendar",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/cross-conversation",
+       "zh": "会话之间互相协作",
+       "en": "Conversations that work together",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/operate-halo",
+       "zh": "让 AI 帮你操作 Halo",
+       "en": "Let the AI operate Halo",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "开发者常用",
+     "en": "For developers",
+     "items": [
+      {
+       "slug": "features/code-review",
+       "zh": "变更、代码评审与 Git",
+       "en": "Changes, code review and Git",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/agent-engines",
+       "zh": "Agent 引擎",
+       "en": "Agent engines",
+       "type": "explanation",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/skills",
+       "zh": "技能",
+       "en": "Skills",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/mcp",
+       "zh": "MCP 服务器",
+       "en": "MCP servers",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/commands",
+       "zh": "命令与快捷键",
+       "en": "Commands and shortcuts",
+       "type": "reference",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "随时随地",
+     "en": "Anywhere",
+     "items": [
+      {
+       "slug": "features/remote-access",
+       "zh": "远程访问",
+       "en": "Remote Access",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "features/mobile",
+       "zh": "在手机上用 Halo",
+       "en": "Halo on your phone",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "设置与技巧",
+     "en": "Settings and tips",
+     "items": [
+      {
+       "slug": "features/settings",
+       "zh": "设置参考",
+       "en": "Settings reference",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/best-practices",
+       "zh": "使用技巧",
+       "en": "Tips and best practices",
+       "type": "explanation",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "场景与对比",
+     "en": "Use cases & comparisons",
+     "items": [
+      {
+       "slug": "use-cases/",
+       "zh": "场景示例",
+       "en": "Use cases",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "seo/ai-desktop-agent",
+       "zh": "AI 桌面助手",
+       "en": "AI desktop agent",
+       "type": "landing",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "public"
+      },
+      {
+       "slug": "seo/ai-agent-automation",
+       "zh": "AI Agent 自动化",
+       "en": "—",
+       "type": "landing",
+       "priority": "P1",
+       "locales": [
+        "zh"
+       ],
+       "edition": "public"
+      },
+      {
+       "slug": "seo/ai-digital-human",
+       "zh": "AI 数字人",
+       "en": "—",
+       "type": "landing",
+       "priority": "P1",
+       "locales": [
+        "zh"
+       ],
+       "edition": "public"
+      },
+      {
+       "slug": "seo/ai-digital-worker",
+       "zh": "AI 数字员工",
+       "en": "AI digital worker",
+       "type": "landing",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "public"
+      },
+      {
+       "slug": "seo/ai-niuma",
+       "zh": "AI 牛马",
+       "en": "—",
+       "type": "landing",
+       "priority": "P1",
+       "locales": [
+        "zh"
+       ],
+       "edition": "public"
+      },
+      {
+       "slug": "seo/claude-code-desktop",
+       "zh": "Claude Code 桌面版",
+       "en": "Claude Code desktop",
+       "type": "landing",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "public"
+      }
+     ]
+    },
+    {
+     "zh": "管理员与 IT",
+     "en": "Admins and IT",
+     "items": [
+      {
+       "slug": "advanced/",
+       "zh": "管理员与 IT",
+       "en": "For IT and admins",
+       "type": "hub",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/security",
+       "zh": "安全、隐私与数据流",
+       "en": "Security, privacy and data flow",
+       "type": "explanation",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/deployment",
+       "zh": "批量部署",
+       "en": "Deploy to many computers",
+       "type": "how-to",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/gateway-and-proxy",
+       "zh": "模型网关与代理",
+       "en": "Model gateway and proxy",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/federation-gateway",
+       "zh": "部署联邦网关",
+       "en": "Deploy the Federation Gateway",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/updates",
+       "zh": "更新 Halo",
+       "en": "Updating Halo",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/private-store",
+       "zh": "私有商店",
+       "en": "Private store",
+       "type": "how-to",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/config-paths",
+       "zh": "数据与配置位置",
+       "en": "Where Halo keeps your data",
+       "type": "reference",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "advanced/migrate",
+       "zh": "换电脑迁移",
+       "en": "Move Halo to a new computer",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dh",
+   "zh": "数字人",
+   "en": "Digital Humans",
+   "link": "digital-humans/overview",
+   "prefixes": [
+    "digital-humans/"
+   ],
+   "groups": [
+    {
+     "zh": "数字人",
+     "en": "Digital Humans",
+     "items": [
+      {
+       "slug": "digital-humans/overview",
+       "zh": "数字人概述",
+       "en": "Digital Humans overview",
+       "type": "explanation",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/create",
+       "zh": "创建数字人",
+       "en": "Create a Digital Human",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/triggers",
+       "zh": "运行计划与触发方式",
+       "en": "Schedules and triggers",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/capabilities",
+       "zh": "能力与设置",
+       "en": "Capabilities and settings",
+       "type": "reference",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/manage",
+       "zh": "运行记录与管理",
+       "en": "Runs and management",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/keep-running",
+       "zh": "让数字人一直在线",
+       "en": "Keep Digital Humans running",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/reminders",
+       "zh": "提醒",
+       "en": "Reminders",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/store",
+       "zh": "商店",
+       "en": "Store",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "团队",
+     "en": "Teams",
+     "items": [
+      {
+       "slug": "digital-humans/collaboration",
+       "zh": "数字人团队",
+       "en": "Digital Human teams",
+       "type": "explanation",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/team-workbench",
+       "zh": "团队工作台",
+       "en": "The team workbench",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/saved-teams",
+       "zh": "保存团队与定时运行",
+       "en": "Saved teams and schedules",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/cross-computer-teams",
+       "zh": "跨电脑团队",
+       "en": "Teams across computers",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "消息通道",
+     "en": "Message channels",
+     "items": [
+      {
+       "slug": "digital-humans/channels",
+       "zh": "消息通道概览",
+       "en": "Message channels overview",
+       "type": "explanation",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/wecom-bot",
+       "zh": "企业微信智能机器人",
+       "en": "WeCom Intelligent Bot",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/wecom-bot-features",
+       "zh": "企业微信机器人进阶",
+       "en": "WeCom bot: advanced",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/wecom-name-resolution",
+       "zh": "企业微信显示真实姓名",
+       "en": "WeCom: show real names",
+       "type": "how-to",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/feishu-bot",
+       "zh": "飞书机器人",
+       "en": "Feishu Bot",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/personal-wechat",
+       "zh": "微信机器人",
+       "en": "WeChat Bot",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/notifications",
+       "zh": "通知与主动推送",
+       "en": "Notifications and proactive push",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "digital-humans/permissions",
+       "zh": "主人与访客权限",
+       "en": "Owner and guest permissions",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dev",
+   "zh": "开发者",
+   "en": "Developers",
+   "link": "developers/",
+   "prefixes": [
+    "developers/",
+    "server/"
+   ],
+   "groups": [
+    {
+     "zh": "开始",
+     "en": "Start",
+     "items": [
+      {
+       "slug": "developers/",
+       "zh": "开发者",
+       "en": "Developers",
+       "type": "hub",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/quickstart",
+       "zh": "快速上手：调用 Halo API",
+       "en": "Quickstart: call the Halo API",
+       "type": "tutorial",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/docs-for-ai",
+       "zh": "给 AI 工具的文档",
+       "en": "Docs for AI tools",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "HTTP API",
+     "en": "HTTP API",
+     "items": [
+      {
+       "slug": "developers/api/",
+       "zh": "HTTP API 概览",
+       "en": "HTTP API overview",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/conversation",
+       "zh": "API：会话",
+       "en": "API: Conversations",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/workspace",
+       "zh": "API：工作区与文件",
+       "en": "API: Workspaces and files",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/digital-human",
+       "zh": "API：数字人",
+       "en": "API: Digital Humans",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/team",
+       "zh": "API：团队",
+       "en": "API: Teams",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/knowledge-base",
+       "zh": "API：知识库",
+       "en": "API: Knowledge bases",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/channels",
+       "zh": "API：消息通道",
+       "en": "API: Message channels",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/settings",
+       "zh": "API：设置与模型",
+       "en": "API: Settings and models",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/store",
+       "zh": "API：商店",
+       "en": "API: Store",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/terminal",
+       "zh": "API：终端",
+       "en": "API: Terminal",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/recipes",
+       "zh": "API 实用示例",
+       "en": "API recipes",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/api/websocket",
+       "zh": "WebSocket 事件",
+       "en": "WebSocket events",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "制作数字人",
+     "en": "Build Digital Humans",
+     "items": [
+      {
+       "slug": "developers/digital-humans/",
+       "zh": "数字人开发概览",
+       "en": "Building Digital Humans",
+       "type": "explanation",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/digital-humans/build",
+       "zh": "教程：做一个浏览器自动化数字人",
+       "en": "Tutorial: build a browser-automation Digital Human",
+       "type": "tutorial",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/digital-humans/spec",
+       "zh": "数字人 spec 参考",
+       "en": "Digital Human spec reference",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/digital-humans/production",
+       "zh": "生产级数字人",
+       "en": "Production-grade Digital Humans",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/dhp",
+       "zh": "DHP 协议",
+       "en": "DHP protocol",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/store-publishing",
+       "zh": "发布到商店",
+       "en": "Publish to the Store",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "扩展",
+     "en": "Extensions",
+     "items": [
+      {
+       "slug": "developers/skills",
+       "zh": "编写技能",
+       "en": "Writing skills",
+       "type": "reference",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "developers/mcp",
+       "zh": "MCP 配置参考",
+       "en": "MCP configuration reference",
+       "type": "reference",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "Halo Server",
+     "en": "Halo Server",
+     "items": [
+      {
+       "slug": "server/",
+       "zh": "Halo Server 快速开始",
+       "en": "Halo Server quickstart",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "server/configuration",
+       "zh": "Halo Server 配置",
+       "en": "Halo Server configuration",
+       "type": "reference",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "server/deployment-docker",
+       "zh": "Docker 部署",
+       "en": "Deploy with Docker",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "server/deployment-faas",
+       "zh": "Serverless 部署（Knative）",
+       "en": "Serverless deployment (Knative)",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "server/integration",
+       "zh": "Halo Server 集成指南",
+       "en": "Halo Server integration guide",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "server/examples",
+       "zh": "Halo Server 集成示例",
+       "en": "Halo Server integration examples",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "server/build",
+       "zh": "自建镜像与工作原理",
+       "en": "Build your own image",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "help",
+   "zh": "帮助",
+   "en": "Help",
+   "link": "troubleshooting/",
+   "prefixes": [
+    "troubleshooting/",
+    "guide/changelog",
+    "contact"
+   ],
+   "groups": [
+    {
+     "zh": "帮助",
+     "en": "Help",
+     "items": [
+      {
+       "slug": "troubleshooting/",
+       "zh": "帮助中心",
+       "en": "Help center",
+       "type": "hub",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "troubleshooting/faq",
+       "zh": "常见问题",
+       "en": "FAQ",
+       "type": "reference",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "troubleshooting/common-errors",
+       "zh": "错误信息速查",
+       "en": "Error messages",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "troubleshooting/api-errors",
+       "zh": "模型 API 错误码",
+       "en": "Model API error codes",
+       "type": "reference",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "troubleshooting/install",
+       "zh": "安装与启动问题",
+       "en": "Install and launch problems",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "troubleshooting/channels",
+       "zh": "机器人不回复",
+       "en": "Bot not replying",
+       "type": "how-to",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "troubleshooting/digital-humans",
+       "zh": "数字人没有运行",
+       "en": "A Digital Human did not run",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "troubleshooting/diagnostics",
+       "zh": "日志与诊断",
+       "en": "Logs and diagnostics",
+       "type": "how-to",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      }
+     ]
+    },
+    {
+     "zh": "参考与动态",
+     "en": "Reference and news",
+     "items": [
+      {
+       "slug": "guide/changelog",
+       "zh": "更新日志",
+       "en": "Changelog",
+       "type": "reference",
+       "priority": "P0",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
+       "slug": "contact",
+       "zh": "联系我们",
+       "en": "Contact",
+       "type": "reference",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "public"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

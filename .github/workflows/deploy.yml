@@ -20,6 +20,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history: "last updated" dates and sitemap lastmod come from git.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -32,12 +35,36 @@ jobs:
         run: npm ci
         working-directory: docs-src
 
+      # Strict: dead links, missing screenshots and every build check fail the build.
       - name: Build VitePress
         run: npm run build
         working-directory: docs-src
+        env:
+          DOCS_STRICT: '1'
+          SEO_CHECK_DENYLIST_TERMS: ${{ secrets.SEO_CHECK_DENYLIST_TERMS }}
+
+      # The intranet edition is built from the same source on every change so it
+      # cannot silently break; it is checked here and never deployed.
+      - name: Build the intranet edition (check only)
+        run: npx vitepress build --outDir ../.internal-check
+        working-directory: docs-src
+        env:
+          HALO_INTERNAL: '1'
+          DOCS_STRICT: '1'
+          SEO_CHECK_DENYLIST_TERMS: ${{ secrets.SEO_CHECK_DENYLIST_TERMS }}
+
+      - name: Check the intranet edition
+        run: node scripts/seo-check.mjs .internal-check --internal
+        env:
+          SEO_CHECK_DENYLIST_TERMS: ${{ secrets.SEO_CHECK_DENYLIST_TERMS }}
 
       - name: Assemble site
         run: ./scripts/assemble-site.sh
+
+      - name: SEO, link and leak check
+        run: node scripts/seo-check.mjs dist/docs
+        env:
+          SEO_CHECK_DENYLIST_TERMS: ${{ secrets.SEO_CHECK_DENYLIST_TERMS }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
