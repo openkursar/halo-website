@@ -508,3 +508,203 @@
   border-top: 1px solid var(--vp-c-divider);
   font-size: 0.92rem;
 }
+
+/* ─── Avatar generator ───────────────────────────────── */
+.halo-avatar-gen {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  background: var(--vp-c-bg-soft);
+}
+
+@media (min-width: 640px) {
+  .halo-avatar-gen {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+}
+
+.halo-avatar-gen .stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.halo-avatar-gen .preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.halo-avatar-gen .preview.empty {
+  border: 1px dashed var(--vp-c-divider);
+  border-radius: 50%;
+  text-align: center;
+}
+
+.halo-avatar-gen .preview.empty.square {
+  border-radius: 12px;
+}
+
+.halo-avatar-gen .placeholder {
+  padding: 0 1rem;
+  font-size: 0.85rem;
+  color: var(--vp-c-text-3);
+}
+
+.halo-avatar-gen .sizes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.halo-avatar-gen .caption {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--vp-c-text-3);
+}
+
+.halo-avatar-gen .form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+.halo-avatar-gen .field-label {
+  margin-top: 0.4rem;
+  padding: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.halo-avatar-gen input[type='text'],
+.halo-avatar-gen select {
+  width: 100%;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+}
+
+@media (min-width: 640px) {
+  .halo-avatar-gen select {
+    width: auto;
+    align-self: flex-start;
+  }
+}
+
+.halo-avatar-gen input[type='text']:focus,
+.halo-avatar-gen select:focus {
+  border-color: var(--vp-c-brand-1);
+  outline: none;
+}
+
+.halo-avatar-gen .note {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--vp-c-text-3);
+}
+
+.halo-avatar-gen .note.warn {
+  color: var(--vp-c-warning-1);
+}
+
+.halo-avatar-gen .shape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.halo-avatar-gen .shape .field-label {
+  flex-basis: 100%;
+}
+
+.halo-avatar-gen .shape label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.halo-avatar-gen .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.halo-avatar-gen .actions button {
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+  cursor: pointer;
+}
+
+.halo-avatar-gen .actions button:hover:not(:disabled) {
+  color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+}
+
+.halo-avatar-gen .actions button.primary {
+  border-color: transparent;
+  color: var(--vp-button-brand-text);
+  background: var(--vp-button-brand-bg);
+}
+
+.halo-avatar-gen .actions button.primary:hover:not(:disabled) {
+  color: var(--vp-button-brand-hover-text);
+  background: var(--vp-button-brand-hover-bg);
+}
+
+.halo-avatar-gen .actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* The face glances and blinks like the digital-human avatar in the app and the
+   animated brand mark. It moves the children of the face group of the generated
+   SVG (svg > g > g > mouth and two eyes); the group's own transform places the
+   face. Mirrors the app's avatar-alive rules. */
+@keyframes halo-avatar-look { 0%, 100% { translate: -0.8px 0 } 50% { translate: 0.8px 0 } }
+@keyframes halo-avatar-blink { 0%, 44%, 52%, 100% { scale: 1 1 } 48% { scale: 1 .15 } }
+
+.halo-avatar-alive {
+  display: flex;
+}
+
+.halo-avatar-alive > svg > g > g > * {
+  animation: halo-avatar-look 2.4s ease-in-out infinite;
+}
+
+.halo-avatar-alive > svg > g > g > rect {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: halo-avatar-look 2.4s ease-in-out infinite, halo-avatar-blink 2.4s ease-in-out infinite;
+}
+
+/* Lists `rect` too: that rule outranks a bare `*`. */
+@media (prefers-reduced-motion: reduce) {
+  .halo-avatar-alive > svg > g > g > *,
+  .halo-avatar-alive > svg > g > g > rect {
+    animation: none;
+  }
+}

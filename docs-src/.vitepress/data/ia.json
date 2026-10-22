@@ -829,6 +829,18 @@
         "en"
        ],
        "edition": "all"
+      },
+      {
+       "slug": "digital-humans/avatar",
+       "zh": "数字人头像",
+       "en": "Digital Human avatar",
+       "type": "how-to",
+       "priority": "P2",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
       }
      ]
     },

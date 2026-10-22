@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "vitepress dev",
-    "build": "node ../scripts/gen-api-docs.mjs --check && node ../scripts/gen-spec-docs.mjs --check && node ../scripts/gen-changelog.mjs --check && node ../scripts/gen-glossary.mjs --check && vitepress build",
+    "check:avatar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning ../scripts/avatar-parity.mjs --check",
+    "build": "node ../scripts/gen-api-docs.mjs --check && node ../scripts/gen-spec-docs.mjs --check && node ../scripts/gen-changelog.mjs --check && node ../scripts/gen-glossary.mjs --check && npm run check:avatar && vitepress build",
     "build:internal": "HALO_INTERNAL=1 vitepress build --outDir ../.internal-check",
     "build:strict": "DOCS_STRICT=1 npm run build",
     "preview": "vitepress preview"

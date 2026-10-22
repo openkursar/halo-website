@@ -7,6 +7,7 @@ import Feedback from './components/Feedback.vue'
 import PlatformTabs from './components/PlatformTabs.vue'
 import Shortcut from './components/Shortcut.vue'
 import DocsHome from './components/DocsHome.vue'
+import AvatarGenerator from './components/AvatarGenerator.vue'
 import './custom.css'
 
 // Adds a copy button to the prompt (first blockquote) of every "Just tell Halo" block.
@@ -42,6 +43,7 @@ export default {
     app.component('PlatformTabs', PlatformTabs)
     app.component('Shortcut', Shortcut)
     app.component('DocsHome', DocsHome)
+    app.component('AvatarGenerator', AvatarGenerator)
   },
   setup() {
     if (typeof window === 'undefined') return
