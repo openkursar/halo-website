@@ -28,8 +28,6 @@ This is step 1 of [Get started](/en/getting-started/). Halo can't help with it b
 
 <!-- public:start -->
 Open the [download section of the Halo website](https://hello-halo.cc/#download). The page detects your system, including Apple silicon vs Intel on a Mac. Click **Download**. Every package is also on [GitHub Releases](https://github.com/openkursar/hello-halo/releases/latest).
-<!-- public:end -->
-<!-- internal:download -->
 
 To pick the file yourself:
 
@@ -40,6 +38,8 @@ To pick the file yourself:
 | Windows PC | `Halo-Setup-<version>.exe` |
 | Linux PC | `Halo-<version>.AppImage` |
 | Android phone | `Halo-<version>.apk` |
+<!-- public:end -->
+<!-- internal:download -->
 
 Not sure which chip your Mac has? Open the Apple menu › About This Mac and look at the "Chip" line. A name starting with Apple M means Apple silicon; a "Processor" line that says Intel means an Intel Mac.
 

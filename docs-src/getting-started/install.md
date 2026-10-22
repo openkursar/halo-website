@@ -28,8 +28,6 @@ related: [getting-started/setup-ai, troubleshooting/install, advanced/updates]
 
 <!-- public:start -->
 打开 [Halo 官网的下载区](https://hello-halo.cc/#download)。网页会识别你的系统，Mac 还会区分 Apple 芯片和 Intel 芯片，点 **下载** 即可。所有安装包也都在 [GitHub Releases](https://github.com/openkursar/hello-halo/releases/latest)。
-<!-- public:end -->
-<!-- internal:download -->
 
 如果要自己挑文件，按下表选：
 
@@ -40,6 +38,8 @@ related: [getting-started/setup-ai, troubleshooting/install, advanced/updates]
 | Windows 电脑 | `Halo-Setup-<版本号>.exe` |
 | Linux 电脑 | `Halo-<版本号>.AppImage` |
 | Android 手机 | `Halo-<版本号>.apk` |
+<!-- public:end -->
+<!-- internal:download -->
 
 不确定 Mac 是哪种芯片：点屏幕左上角的苹果菜单 ›「关于本机」，看「芯片」一行。写着 Apple M 开头的就是 Apple 芯片，显示「处理器」并写着 Intel 的就是 Intel 芯片。
 
