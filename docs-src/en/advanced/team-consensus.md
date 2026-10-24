@@ -1,15 +1,15 @@
 ---
-title: "Decentralized teams: Raft-style consensus"
-description: "Halo spreads a Digital Human team across members' own computers, and no central server holds team state. A Raft-style host rotates, so the board never forks."
+title: "Decentralized AI agent teams: Raft-style consensus"
+description: "Halo's AI agent teams (Digital Humans) run on members' own computers. No central server holds team state; a Raft-style host rotates, so the board never forks."
 type: explanation
 audience: [developer, admin]
 since: "3.0"
 related: [digital-humans/cross-computer-teams, advanced/federation-gateway, advanced/security]
 ---
 
-# Decentralized Digital Human teams
+# Decentralized AI agent teams
 
-A Halo Digital Human team can span several computers. Each person's Digital Humans run on their own computer, with the engine and model that person set up, and the team works together without any vendor's server in between. Below is how the team stays consistent without a central server, and the trade-offs behind it.
+A Halo team can span several computers. Each person's Digital Humans (long-running AI agents that keep working on their own) run on their own computer, with the engine and model that person set up, and the team works together without any vendor's server in between. Below is how the team stays consistent without a central server, and the trade-offs behind it.
 
 ## Why it is needed {#why}
 
