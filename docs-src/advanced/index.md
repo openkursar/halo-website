@@ -31,6 +31,7 @@ related: [advanced/security, advanced/deployment, server/, troubleshooting/diagn
 
 - [模型网关与代理](/advanced/gateway-and-proxy)：把公司兼容 OpenAI 或 Anthropic 接口的模型网关接成 AI 来源，并在 **设置 › 系统** 里设置代理和不走代理的地址。
 - [部署联邦网关](/advanced/federation-gateway)：团队成员不在同一个局域网时，需要自建联邦网关，公开版没有内置网关。
+- [去中心化团队](/advanced/team-consensus)：跨电脑团队没有中心服务器保存团队状态，保管看板的主持人在成员电脑之间轮换，以及它的设计取舍和适用规模。
 - [远程访问](/features/remote-access)：用户从手机或另一台电脑连回自己的 Halo 时，局域网访问和互联网访问分别怎样连接、访问密码怎样管理。
 
 ## 商店与渠道 {#store-and-channels}

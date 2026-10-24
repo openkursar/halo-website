@@ -5,7 +5,7 @@ type: how-to
 audience: [office]
 since: "3.0"
 prerequisites: [digital-humans/saved-teams]
-related: [digital-humans/team-workbench, advanced/federation-gateway, features/remote-access]
+related: [digital-humans/team-workbench, advanced/federation-gateway, advanced/team-consensus, features/remote-access]
 ---
 
 # Teams across computers
@@ -100,6 +100,8 @@ The team's tasks and board are kept by the computer that created the team (the h
 - When the old host comes back, it steps aside, and the team record never splits.
 - The host's own Digital Humans, including the lead, can't work while it's offline. The takeover keeps the shared team record going, not the Digital Humans on that computer.
 - A computer cut off from most of the others pauses changes and stays view-only. When it reconnects, it says "‹team› is back" and "Reconnected automatically — work picks up where it left off."
+
+For the design behind this and its trade-offs, see [Decentralized teams](/en/advanced/team-consensus).
 
 ## Leave a team {#leave}
 

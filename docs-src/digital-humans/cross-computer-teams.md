@@ -5,7 +5,7 @@ type: how-to
 audience: [office]
 since: "3.0"
 prerequisites: [digital-humans/saved-teams]
-related: [digital-humans/team-workbench, advanced/federation-gateway, features/remote-access]
+related: [digital-humans/team-workbench, advanced/federation-gateway, advanced/team-consensus, features/remote-access]
 ---
 
 # 跨电脑团队
@@ -100,6 +100,8 @@ related: [digital-humans/team-workbench, advanced/federation-gateway, features/r
 - 原来的主持人回来后会自动让位，团队记录不会分叉。
 - 主持人自己的数字人（包括负责人）在它离线期间不能工作。接手保住的是团队的共享记录，不是那台电脑上的数字人。
 - 和大多数电脑断开的一方会暂停修改，只能查看；重新连上后会提示「某团队 已恢复」和「自动重新连接——工作从上次中断处继续。」
+
+背后的设计和取舍见 [去中心化团队](/advanced/team-consensus)。
 
 ## 退出团队 {#leave}
 

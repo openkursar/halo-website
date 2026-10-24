@@ -670,6 +670,18 @@
        "edition": "all"
       },
       {
+       "slug": "advanced/team-consensus",
+       "zh": "去中心化团队",
+       "en": "Decentralized teams",
+       "type": "explanation",
+       "priority": "P1",
+       "locales": [
+        "zh",
+        "en"
+       ],
+       "edition": "all"
+      },
+      {
        "slug": "advanced/updates",
        "zh": "更新 Halo",
        "en": "Updating Halo",

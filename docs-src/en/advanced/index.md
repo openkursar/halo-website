@@ -31,6 +31,7 @@ Rolling out Halo 3.0.4 at your company? This section follows the questions in th
 
 - [Model gateway and proxy](/en/advanced/gateway-and-proxy): add your company's OpenAI- or Anthropic-compatible model gateway as an AI source, and set the proxy and the addresses that bypass it in **Settings › System**.
 - [Deploy the Federation Gateway](/en/advanced/federation-gateway): teams whose members are not on the same local network need a self-hosted Federation Gateway. The public build has no built-in gateway.
+- [Decentralized teams](/en/advanced/team-consensus): how a team across computers works when no central server holds team state, the host role rotating among members' computers, and its trade-offs and intended size.
 - [Remote Access](/en/features/remote-access): how users reach their own Halo from a phone or another computer over the local network or the internet, and how the access password is managed.
 
 ## Store and channels {#store-and-channels}
