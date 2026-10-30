@@ -72,8 +72,8 @@
   },
   "requires.skills": {
     "source": "2ad66d4b890f",
-    "en": "Skills to install together with it, as ids or objects. Every skill in its workspace or global scope is available to it anyway; this list only decides what gets installed.",
-    "zh": "随它一起安装的技能，可以写 id 或对象。它所在工作区和全局范围里的技能本来就都能用；这个列表只决定要安装哪些。"
+    "en": "Skills it depends on, as ids or objects. Declare every skill the system prompt relies on: sharing and export package only these, so an undeclared skill is missing for everyone who installs it. At runtime every skill in its workspace or global scope loads anyway.",
+    "zh": "它依赖的技能，可以写 id 或对象。提示词用到的技能都要写在这里：分享和导出只打包这里声明的技能，没写的技能在别人安装后就没有。运行时，它所在工作区和全局范围里的技能本来就都能用。"
   },
   "requires.skills[].id": {
     "source": "23a7a30ef349",

@@ -98,7 +98,7 @@ _Generated from the schema of Halo 3.0.4._
 | `mcps[].reason` | `string` | No | — | Why it needs the server, shown next to the dependency. |
 | `mcps[].bundled` | `boolean` | No | — | **No effect:** accepted, but nothing reads it. Meant to mark an MCP server shipped inside the package. |
 | `mcps[].enabled` | `boolean` | No | — | `false` keeps the declaration but stops this Digital Human from using the server, in runs and in chat. The server itself stays on for everyone else. |
-| `skills` | `(string \| object)[]` | No | — | Skills to install together with it, as ids or objects. Every skill in its workspace or global scope is available to it anyway; this list only decides what gets installed. |
+| `skills` | `(string \| object)[]` | No | — | Skills it depends on, as ids or objects. Declare every skill the system prompt relies on: sharing and export package only these, so an undeclared skill is missing for everyone who installs it. At runtime every skill in its workspace or global scope loads anyway. |
 | `skills[].id` | `string` (non-empty) | Yes | — | Skill id. |
 | `skills[].reason` | `string` | No | — | Why it needs the skill. |
 | `skills[].bundled` | `boolean` | No | — | `true` when the skill ships inside the package under `skills/<id>/` rather than coming from the Store. |
